@@ -217,6 +217,37 @@ function addPatcherPortalField(
 }
 
 /**
+ * Add the Linked JIRA Issues field to the sidebar, which will contain a link to
+ * the relevant JIRA tickets.
+ */
+
+function addJIRASearchField(
+  propertyBox: HTMLElement,
+  ticketId: string
+) : void {
+
+  var query = `
+"Customer Ticket Permalink" = "https://${document.location.host}${document.location.pathname}" OR
+"Zendesk Ticket IDs" ~ ${ticketId}
+  `.trim();
+
+  var encodedQuery = encodeURIComponent(query);
+
+  var jiraSearchItems = [];
+
+  var jiraSearchLinkHREF = 'https://issues.liferay.com/issues/?jql=' + encodedQuery;
+
+  var jiraSearchLinkContainer = document.createElement('div');
+
+  var jiraSearchLink = createAnchorTag("Linked Issues", jiraSearchLinkHREF);
+  jiraSearchLinkContainer.appendChild(jiraSearchLink);
+
+  jiraSearchItems.push(jiraSearchLinkContainer);
+
+  generateFormField(propertyBox, 'lesa-ui-jirasearch', 'JIRA Search', jiraSearchItems);
+}
+
+/**
  * Make tags in the sidebar clickable, so we can easily find tickets
  * with similar tags.
  */
@@ -279,6 +310,7 @@ function updateSidebarBoxContainer(
 
   for (var i = 0; i < propertyBoxes.length; i++) {
     addOrganizationField(propertyBoxes[i], ticketId, ticketInfo);
+    addJIRASearchField(propertyBoxes[i], ticketId);
     addPatcherPortalField(propertyBoxes[i], ticketId, ticketInfo);
   }
 }
