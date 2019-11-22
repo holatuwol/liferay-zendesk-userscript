@@ -118,6 +118,15 @@ function checkTicketMetadata(
   var xhr = new XMLHttpRequest();
 
   xhr.onload = function() {
+    if (xhr.status != 200) {
+      console.error("URL: " + xhr.responseURL);
+      console.error("Error: " + xhr.status + " - " + xhr.statusText);
+
+      callback(ticketId, null);
+
+      return;
+    }
+
     var ticketInfo = null;
 
     try {
@@ -268,6 +277,11 @@ function setAccountInfo(
   var xhr = new XMLHttpRequest();
 
   xhr.onload = function() {
+    if (xhr.status != 200) {
+      console.log("URL: " + xhr.responseURL);
+      console.log("Error: " + xhr.status + " - " + xhr.statusText);
+    }
+
     try {
       accountInfo = JSON.parse(xhr.responseText);
     }
