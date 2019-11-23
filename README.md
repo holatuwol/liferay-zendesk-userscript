@@ -1,11 +1,15 @@
 # ZenDesk for TSEs (Attachments List, Comment Permalinks, Sidebar Quick Links, Compose with Stackedit)
 
 * **Loop**: https://loop.liferay.com/home/-/loop/feed/15379250
-* **Note**: Only tested in Opera (Violentmonkey), but it should work in other browsers since it doesn't use any special features. Any features that interact with ZenDesk apps (for example, there is a feature that auto-populates a few fields when you use the "Create Issue" link in the JIRA integration app) require using Tampermonkey or Violentmonkey, due to a known limitation with iframes in Greasemonkey 4 ([reference](https://github.com/greasemonkey/greasemonkey/issues/2574)).
+* **Source**: https://github.com/holatuwol/liferay-zendesk-userscript
+
+**Note**: Only tested in Opera (Violentmonkey), but it should work in other browsers since it doesn't use any special features. Any features that interact with ZenDesk apps (for example, there is a feature that auto-populates a few fields when you use the "Create Issue" link in the JIRA integration app) require using Tampermonkey or Violentmonkey, due to a known limitation with iframes in Greasemonkey 4 ([reference](https://github.com/greasemonkey/greasemonkey/issues/2574)).
+
+---
 
 [Eric Yan](https://loop.liferay.com/web/guest/home/-/loop/people/_eric.yan) highlighted a problem where finding attachments was difficult with Help Center (though this might be a training problem; we have no idea where to look for it), so I've created a user script to fix a few of the problems I've experienced with the ZenDesk UI.
 
-**As of September 16, 2019 - 09:45 Pacific (version 7.7)**
+**As of November 22, 2019 - 17:45 Pacific (version 8.0)**
 
 The script adds the following functionality to the top of the ticket:
 
@@ -15,6 +19,7 @@ The script adds the following functionality to the top of the ticket:
 - A workaround for [360001126648](https://grow.liferay.com/share/issues/360001126648), which downloads image attachments instead of opening them in a pop-up (only in the list of attachments)
 - A "Download All" link which generates a zip file of all attachments for the ticket
 - `CRITICAL` label, based on the rules in [Help Center Statuses and Priority](https://grow.liferay.com/share/Help+Center+Statuses+and+Priorities)
+- `CUSTOMER REGION` label if the assignee region is different from the customer region
 - Emoji markers for tags, which currently only includes `⚠️` for `cas_fire`, `cas_hot`, `cas_priority`
 
 The script also adds the following functionality to the sidebar:
