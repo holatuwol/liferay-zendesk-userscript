@@ -68,6 +68,7 @@ type TicketMetadata = {
     priority: string | null
     raw_subject: string
     requester_id: number
+    status: string
     tags: Array<string> | null
   };
   organizations: Array<OrganizationMetadata>;

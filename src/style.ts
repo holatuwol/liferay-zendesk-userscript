@@ -119,9 +119,14 @@ a.generating::after {
   display: none;
 }
 
+.lesa-ui-priority:not(:empty) {
+  margin-bottom: 8px;
+}
+
 .lesa-ui-priority span {
   color: #fff;
   border-radius: 2px;
+  margin-right: 8px;
   padding: 4px;
   text-align: center;
   text-transform: uppercase;
