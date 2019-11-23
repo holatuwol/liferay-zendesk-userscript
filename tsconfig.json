@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "lib": ["es6", "dom"],
+    "noImplicitAny": true,
+    "noImplicitThis": false,
+    "outFile": "build/zendesk.user.js",
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+  },
+  "include": [
+    "user_script.ts",
+    "src/style.ts",
+    "src/types.d.ts",
+    "src/common.ts",
+    "src/ticket.ts",
+    "src/sidebar.ts",
+    "src/attachments.ts",
+    "src/description.ts",
+    "src/reply.ts",
+    "src/permalink.ts",
+    "src/jira.ts",
+    "src/main.ts"
+  ]
+}
