@@ -100,7 +100,7 @@ function addPriorityMarker(
     var customerRegion = ticketInfo.organizations[0].organization_fields.support_region;
     var ticketContainer = <HTMLElement> header.closest('.main_panes');
     var assigneeElement = <HTMLElement> ticketContainer.querySelector('.assignee_id .zd-combo-selectmenu');
-    var assigneeText = (assigneeElement.textContent || '').trim();
+    var assigneeText = (assigneeElement.getAttribute('data-original-title') || '').trim();
     var assigneeRegions = new Set(getSupportOffices(assigneeText).map(x => x.toLowerCase()));
 
     if (!assigneeRegions.has(customerRegion)) {

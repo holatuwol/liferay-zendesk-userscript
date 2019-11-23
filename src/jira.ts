@@ -183,6 +183,10 @@ function getSupportOffices(
     supportOffices.push('Brazil');
   }
 
+  if (assigneeGroup.indexOf('- CN') != -1) {
+    supportOffices.push('China');
+  }
+
   if (assigneeGroup.indexOf('- HU') != -1) {
     supportOffices.push('EU');
   }
