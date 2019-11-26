@@ -247,6 +247,41 @@ function addJIRASearchField(
   generateFormField(propertyBox, 'lesa-ui-jirasearch', 'JIRA Search', jiraSearchItems);
 }
 
+function hideSidebarSelectOption(
+  hiddenMenuItemTexts: Set<string>
+) : void {
+
+  var menuItems = <Array<HTMLLIElement>> Array.from(document.querySelectorAll('.zd-state-focus.zd-state-open ul li'));
+
+  for (var i = 0; i < menuItems.length; i++) {
+    var menuItemText = (menuItems[i].textContent || '').trim();
+
+    if (hiddenMenuItemTexts.has(menuItemText)) {
+      menuItems[i].style.display = 'none';
+    }
+  }
+}
+
+/**
+ * Hide certain select options that we don't want users to select.
+ */
+function hideSidebarSelectOptions(
+  propertyBox: HTMLElement,
+  ticketId: string,
+  ticketInfo: TicketMetadata
+) : void {
+
+  var workspaceElement = <HTMLElement> propertyBox.closest('.workspace');
+
+  var longTermResolutionButton = <HTMLElement | null> workspaceElement.querySelector('.custom_field_360013378112');
+
+  if (longTermResolutionButton) {
+    longTermResolutionButton.onclick = hideSidebarSelectOption.bind(
+      null, new Set(['Documentation (Archived)'])
+    );
+  }
+}
+
 /**
  * Make tags in the sidebar clickable, so we can easily find tickets
  * with similar tags.
@@ -312,5 +347,6 @@ function updateSidebarBoxContainer(
     addOrganizationField(propertyBoxes[i], ticketId, ticketInfo);
     addJIRASearchField(propertyBoxes[i], ticketId);
     addPatcherPortalField(propertyBoxes[i], ticketId, ticketInfo);
+    hideSidebarSelectOptions(propertyBoxes[i], ticketId, ticketInfo);
   }
 }
