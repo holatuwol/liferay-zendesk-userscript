@@ -52,6 +52,51 @@ function getEmojiAnchorTags(tags: Array<string>) : HTMLSpanElement | null {
 }
 
 /**
+ * Retrieves the support region
+ */
+
+function getSupportRegions(
+  assigneeText: string
+) : Set<string> {
+
+  var supportRegions = [];
+
+  if (assigneeText.indexOf('- AU') != -1) {
+    supportRegions.push('Australia');
+  }
+
+  if (assigneeText.indexOf('- BR') != -1) {
+    supportRegions.push('Brazil');
+  }
+
+  if (assigneeText.indexOf('- CN') != -1) {
+    supportRegions.push('China');
+  }
+
+  if (assigneeText.indexOf('- HU') != -1) {
+    supportRegions.push("Hungary");
+  }
+
+  if (assigneeText.indexOf('- IN') != -1) {
+    supportRegions.push('India');
+  }
+
+  if (assigneeText.indexOf('- JP') != -1) {
+    supportRegions.push('Japan');
+  }
+
+  if ((assigneeText.indexOf('Spain Pod') == 0) || (assigneeText.indexOf(' - ES') != -1)) {
+    supportRegions.push('Spain');
+  }
+
+  if (assigneeText.indexOf(' - US') != -1) {
+    supportRegions.push('US');
+  }
+
+  return new Set(supportRegions.map(x => x.toLowerCase()));
+}
+
+/**
  * Add a marker to show the LESA priority on the ticket.
  */
 
@@ -101,7 +146,7 @@ function addPriorityMarker(
     var ticketContainer = <HTMLElement> header.closest('.main_panes');
     var assigneeElement = <HTMLElement> ticketContainer.querySelector('.assignee_id .zd-combo-selectmenu');
     var assigneeText = (assigneeElement.getAttribute('data-original-title') || assigneeElement.textContent || '').trim();
-    var assigneeRegions = new Set(getSupportOffices(assigneeText).map(x => x.toLowerCase()));
+    var assigneeRegions = getSupportRegions(assigneeText);
 
     if (!assigneeRegions.has(customerRegion)) {
       var customerRegionElement = document.createElement('span');

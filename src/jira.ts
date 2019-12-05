@@ -167,15 +167,12 @@ function addReactLabelValues(
 
 function getSupportOffices(
   assigneeGroup: string
-) : Array<string> {
+) : Set<string> {
 
   var supportOffices = [];
 
-  if ((assigneeGroup.indexOf('- AU') != -1) || (assigneeGroup.indexOf('- CN') != -1) || (assigneeGroup.indexOf('- JP') != -1)) {
-    supportOffices.push('APAC');
-  }
-
   if (assigneeGroup.indexOf('- AU') != -1) {
+    supportOffices.push('APAC');
     supportOffices.push('AU/NZ');
   }
 
@@ -184,7 +181,7 @@ function getSupportOffices(
   }
 
   if (assigneeGroup.indexOf('- CN') != -1) {
-    supportOffices.push('China');
+    supportOffices.push('APAC');
   }
 
   if (assigneeGroup.indexOf('- HU') != -1) {
@@ -196,7 +193,7 @@ function getSupportOffices(
   }
 
   if (assigneeGroup.indexOf('- JP') != -1) {
-    supportOffices.push('Japan');
+    supportOffices.push('APAC');
   }
 
   if ((assigneeGroup.indexOf('Spain Pod') == 0) || (assigneeGroup.indexOf(' - ES') != -1)) {
@@ -207,7 +204,7 @@ function getSupportOffices(
     supportOffices.push('US');
   }
 
-  return supportOffices;
+  return new Set(supportOffices);
 }
 
 /**
@@ -236,7 +233,7 @@ function initJiraTicketValues(
 
   function setSupportOffice(callback: Function) : void {
     var assigneeGroup = ticket.assignee.group.name;
-    var supportOffices = getSupportOffices(assigneeGroup);
+    var supportOffices = Array.from(getSupportOffices(assigneeGroup));
 
     addReactLabelValues('customfield_11523', supportOffices, callback);
   }
