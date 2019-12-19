@@ -313,7 +313,7 @@ function addTicketDescription(
   // Since comments are listed in reverse order, the last comment is the first
   // comment (from a time perspective), and can be used as a description.
 
-  var comments = conversation.querySelectorAll('.event.is-public .zd-comment');
+  var comments = conversation.querySelectorAll('.event .zd-comment');
 
   if (comments.length == 0) {
     return;
