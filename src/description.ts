@@ -52,6 +52,26 @@ function getEmojiAnchorTags(tags: Array<string>) : HTMLSpanElement | null {
 }
 
 /**
+ * Checks whether the assignee text corresponds to the specified support region.
+ */
+
+function isSupportRegion(
+	assigneeText: string,
+	regionText: string
+) : boolean {
+
+	if (isSupportRegion(assigneeText, '- ' + regionText)) {
+		return true;
+	}
+
+	if (assigneeText.indexOf('/' + regionText + '/')) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
  * Retrieves the support region
  */
 
@@ -61,35 +81,35 @@ function getSupportRegions(
 
   var supportRegions = [];
 
-  if (assigneeText.indexOf('- AU') != -1) {
+  if (isSupportRegion(assigneeText, 'AU')) {
     supportRegions.push('Australia');
   }
 
-  if (assigneeText.indexOf('- BR') != -1) {
+  if (isSupportRegion(assigneeText, 'BR')) {
     supportRegions.push('Brazil');
   }
 
-  if (assigneeText.indexOf('- CN') != -1) {
+  if (isSupportRegion(assigneeText, 'CN')) {
     supportRegions.push('China');
   }
 
-  if (assigneeText.indexOf('- HU') != -1) {
+  if (isSupportRegion(assigneeText, 'HU')) {
     supportRegions.push("Hungary");
   }
 
-  if (assigneeText.indexOf('- IN') != -1) {
+  if (isSupportRegion(assigneeText, 'IN')) {
     supportRegions.push('India');
   }
 
-  if (assigneeText.indexOf('- JP') != -1) {
+  if (isSupportRegion(assigneeText, 'JP')) {
     supportRegions.push('Japan');
   }
 
-  if ((assigneeText.indexOf('Spain Pod') == 0) || (assigneeText.indexOf(' - ES') != -1)) {
+  if ((assigneeText.indexOf('Spain Pod') == 0) || (isSupportRegion(assigneeText, 'ES'))) {
     supportRegions.push('Spain');
   }
 
-  if (assigneeText.indexOf(' - US') != -1) {
+  if (isSupportRegion(assigneeText, 'US')) {
     supportRegions.push('US');
   }
 
