@@ -60,11 +60,11 @@ function isSupportRegion(
 	regionText: string
 ) : boolean {
 
-	if (isSupportRegion(assigneeText, '- ' + regionText)) {
+	if (assigneeText.indexOf('- ' + regionText) != -1) {
 		return true;
 	}
 
-	if (assigneeText.indexOf('/' + regionText + '/')) {
+	if (assigneeText.indexOf('/' + regionText + '/') != -1) {
 		return true;
 	}
 
