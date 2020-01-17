@@ -228,7 +228,8 @@ function addJIRASearchField(
 
   var query = `
 "Customer Ticket Permalink" = "https://${document.location.host}${document.location.pathname}" OR
-"Zendesk Ticket IDs" ~ ${ticketId}
+"Zendesk Ticket IDs" ~ ${ticketId} OR
+"Customer Ticket" = "https://${document.location.host}${document.location.pathname}"
   `.trim();
 
   var encodedQuery = encodeURIComponent(query);
