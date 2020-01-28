@@ -138,7 +138,6 @@ function addAttachmentDate(
 
   attachmentExtraInfo.appendChild(document.createTextNode(attachment.author + ' on '));
 
-  var attachmentCommentLink = createAnchorTag(attachment.time, null);
   var attachmentCommentLink = createAnchorTag(newDate, null);
   attachmentCommentLink.classList.add('attachment-comment-link');
   attachmentCommentLink.onclick = highlightComment.bind(null, attachment.commentId);
@@ -177,7 +176,11 @@ function addAttachmentRow(
 
   var attachmentLink = createAnchorTag(attachment.text, attachment.href, attachment.download);
   attachmentLink.classList.add('attachment');
-  container.appendChild(attachmentLink);
+
+  var attachmentWrapper = document.createElement('span');
+  attachmentWrapper.appendChild(attachmentLink);
+
+  container.appendChild(attachmentWrapper);
 }
 
 /**
