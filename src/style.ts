@@ -30,17 +30,25 @@ a.generating::after {
 .lesa-ui-attachments,
 .lesa-ui-knowledge-capture {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 0.5em;
 }
 
 .lesa-ui-attachment-info {
   display: grid;
   grid-gap: 0em 1em;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: 1em auto;
+  margin: 0.5em;
+}
+
+.lesa-ui-attachment-info input {
+  margin-left: 0.5em;
 }
 
 .lesa-ui-attachment-info .lesa-ui-attachment-extra-info {
+  border-top: 1px solid #eee;
+  grid-column: 1 / 2 span;
+  padding: 0.2em 0.5em;
   text-align: right;
 }
 
@@ -64,14 +72,19 @@ a.generating::after {
 }
 
 .lesa-ui-knowledge-capture ul {
-  margin-left: 0px;
+  margin-left: 1em;
 }
 
 .lesa-ui-description {
   font-weight: normal;
 }
 
-.lesa-ui-description .zd-comment {
+.lesa-ui-description > div {
+  margin-bottom: 2em;
+}
+
+.lesa-ui-description .zd-comment,
+.lesa-ui-description .lesa-ui-attachment-info {
   max-height: 25em;
   overflow-y: auto;
 }

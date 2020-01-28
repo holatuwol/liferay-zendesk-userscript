@@ -118,18 +118,17 @@ function extractExternalLinkMetadata(
   }
 }
 
-/**
- * Generate a single row in the attachment table based on the provided link.
- */
-
-function addAttachmentRow(
+function addAttachmentDate(
   container: HTMLDivElement,
-  attachment: AttachmentLinkMetadata
-) : void {
+  attachment: AttachmentLinkMetadata,
+  oldDate: string | null
+) : string {
 
-  var attachmentLink = createAnchorTag(attachment.text, attachment.href, attachment.download);
-  attachmentLink.classList.add('attachment');
-  container.appendChild(attachmentLink);
+  var newDate = attachment.time;
+
+  if (oldDate == newDate) {
+    return newDate;
+  }
 
   // Attach an author and a timestamp. We'll have the timestamp be a comment permalink, since
   // other parts in this script provide us with that functionality.
@@ -140,11 +139,24 @@ function addAttachmentRow(
   attachmentExtraInfo.appendChild(document.createTextNode(attachment.author + ' on '));
 
   var attachmentCommentLink = createAnchorTag(attachment.time, null);
+  var attachmentCommentLink = createAnchorTag(newDate, null);
   attachmentCommentLink.classList.add('attachment-comment-link');
   attachmentCommentLink.onclick = highlightComment.bind(null, attachment.commentId);
 
   attachmentExtraInfo.appendChild(attachmentCommentLink)
   container.appendChild(attachmentExtraInfo);
+
+  return newDate;
+}
+
+/**
+ * Generate a single row in the attachment table based on the provided link.
+ */
+
+function addAttachmentRow(
+  container: HTMLDivElement,
+  attachment: AttachmentLinkMetadata
+) : void {
 
   var attachmentCheckbox = document.createElement('input');
   attachmentCheckbox.setAttribute('type', 'checkbox');
@@ -162,6 +174,10 @@ function addAttachmentRow(
   }
 
   container.appendChild(attachmentCheckbox);
+
+  var attachmentLink = createAnchorTag(attachment.text, attachment.href, attachment.download);
+  attachmentLink.classList.add('attachment');
+  container.appendChild(attachmentLink);
 }
 
 /**
@@ -270,8 +286,6 @@ function createAttachmentsContainer(
 
   attachmentsContainer.appendChild(attachmentsLabel);
 
-  var attachmentsWrapper = document.createElement('div');
-
   // Accumulate the attachments, and then sort them by date
 
   var attachments = [];
@@ -294,11 +308,14 @@ function createAttachmentsContainer(
   var attachmentInfo = document.createElement('div');
   attachmentInfo.classList.add('lesa-ui-attachment-info');
 
+  var oldDate = null;
+
   for (var i = 0; i < attachments.length; i++) {
+    oldDate = addAttachmentDate(attachmentInfo, attachments[i], oldDate);
     addAttachmentRow(attachmentInfo, attachments[i]);
   }
 
-  attachmentsWrapper.appendChild(attachmentInfo);
+  attachmentsContainer.appendChild(attachmentInfo);
 
   if (JSZip) {
     var downloadAllContainer = document.createElement('div');
@@ -309,10 +326,8 @@ function createAttachmentsContainer(
 
     downloadAllContainer.appendChild(attachmentsZipLink);
 
-    attachmentsWrapper.appendChild(downloadAllContainer);
+    attachmentsContainer.appendChild(downloadAllContainer);
   }
-
-  attachmentsContainer.appendChild(attachmentsWrapper);
 
   return attachmentsContainer;
 }
