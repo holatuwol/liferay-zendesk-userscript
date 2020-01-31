@@ -69,38 +69,76 @@ function setReactSearchSelectValue(
   callback: Function
 ) : void {
 
-  var buttonField = <HTMLDivElement> document.querySelector('div[data-test-id=' + testId + ']');
+  function requestPopup(callback: Function) : void {
+    var buttonField = <HTMLDivElement> document.querySelector('div[data-test-id=' + testId + ']');
 
-  if (!buttonField.querySelector('div[aria-haspopup=true]')) {
-    var button = <HTMLDivElement> buttonField.querySelector('div[role=button]');
-    button.click();
+    if (!buttonField) {
+      setTimeout(requestPopup.bind(null, callback), 100);
+      return;
+    }
+
+    if (!buttonField.querySelector('div[aria-haspopup=true]')) {
+      var button = <HTMLDivElement> buttonField.querySelector('div[role=button]');
+      button.click();
+    }
+
+    if (callback) {
+      callback();
+    }
   }
 
-  function clickSearchMenuOptions() {
-    var searchMenu = document.querySelector('div[class*="ssc-scrollable"]');
+  function waitForPopup(callback: Function) : void {
+    var searchMenu = <HTMLDivElement> document.querySelector('div[data-test-id=' + testId + '-list]');
 
     if (!searchMenu) {
-      setTimeout(clickSearchMenuOptions, 100);
+      setTimeout(waitForPopup.bind(null, callback), 100);
       return;
     }
 
     var options = <Array<HTMLDivElement>> Array.from(searchMenu.querySelectorAll('div[class*="optionText"]'));
 
     if (options.length == 0) {
-      setTimeout(clickSearchMenuOptions, 100);
+      setTimeout(waitForPopup.bind(null, callback), 100);
       return;
-    }
-
-    for (var i = 0; i < options.length; i++) {
-      options[i].click();
     }
 
     if (callback) {
       callback();
     }
-  };
+  }
 
-  setReactInputValue('input[data-test-id=' + testId + '-search]', value, clickSearchMenuOptions);
+  function setPopupValue(callback: Function) : void {
+    function clickSearchMenuOptions() : void {
+      var searchMenu = <HTMLDivElement> document.querySelector('div[data-test-id=' + testId + '-list]');
+
+      if (!searchMenu) {
+        setTimeout(clickSearchMenuOptions, 100);
+        return;
+      }
+
+      var options = <Array<HTMLDivElement>> Array.from(searchMenu.querySelectorAll('div[class*="optionText"]'));
+
+      if (options.length != 1) {
+        setTimeout(clickSearchMenuOptions, 100);
+        return;
+      }
+
+      for (var i = 0; i < options.length; i++) {
+        options[i].click();
+      }
+
+      if (callback) {
+        callback();
+      }
+    };
+
+    setReactInputValue('input[data-test-id=' + testId + '-search]', value, clickSearchMenuOptions);
+  }
+
+  var callOrder = <Array<Function>> [requestPopup, waitForPopup, setPopupValue];
+
+  var nestedFunction = callOrder.reverse().reduce(function(accumulator, x) { return x.bind(null, accumulator); });
+  nestedFunction();
 }
 
 /**
@@ -273,12 +311,16 @@ function initJiraTicketValues(
     setReactInputValue('input[data-test-id=customfield_22551]', Array.from(baselines).join(' '), callback)
   }
 
-  function focusSummary() {
+  function focusSummary(callback: Function) {
     var summary = <HTMLInputElement> document.querySelector('input[data-test-id=summary]');
     summary.focus();
 
     var app = <HTMLElement> document.getElementById('app');
     app.scrollIntoView();
+
+    if (callback) {
+      callback();
+    }
   }
 
   var callOrder = <Array<Function>> [setProjectId, setSummary, setCustomerTicketCreationDate, setSupportOffice, setAffectsVersion, setDeliveryBaseFixPack, focusSummary];
@@ -331,13 +373,13 @@ function initZafParentClient(
 function initZafClient(
   callback: (c: ZendeskClientInstance, p: ZendeskClientInstance) => void
 ) : void {
-  if (!ZAFClient) {
-    setTimeout(initZafClient, 1000);
+  if (!window.ZAFClient) {
+    setTimeout(initZafClient.bind(null, callback), 1000);
 
     return;
   }
 
-  var client = ZAFClient.init();
+  var client = window.ZAFClient.init();
   client.on('app.registered', initZafParentClient.bind(null, client, callback));
 }
 
