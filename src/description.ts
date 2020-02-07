@@ -196,7 +196,12 @@ function addSubjectTextWrap(
   ticketInfo: TicketMetadata
 ) : void {
 
-  var oldSubjectField = <HTMLInputElement> header.querySelector('input[name="subject"]');
+  var oldSubjectField = <HTMLInputElement> header.querySelector('input[data-test-id=ticket-pane-subject]');
+
+  if (!oldSubjectField) {
+    return;
+  }
+
   oldSubjectField.setAttribute('type', 'hidden');
 
   var newSubjectField = header.querySelector('.lesa-ui-subject');
