@@ -383,6 +383,19 @@ function initZafClient(
   client.on('app.registered', initZafParentClient.bind(null, client, callback));
 }
 
+function detachModalWindowHandler() : void {
+  var backdrop = document.querySelector('.modal-backdrop.in');
+
+  if (!backdrop) {
+    return;
+  }
+
+  jQuery(backdrop).unbind('click');
+}
+
 if (window.location.hostname == '24475.apps.zdusercontent.com') {
   setTimeout(initZafClient.bind(null, attachCopyFieldsLinkListener), 1000);
+}
+else {
+  setInterval(detachModalWindowHandler, 1000);
 }
