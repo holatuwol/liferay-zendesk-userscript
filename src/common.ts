@@ -54,10 +54,11 @@ function downloadFile(
   xhr.responseType = 'blob';
 
   xhr.onload = function() {
-    downloadBlob(filename, this.response);
-
     if (callback) {
       callback(this.response);
+    }
+    else {
+      downloadBlob(filename, this.response);
     }
   };
 

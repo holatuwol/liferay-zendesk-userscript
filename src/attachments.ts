@@ -271,12 +271,14 @@ function createAttachmentsContainer(
   conversation: HTMLDivElement
 ) : HTMLDivElement | null {
 
-  var attachmentLinks = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('.attachment'));
+  var attachmentLinks = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('a.attachment'));
+
+  var attachmentThumbnails = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('a[data-test-id="attachment-thumbnail"]'));
 
   var externalLinks = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('.is-public .zd-comment > a:not(.attachment)'));
   externalLinks = externalLinks.filter(isLiferayLargeAttachment);
 
-  if (attachmentLinks.length + externalLinks.length == 0) {
+  if (attachmentLinks.length + attachmentThumbnails.length + externalLinks.length == 0) {
     return null;
   }
 
@@ -291,15 +293,9 @@ function createAttachmentsContainer(
 
   // Accumulate the attachments, and then sort them by date
 
-  var attachments = [];
-
-  for (var i = 0; i < attachmentLinks.length; i++) {
-    attachments.push(extractAttachmentLinkMetadata(attachmentLinks[i]));
-  }
-
-  for (var i = 0; i < externalLinks.length; i++) {
-    attachments.push(extractExternalLinkMetadata(externalLinks[i]));
-  }
+  var attachments = attachmentLinks.map(extractAttachmentLinkMetadata).
+    concat(attachmentThumbnails.map(extractAttachmentLinkMetadata)).
+    concat(externalLinks.map(extractExternalLinkMetadata));
 
   attachments.sort(function(a, b) {
     return a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 :
@@ -325,7 +321,7 @@ function createAttachmentsContainer(
     downloadAllContainer.classList.add('lesa-ui-attachments-bulk-download');
 
     var attachmentsZipLink = createAnchorTag('Generate Bulk Download', null);
-    attachmentsZipLink.onclick = createAttachmentZip.bind(null, attachmentsZipLink, attachmentsZipLink, ticketId, ticketInfo);
+    attachmentsZipLink.onclick = createAttachmentZip.bind(attachmentsZipLink, ticketId, ticketInfo);
 
     downloadAllContainer.appendChild(attachmentsZipLink);
 
