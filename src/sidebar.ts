@@ -252,15 +252,23 @@ function hideSidebarSelectOption(
   hiddenMenuItemTexts: Set<string>
 ) : void {
 
-  var menuItems = <Array<HTMLLIElement>> Array.from(document.querySelectorAll('.zd-state-focus.zd-state-open ul li'));
+  var menu = <HTMLUListElement>document.querySelector('.zd-state-focus.zd-state-open ul');
+  var menuItems = <Array<HTMLLIElement>> Array.from(menu.querySelectorAll('li'));
+  var menuItemCount = menuItems.length;
 
   for (var i = 0; i < menuItems.length; i++) {
     var menuItemText = (menuItems[i].textContent || '').trim();
 
     if (hiddenMenuItemTexts.has(menuItemText)) {
       menuItems[i].style.display = 'none';
+      --menuItemCount;
     }
   }
+
+  var menuParentElement = <HTMLDivElement>menu.parentElement;
+  var spacerElement = <HTMLDivElement>menuParentElement.querySelector('div');
+
+  spacerElement.style.height = (menuItemCount * 36) + 'px';
 }
 
 /**
