@@ -278,7 +278,7 @@ function hideSidebarSelectOptions(
 
   if (longTermResolutionButton) {
     longTermResolutionButton.onclick = hideSidebarSelectOption.bind(
-      null, new Set(['Documentation (Archived)'])
+      null, new Set(['Documentation (Archived)', 'Partner Audit'])
     );
   }
 }
