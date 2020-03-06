@@ -346,6 +346,10 @@ function addTicketDescription(
 
   var lastComment = comments[comments.length - 1];
 
+  if (lastComment.innerHTML == lastComment.textContent && (lastComment.innerHTML.indexOf('(to maintain formatting)') != -1 || lastComment.innerHTML.indexOf('(to retain formatting)') != -1)) {
+    lastComment = comments[comments.length - 2];
+  }
+
   var description = document.createElement('div');
 
   description.classList.add('comment');
