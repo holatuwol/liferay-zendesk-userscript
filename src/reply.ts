@@ -215,11 +215,15 @@ function addPlaybookReminder(
   var playbookReminderElement = parentElement.querySelector('.lesa-ui-playbook-reminder');
 
   if (playbookReminderElement) {
-    return;
+    if (ticketId == playbookReminderElement.getAttribute('data-ticket-id')) {
+      return;
+    }
   }
-
-  playbookReminderElement = document.createElement('div');
-  playbookReminderElement.classList.add('lesa-ui-playbook-reminder');
+  else {
+    playbookReminderElement = document.createElement('div');
+    playbookReminderElement.setAttribute('data-ticket-id', ticketId);
+    playbookReminderElement.classList.add('lesa-ui-playbook-reminder');
+  }
 
   var reminders = [];
 
