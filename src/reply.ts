@@ -182,12 +182,6 @@ function addJiraLinks(
 
   conversation.classList.add('lesa-ui-jiralink');
 
-  var newComments = <Array<HTMLElement>> Array.from(conversation.querySelectorAll('.zendesk-editor--rich-text-container .zendesk-editor--rich-text-comment'));
-
-  for (var i = 0; i < newComments.length; i++) {
-    newComments[i].onblur = _.debounce(addJiraLinksToElement.bind(null, newComments[i]), 500);
-  }
-
   var comments = <Array<HTMLDivElement>> Array.from(conversation.querySelectorAll('div[data-comment-id]'));
 
   for (var i = 0; i < comments.length; i++) {
