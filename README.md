@@ -9,11 +9,11 @@
 
 [Eric Yan](https://loop.liferay.com/web/guest/home/-/loop/people/_eric.yan) highlighted a problem where finding attachments was difficult with Help Center (though this might be a training problem; we have no idea where to look for it), so I've created a user script to fix a few of the problems I've experienced with the ZenDesk UI.
 
-**As of November 22, 2019 - 17:45 Pacific (version 8.0)**
+**As of April 27, 2020 - 17:00 Pacific (version 10.1)**
 
 The script adds the following functionality to the top of the ticket:
 
-- A description (1st comment)
+- A description (1st public comment)
 - A list of any knowledge capture articles for the ticket
 - A list of attachments with who attached it and when
 - A workaround for [360001126648](https://grow.liferay.com/share/issues/360001126648), which downloads image attachments instead of opening them in a pop-up (only in the list of attachments)
@@ -39,7 +39,6 @@ The script also adds the following functionality within the comments:
 
 It also provides the following functionality for authoring comments:
 
-- When creating a new comment, replace plain text JIRA ticket names (LPE-1 LPS-2 LPP-3) with ticket links
 - Provide a button that allows you to underline text, in case your browser intercepts Ctrl+U
 - Provide a button that opens up a Stackedit window so you can compose your comment with Markdown
 
@@ -47,4 +46,6 @@ Finally, in other areas of the UI, the script does the following:
 
 - Adds the account code to all open tabs
 - Updates the window title to make it easier to find tickets via browser history
+- Make all modal windows draggable (so you can move them around)
+- Allow you to accidentaly click outside of a modal window without auto-closing it
 - Auto-populate a few fields when clicking the "Create Issue" button in the JIRA app
