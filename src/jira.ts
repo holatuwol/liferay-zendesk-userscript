@@ -137,7 +137,7 @@ function setReactSearchSelectValue(
 
   var callOrder = <Array<Function>> [requestPopup, waitForPopup, setPopupValue];
 
-  var nestedFunction = callOrder.reverse().reduce(function(accumulator, x) { return x.bind(null, accumulator); });
+  var nestedFunction = callOrder.reverse().reduce(function(accumulator, x) { return x.bind(null, accumulator); }, callback);
   nestedFunction();
 }
 

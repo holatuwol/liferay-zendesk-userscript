@@ -18,6 +18,7 @@
     "src/description.ts",
     "src/reply.ts",
     "src/permalink.ts",
+    "src/modal.ts",
     "src/jira.ts",
     "src/main.ts"
   ]

@@ -194,6 +194,10 @@ a.generating::after {
 .rich_text .comment_input.is-public .lesa-ui-playbook-reminder a {
   text-decoration: underline;
 }
+
+#modals .modal-header {
+  cursor: move;
+}
 `;
 }
 

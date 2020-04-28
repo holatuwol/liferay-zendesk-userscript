@@ -213,4 +213,5 @@ if (window.location.hostname.indexOf('zendesk.com') != -1) {
   setInterval(checkForConversations, 1000);
   setInterval(checkForSubtitles, 1000);
   setInterval(checkSidebarTags, 1000);
+  setInterval(makeDraggableModals, 1000);
 }
