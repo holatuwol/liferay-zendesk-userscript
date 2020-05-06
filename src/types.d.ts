@@ -74,6 +74,28 @@ type TicketMetadata = {
   organizations: Array<OrganizationMetadata>;
 }
 
+interface TinyMCE {
+  (): TinyMCE;
+  new(config?: Object): this;
+  activeEditor: {
+    focus(): void;
+    formatter: {
+      register(name: string, config: Object): void;
+      toggle(name: string): void;
+    };
+    on(eventName: string, callback: (event) => void): void;
+    selection: {
+      getNode(): HTMLElement;
+    }
+  };
+  DOM: {
+    toggleClass(element: HTMLElement, className: string): void
+  }
+}
+
+declare var tinymce : TinyMCE;
+declare var tinyMCE : TinyMCE;
+
 interface TurndownService {
   (): TurndownService;
   new(config?: Object): this;

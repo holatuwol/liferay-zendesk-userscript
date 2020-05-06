@@ -20,6 +20,7 @@
     "src/permalink.ts",
     "src/modal.ts",
     "src/jira.ts",
+    "src/knowledge.ts",
     "src/main.ts"
   ]
 }
