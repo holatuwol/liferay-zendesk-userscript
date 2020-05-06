@@ -1,4 +1,7 @@
-function addArticleCodeButton(toolbarContainer : HTMLDivElement) : void {
+function addArticleCodeButton(
+  toolbarContainer : HTMLDivElement,
+  tinymce : TinyMCE
+) : void {
   // Gets the buttons toolbar
   var toolbar = <HTMLDivElement> toolbarContainer.querySelector('.ssc-view-3df91d6a.ssc-group-f69f19c1');
 
@@ -32,12 +35,18 @@ function addArticleCodeButton(toolbarContainer : HTMLDivElement) : void {
 
   // Registers the button functionality
   // API: https://www.tiny.cloud/docs/api/tinymce/tinymce.formatter/
-  tinymce.activeEditor.formatter.register('codeformat', {
+  var registerArguments = {
     inline: 'code'
-  });
+  };
+
+  if (cloneInto) {
+    registerArguments = cloneInto(registerArguments, unsafeWindow);
+  }
+
+  tinymce.activeEditor.formatter.register('codeformat', registerArguments);
 
   // Adds function to the button
-  codeFormatButton.addEventListener('click', function(e) {
+  codeFormatButton.addEventListener('click', function(e: Event) {
     var target = <HTMLElement> e.currentTarget;
     tinymce.activeEditor.focus();
     tinymce.activeEditor.formatter.toggle('codeformat');
@@ -45,16 +54,28 @@ function addArticleCodeButton(toolbarContainer : HTMLDivElement) : void {
   })
 
   // Adds event listener to check <code> markup everywhere on the active editor
-  tinymce.activeEditor.on('click', function(e) {
+  var checkIfInCodeTag = function(e: Event) {
     if ((tinymce.activeEditor.selection.getNode().nodeName) == "CODE") {
       codeFormatButton.classList.add('src-components-EditorToolbar-ToolbarButton---active---3qTSV');
     } else {
       codeFormatButton.classList.remove('src-components-EditorToolbar-ToolbarButton---active---3qTSV');
     }
-  });
+  };
+
+  if (exportFunction) {
+    checkIfInCodeTag = exportFunction(checkIfInCodeTag, unsafeWindow);
+  }
+
+  tinymce.activeEditor.on('click', checkIfInCodeTag);
 }
 
 function addArticleFormattingButtons() : void {
+  var tinymce = <TinyMCE> unsafeWindow.tinymce;
+
+  if (!tinymce) {
+    return;
+  }
+
   var toolbarContainers = <Array<HTMLDivElement>> Array.from(document.querySelectorAll('div[class*="ssc-container-85be2f31 src-components-EditorToolbar-index---bar---"]'));
 
   for (var i = 0; i < toolbarContainers.length; i++) {
@@ -66,6 +87,6 @@ function addArticleFormattingButtons() : void {
 
     toolbarContainer.classList.add('lesa-ui-stackedit');
 
-    addArticleCodeButton(toolbarContainer);
+    addArticleCodeButton(toolbarContainer, tinymce);
   }
 }
