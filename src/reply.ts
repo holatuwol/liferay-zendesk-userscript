@@ -31,7 +31,7 @@ function addJiraLinksToElement(element: HTMLElement) : void {
  * post with Markdown.
  */
 
-function addStackeditButton(
+function addReplyStackeditButton(
   element: HTMLElement,
   callback: Function
  ) : void {
@@ -56,7 +56,7 @@ function addStackeditButton(
  * Adds an underline button to the regular formatter.
  */
 
-function addUnderlineButton(element: HTMLElement) : void {
+function addReplyUnderlineButton(element: HTMLElement) : void {
   var underlineSVGPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   underlineSVGPath.setAttribute('fill', 'currentColor');
   underlineSVGPath.setAttribute('d', 'M11 7.5c0 2.5-1.4 3.8-3.9 3.8-2.6 0-4.1-1.2-4.1-3.8V1.2h1.3v6.3c0 1.8 1 2.7 2.7 2.7 1.7 0 2.6-.9 2.6-2.7V1.2H11v6.3zm-9 5.3v-.7h10v.7H2z');
@@ -105,7 +105,7 @@ function addUnderlineButton(element: HTMLElement) : void {
  * with Markdown.
  */
 
-function addStackeditButtons(
+function addReplyFormattingButtons(
   ticketId: string,
   ticketInfo: TicketMetadata,
   conversation: HTMLDivElement
@@ -120,8 +120,8 @@ function addStackeditButtons(
   var newComments = <Array<HTMLElement>> Array.from(conversation.querySelectorAll('.zendesk-editor--rich-text-container .zendesk-editor--rich-text-comment'));
 
   for (var i = 0; i < newComments.length; i++) {
-    addUnderlineButton(newComments[i]);
-    addStackeditButton(newComments[i], addJiraLinksToElement);
+    addReplyUnderlineButton(newComments[i]);
+    addReplyStackeditButton(newComments[i], addJiraLinksToElement);
   }
 }
 

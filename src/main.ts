@@ -39,7 +39,7 @@ function checkTicketConversation(
     }
 
     enablePublicConversation(ticketId, ticketInfo, conversation);
-    addStackeditButtons(ticketId, ticketInfo, conversation);
+    addReplyFormattingButtons(ticketId, ticketInfo, conversation);
     addJiraLinks(ticketId, ticketInfo, conversation);
     addPlaybookReminder(ticketId, ticketInfo, conversation);
     addTicketDescription(ticketId, ticketInfo, conversation);
@@ -210,8 +210,10 @@ function checkForSubtitles() : void {
 // attempt to do everything once per second.
 
 if (window.location.hostname.indexOf('zendesk.com') != -1) {
-  setInterval(checkForConversations, 1000);
-  setInterval(checkForSubtitles, 1000);
-  setInterval(checkSidebarTags, 1000);
-  setInterval(makeDraggableModals, 1000);
+  if (window.location.pathname.indexOf('/agent/') == 0) {
+    setInterval(checkForConversations, 1000);
+    setInterval(checkForSubtitles, 1000);
+    setInterval(checkSidebarTags, 1000);
+    setInterval(makeDraggableModals, 1000);
+  }
 }
