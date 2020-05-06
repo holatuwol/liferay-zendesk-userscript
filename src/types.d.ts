@@ -96,6 +96,12 @@ interface TinyMCE {
   }
 }
 
+interface TinyMCENodeChangeEvent {
+  element: {
+    nodeName: string
+  }
+}
+
 interface TurndownService {
   (): TurndownService;
   new(config?: Object): this;

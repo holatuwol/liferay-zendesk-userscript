@@ -54,8 +54,8 @@ function addArticleCodeButton(
   })
 
   // Adds event listener to check <code> markup everywhere on the active editor
-  var checkIfInCodeTag = function(e: Event) {
-    if ((tinymce.activeEditor.selection.getNode().nodeName) == "CODE") {
+  var checkIfInCodeTag = function(e: TinyMCENodeChangeEvent) {
+    if (e.element.nodeName == 'CODE') {
       codeFormatButton.classList.add('src-components-EditorToolbar-ToolbarButton---active---3qTSV');
     } else {
       codeFormatButton.classList.remove('src-components-EditorToolbar-ToolbarButton---active---3qTSV');
@@ -66,7 +66,7 @@ function addArticleCodeButton(
     checkIfInCodeTag = exportFunction(checkIfInCodeTag, unsafeWindow);
   }
 
-  tinymce.activeEditor.on('click', checkIfInCodeTag);
+  tinymce.activeEditor.on('NodeChange', checkIfInCodeTag);
 }
 
 function addArticleFormattingButtons() : void {
