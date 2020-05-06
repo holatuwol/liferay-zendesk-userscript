@@ -9,7 +9,7 @@
 
 [Eric Yan](https://loop.liferay.com/web/guest/home/-/loop/people/_eric.yan) highlighted a problem where finding attachments was difficult with Help Center (though this might be a training problem; we have no idea where to look for it), so I've created a user script to fix a few of the problems I've experienced with the ZenDesk UI.
 
-**As of April 27, 2020 - 17:00 Pacific (version 10.1)**
+**As of May 5, 2020 - 20:15 Pacific (version 10.2)**
 
 The script adds the following functionality to the top of the ticket:
 
@@ -42,10 +42,17 @@ It also provides the following functionality for authoring comments:
 - Provide a button that allows you to underline text, in case your browser intercepts Ctrl+U
 - Provide a button that opens up a Stackedit window so you can compose your comment with Markdown
 
+For the pop-up modal window you use to create JIRA tickets:
+
+- Makes all modal windows draggable (so you can move them around)
+- Allows you to accidentaly click outside of a modal window without auto-closing it
+- Auto-populates a few fields when clicking the "Create Issue" button in the JIRA app
+
+It also updates the editor used for creating knowledge base articles:
+
+- Adds a "Code Format" button so you can get inline code (rather than just code blocks)
+
 Finally, in other areas of the UI, the script does the following:
 
 - Adds the account code to all open tabs
 - Updates the window title to make it easier to find tickets via browser history
-- Make all modal windows draggable (so you can move them around)
-- Allow you to accidentaly click outside of a modal window without auto-closing it
-- Auto-populate a few fields when clicking the "Create Issue" button in the JIRA app
