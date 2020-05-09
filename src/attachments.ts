@@ -48,7 +48,7 @@ function downloadAttachment(
     href, download,
     function(blob: Blob) : void {
       link.classList.remove('downloading');
-      callback(href, blob);
+      callback(download, blob);
   });
 
   var xhr = new XMLHttpRequest();
