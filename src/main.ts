@@ -143,7 +143,7 @@ function checkForConversations() : void {
  */
 
 function updateSubtitle(
-  tab: HTMLElement,
+  subtitle: HTMLElement,
   ticketId: string,
   ticketInfo: TicketMetadata
 ) : void {
@@ -154,14 +154,17 @@ function updateSubtitle(
     return;
   }
 
-  var oldSpan = tab.querySelector('.lesa-ui-subtitle');
+  var oldSpan = subtitle.querySelector('.lesa-ui-account-code');
 
   if (oldSpan && (oldSpan.textContent == accountCode)) {
     return;
   }
 
+  if (!subtitle.classList.contains('lesa-ui-subtitle')) {
+    subtitle.classList.add('lesa-ui-subtitle');
+  }
+
   var newSpan = document.createElement('span');
-  newSpan.classList.add('lesa-ui-subtitle');
 
   var emojis = getEmojiText(ticketInfo.ticket.tags || []);
 
@@ -169,17 +172,14 @@ function updateSubtitle(
     newSpan.appendChild(document.createTextNode(emojis + ' '));
   }
 
-  var accountCodeSpan = document.createElement('span');
-  accountCodeSpan.classList.add('lesa-ui-account-code');
-  accountCodeSpan.textContent = accountCode;
-
-  newSpan.appendChild(accountCodeSpan);
+  newSpan.classList.add('lesa-ui-account-code');
+  newSpan.textContent = accountCode;
 
   if (oldSpan) {
     oldSpan.replaceWith(newSpan);
   }
   else {
-    tab.appendChild(newSpan);
+    subtitle.appendChild(newSpan);
   }
 }
 
@@ -188,11 +188,10 @@ function updateSubtitle(
  */
 
 function checkForSubtitles() : void {
-  var subtitles = <Array<HTMLElement>> Array.from(document.querySelectorAll('.subtitle'));
+  var subtitles = <Array<HTMLElement>> Array.from(document.querySelectorAll('div[data-test-id="header-tab-subtitle"]'));
 
   for (var i = 0; i < subtitles.length; i++) {
     var subtitle = subtitles[i];
-    var tab = subtitle.parentNode;
 
     var textContent = (subtitle.textContent || '').trim();
 
@@ -202,7 +201,7 @@ function checkForSubtitles() : void {
 
     var ticketId = textContent.substring(1);
 
-    checkTicket(ticketId, updateSubtitle.bind(null, tab));
+    checkTicket(ticketId, updateSubtitle.bind(null, subtitle));
   }
 }
 

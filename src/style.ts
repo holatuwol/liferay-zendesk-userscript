@@ -27,6 +27,11 @@ a.generating::after {
   color: #999;
 }
 
+div.lesa-ui-subtitle {
+  display: flex;
+  flex-direction: column;
+}
+
 .lesa-ui-attachments,
 .lesa-ui-knowledge-capture {
   display: flex;
