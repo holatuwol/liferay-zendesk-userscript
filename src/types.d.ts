@@ -13,8 +13,8 @@ type AttachmentLinkMetadata = {
   missingCorsHeader: boolean
 }
 
-declare function cloneInto(gmObject: any, window: UnsafeWindow) : any;
-declare function exportFunction(gmFunction: any, window: UnsafeWindow) : any;
+declare function cloneInto(gmObject: any, window: Window) : any;
+declare function exportFunction(gmFunction: any, window: Window) : any;
 
 type JiraTicket = {
   subject: string
@@ -96,6 +96,8 @@ interface TinyMCE {
   }
 }
 
+declare var tinymce : TinyMCE;
+
 interface TinyMCENodeChangeEvent {
   element: {
     nodeName: string
@@ -109,12 +111,6 @@ interface TurndownService {
 }
 
 declare var TurndownService : TurndownService;
-
-interface UnsafeWindow {
-  tinymce: TinyMCE
-};
-
-declare var unsafeWindow: UnsafeWindow;
 
 type ZendeskClient = {
   init: () => ZendeskClientInstance;
