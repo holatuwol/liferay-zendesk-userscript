@@ -31,8 +31,8 @@ function makeDraggableModal(
 
     var rect = element.getBoundingClientRect();
 
-    elementX = rect.left + (window.pageXOffset || document.documentElement.scrollLeft);
-    elementY = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
+    elementX = rect.left + (unsafeWindow.pageXOffset || document.documentElement.scrollLeft);
+    elementY = rect.top + (unsafeWindow.pageYOffset || document.documentElement.scrollTop);
   });
 
   element.addEventListener('dragend', function(e : DragEvent) {

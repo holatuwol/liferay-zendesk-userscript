@@ -40,7 +40,7 @@ function addArticleCodeButton(
   };
 
   if (cloneInto) {
-    registerArguments = cloneInto(registerArguments, window);
+    registerArguments = cloneInto(registerArguments, unsafeWindow);
   }
 
   tinymce.activeEditor.formatter.register('codeformat', registerArguments);
@@ -63,14 +63,14 @@ function addArticleCodeButton(
   };
 
   if (exportFunction) {
-    checkIfInCodeTag = exportFunction(checkIfInCodeTag, window);
+    checkIfInCodeTag = exportFunction(checkIfInCodeTag, unsafeWindow);
   }
 
   tinymce.activeEditor.on('NodeChange', checkIfInCodeTag);
 }
 
 function addArticleFormattingButtons() : void {
-  var tinymce = window.tinymce;
+  var tinymce = unsafeWindow.tinymce;
 
   if (!tinymce) {
     return;

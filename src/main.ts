@@ -208,14 +208,14 @@ function checkForSubtitles() : void {
 // Since there's an SPA framework in place that I don't fully understand,
 // attempt to do everything once per second.
 
-if (window.location.hostname.indexOf('zendesk.com') != -1) {
-  if (window.location.pathname.indexOf('/agent/') == 0) {
+if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
+  if (unsafeWindow.location.pathname.indexOf('/agent/') == 0) {
     setInterval(checkForConversations, 1000);
     setInterval(checkForSubtitles, 1000);
     setInterval(checkSidebarTags, 1000);
     setInterval(makeDraggableModals, 1000);
   }
-  else if (window.location.pathname.indexOf('/knowledge/') == 0) {
+  else if (unsafeWindow.location.pathname.indexOf('/knowledge/') == 0) {
     setInterval(addArticleFormattingButtons, 1000);
   }
 }

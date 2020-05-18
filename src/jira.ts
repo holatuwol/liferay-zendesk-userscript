@@ -373,13 +373,13 @@ function initZafParentClient(
 function initZafClient(
   callback: (c: ZendeskClientInstance, p: ZendeskClientInstance) => void
 ) : void {
-  if (!window.ZAFClient) {
+  if (!unsafeWindow.ZAFClient) {
     setTimeout(initZafClient.bind(null, callback), 1000);
 
     return;
   }
 
-  var client = window.ZAFClient.init();
+  var client = unsafeWindow.ZAFClient.init();
   client.on('app.registered', initZafParentClient.bind(null, client, callback));
 }
 
@@ -393,7 +393,7 @@ function detachModalWindowHandler() : void {
   jQuery(backdrop).unbind('click');
 }
 
-if (window.location.hostname == '24475.apps.zdusercontent.com') {
+if (unsafeWindow.location.hostname == '24475.apps.zdusercontent.com') {
   setTimeout(initZafClient.bind(null, attachCopyFieldsLinkListener), 1000);
 }
 else {
