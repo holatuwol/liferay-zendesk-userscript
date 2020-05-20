@@ -221,22 +221,22 @@ function addSubjectTextWrap(
   }
   else {
     var newTextArea = document.createElement('textarea');
+    var oldClassList = Array.from(oldSubjectField.classList);
 
-    var oldMaxLength = oldSubjectField.getAttribute('maxlength');
-
-    if (oldMaxLength) {
-      newTextArea.setAttribute('maxlength', oldMaxLength);
-    }
-
-    var oldName = oldSubjectField.getAttribute('name');
-
-    if (oldName) {
-      newTextArea.setAttribute('name', oldName);
+    for (var i = 0; i < oldClassList.length; i++) {
+      newTextArea.classList.add(oldClassList[i])
     }
 
     newTextArea.value = oldSubjectField.value;
 
-    newTextArea.classList.add('ember-text-area');
+    newTextArea.onchange = function() {
+      oldSubjectField.value = newTextArea.value;
+
+      var event = document.createEvent('HTMLEvents');
+      event.initEvent('blur', false, true);
+      oldSubjectField.dispatchEvent(event);
+    }
+
     newSubjectField = newTextArea;
   }
 
