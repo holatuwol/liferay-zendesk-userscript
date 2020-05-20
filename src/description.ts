@@ -215,33 +215,29 @@ function addSubjectTextWrap(
     parentElement.removeChild(newSubjectField);
   }
 
-  if (oldSubjectField.readOnly) {
-    newSubjectField = document.createElement('div');
-    newSubjectField.textContent = oldSubjectField.value;
+  newSubjectField = document.createElement('div');
+
+  var oldClassList = Array.from(oldSubjectField.classList);
+
+  for (var i = 0; i < oldClassList.length; i++) {
+    newSubjectField.classList.add(oldClassList[i]);
   }
-  else {
-    var newTextArea = document.createElement('textarea');
-    var oldClassList = Array.from(oldSubjectField.classList);
 
-    for (var i = 0; i < oldClassList.length; i++) {
-      newTextArea.classList.add(oldClassList[i])
-    }
+  newSubjectField.textContent = oldSubjectField.value;
 
-    newTextArea.value = oldSubjectField.value;
+  if (!oldSubjectField.readOnly) {
+    newSubjectField.setAttribute('contenteditable', 'true');
 
-    newTextArea.onchange = function() {
-      oldSubjectField.value = newTextArea.value;
+    newSubjectField.addEventListener('blur', function() {
+      oldSubjectField.value = this.textContent || '';
 
       var event = document.createEvent('HTMLEvents');
       event.initEvent('blur', false, true);
       oldSubjectField.dispatchEvent(event);
-    }
-
-    newSubjectField = newTextArea;
+    });
   }
 
   newSubjectField.classList.add('lesa-ui-subject');
-  newSubjectField.classList.add('ember-view');
   newSubjectField.setAttribute('data-ticket-id', ticketId);
 
   var parentElement = <HTMLElement> oldSubjectField.parentElement;
