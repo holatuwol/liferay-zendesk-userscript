@@ -111,6 +111,7 @@ function addOrganizationField(
  */
 
 function getPatcherPortalAccountsHREF(
+  path: string,
   params: {[s: string] : string}
 ) : string {
 
@@ -118,7 +119,7 @@ function getPatcherPortalAccountsHREF(
   var ns = '_' + portletId + '_';
 
   var queryString = Object.keys(params).map(function(key) { return (key.indexOf('p_p_') == 0 ? key : (ns + key)) + '=' + encodeURIComponent(params[key]) }).join('&');
-  return 'https://patcher.liferay.com/group/guest/patching/-/osb_patcher/accounts/view?p_p_id=' + portletId + '&' + queryString;
+  return 'https://patcher.liferay.com/group/guest/patching/-/osb_patcher/accounts' + path + '?p_p_id=' + portletId + '&' + queryString;
 }
 
 /**
@@ -192,8 +193,8 @@ function addPatcherPortalField(
   var patcherPortalItems = <Array<Node>> [];
 
   if (accountCode) {
-    var allBuildsLinkHREF = getPatcherPortalAccountsHREF({
-      'patcherBuildAccountEntryCode': accountCode
+    var allBuildsLinkHREF = getPatcherPortalAccountsHREF('', {
+      'accountEntryCode': accountCode
     });
 
     patcherPortalItems.push(createAnchorTag('All Builds', allBuildsLinkHREF));
@@ -201,7 +202,7 @@ function addPatcherPortalField(
     var version = getProductVersion(propertyBox);
 
     if (version) {
-      var versionBuildsLinkHREF = getPatcherPortalAccountsHREF({
+      var versionBuildsLinkHREF = getPatcherPortalAccountsHREF('/view', {
         'patcherBuildAccountEntryCode': accountCode,
         'patcherProductVersionId': getProductVersionId(version)
       });
