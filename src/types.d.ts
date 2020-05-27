@@ -78,10 +78,16 @@ type TicketMetadata = {
   organizations: Array<OrganizationMetadata>;
 }
 
+interface TinyMCEDomQuery {
+  nextUntil(until?: string) : TinyMCEDomQuery;
+  wrapAll(content: string | HTMLElement) : TinyMCEDomQuery;
+}
+
 interface TinyMCE {
   (): TinyMCE;
   new(config?: Object): this;
   activeEditor: {
+    contentDocument: Document;
     focus(): void;
     formatter: {
       register(name: string, config: Object): void;
@@ -91,6 +97,9 @@ interface TinyMCE {
     selection: {
       getNode(): HTMLElement;
     }
+  };
+  dom: {
+    DomQuery(element: HTMLElement) : TinyMCEDomQuery;
   };
   DOM: {
     toggleClass(element: HTMLElement, className: string): void

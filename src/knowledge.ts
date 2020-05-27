@@ -69,13 +69,48 @@ function addArticleCodeButton(
   tinymce.activeEditor.on('NodeChange', checkIfInCodeTag);
 }
 
-function addArticleFormattingButtons() : void {
-  var tinymce = unsafeWindow.tinymce;
+function wrapLiferayGatedContent(tinymce : TinyMCE) : void {
+  // Only runs if on a KCS
 
-  if (!tinymce) {
+  var isFastTrack = Array.from(document.querySelectorAll([
+    'div[data-test-id="sectionSelector-section"]', // Visible when sidebar is open
+    'div[data-test-id="section-name"]'             // Visible when sidebar is closed
+  ].join(','))).filter(x => x.textContent == 'Fast Track').length > 0;
+
+  if (!isFastTrack) {
     return;
   }
 
+  var allEditorH2 = tinymce.activeEditor.contentDocument.getElementsByTagName('h2');
+
+  for (var i = 0; i < allEditorH2.length; i++) {
+    if ((allEditorH2[i].textContent == 'Resolution' || allEditorH2[i].textContent == 'Additional Information') &&
+      (<HTMLElement> allEditorH2[i].nextSibling).tagName != 'DIV') {
+      tinymce.dom.DomQuery(allEditorH2[i]).nextUntil().wrapAll('<div>');
+    }
+  }
+}
+
+function addArticleSubmissionListeners(tinymce : TinyMCE) : void {
+  var validationButtons = document.querySelectorAll([
+    'div[data-test-id="createButton-menu-button"]', // appears when first creating a KCS
+    'div[data-test-id="updateButton-menu-button"]'  // appears when updating an existing one
+  ].join(','));
+
+  for (var i = 0; i < validationButtons.length; i++) {
+    var button = validationButtons[i];
+
+    if (button.classList.contains('lesa-ui-button-listen')) {
+      continue;
+    }
+
+    button.classList.add('lesa-ui-button-listen');
+
+    button.addEventListener('click', wrapLiferayGatedContent.bind(null, tinymce));
+  }
+}
+
+function addArticleFormattingButtons(tinymce : TinyMCE) : void {
   var toolbarContainers = <Array<HTMLDivElement>> Array.from(document.querySelectorAll('div[class*="ssc-container-85be2f31 src-components-EditorToolbar-index---bar---"]'));
 
   for (var i = 0; i < toolbarContainers.length; i++) {
@@ -89,4 +124,21 @@ function addArticleFormattingButtons() : void {
 
     addArticleCodeButton(toolbarContainer, tinymce);
   }
+}
+
+function updateKnowledgeCenterEditor() {
+  var tinymce = unsafeWindow.tinymce;
+
+  if (!tinymce) {
+    return;
+  }
+
+  addArticleFormattingButtons(tinymce);
+  addArticleSubmissionListeners(tinymce);
+}
+
+if ((unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) &&
+  (unsafeWindow.location.pathname.indexOf('/knowledge/') == 0)) {
+
+  setInterval(updateKnowledgeCenterEditor, 1000);
 }

@@ -215,7 +215,4 @@ if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
     setInterval(checkSidebarTags, 1000);
     setInterval(makeDraggableModals, 1000);
   }
-  else if (unsafeWindow.location.pathname.indexOf('/knowledge/') == 0) {
-    setInterval(addArticleFormattingButtons, 1000);
-  }
 }
