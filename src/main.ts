@@ -10,9 +10,9 @@ function enablePublicConversation(
 ) : void {
 
   var fullTab = <HTMLElement> conversation.querySelector('.event-nav.conversation .fullConversation');
-  var publicTab = <HTMLElement> conversation.querySelector('.event-nav.conversation .publicConversation');
+  var publicTab = conversation.querySelector('.event-nav.conversation .publicConversation');
 
-  if (parseInt(publicTab.getAttribute('data-count') || '0') == 0) {
+  if (publicTab && parseInt(publicTab.getAttribute('data-count') || '0') == 0) {
     publicTab.setAttribute('data-count', fullTab.getAttribute('data-count') || '0');
   }
 }
