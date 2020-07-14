@@ -127,6 +127,13 @@ function addPriorityMarker(
   ticketInfo: TicketMetadata
 ) : void {
 
+  var ticketContainer = <HTMLElement> header.closest('.main_panes');
+  var assigneeElement = <HTMLElement> ticketContainer.querySelector('.js-zero-state-ticket-tutorial-assignee-field span');
+
+  if (!assigneeElement) {
+    return;
+  }
+
   var priorityElement = header.querySelector('.lesa-ui-priority');
 
   if (priorityElement) {
@@ -163,8 +170,6 @@ function addPriorityMarker(
 
   if ((ticketInfo.ticket.status != 'closed') && (ticketInfo.organizations.length > 0)) {
     var customerRegion = ticketInfo.organizations[0].organization_fields.support_region;
-    var ticketContainer = <HTMLElement> header.closest('.main_panes');
-    var assigneeElement = <HTMLElement> ticketContainer.querySelector('.assignee_id .zd-combo-selectmenu');
     var assigneeText = (assigneeElement.getAttribute('data-original-title') || assigneeElement.textContent || '').trim();
     var assigneeRegions = getSupportRegions(assigneeText);
 
