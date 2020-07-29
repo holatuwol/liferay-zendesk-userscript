@@ -296,6 +296,45 @@ function createKnowledgeCaptureContainer(
 }
 
 /**
+ * Sometimes CSEs post a dummy comment, which basically says "see comment above this one"
+ * in order to preserve formatting when creating child tickets.
+ */
+
+function isDummyComment(
+  ticketInfo: TicketMetadata,
+  comment: Element
+) : boolean {
+
+  var isChildTicket = false;
+  var customFields = ticketInfo.ticket.custom_fields;
+
+  for (var i = 0; i < customFields.length; i++) {
+    if ((customFields[i].id == 360013377052) && (customFields[i].value.indexOf('child_of:') != -1)) {
+      isChildTicket = true;
+    }
+  }
+
+  if (!isChildTicket) {
+    return false;
+  }
+
+  var innerHTML = comment.innerHTML;
+
+  if (innerHTML != comment.textContent) {
+    return false;
+  }
+
+  if ((innerHTML.indexOf('(to maintain formatting)') != -1) ||
+    (innerHTML.indexOf('(to retain formatting)') != -1) ||
+    (innerHTML.indexOf('formatted comment'))) {
+
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Add a ticket description and a complete list of attachments to the top of the page.
  */
 
@@ -347,7 +386,7 @@ function addTicketDescription(
 
   var lastComment = comments[comments.length - 1];
 
-  if (lastComment.innerHTML == lastComment.textContent && (lastComment.innerHTML.indexOf('(to maintain formatting)') != -1 || lastComment.innerHTML.indexOf('(to retain formatting)') != -1)) {
+  if (isDummyComment(ticketInfo, lastComment)) {
     lastComment = comments[comments.length - 2];
   }
 
