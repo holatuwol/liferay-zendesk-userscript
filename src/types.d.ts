@@ -69,7 +69,7 @@ type TicketMetadata = {
   audits?: Array<TicketAuditEvent>
   ticket: {
     id: number
-    custom_fields: Array<{id: number; value: string}>
+    custom_fields: Array<{id: number; value: string | null}>
     priority: string | null
     raw_subject: string
     requester_id: number

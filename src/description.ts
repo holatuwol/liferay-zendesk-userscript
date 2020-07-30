@@ -309,7 +309,13 @@ function isDummyComment(
   var customFields = ticketInfo.ticket.custom_fields;
 
   for (var i = 0; i < customFields.length; i++) {
-    if ((customFields[i].id == 360013377052) && (customFields[i].value.indexOf('child_of:') != -1)) {
+    var customField = customFields[i];
+
+    if (customField.id != 360013377052) {
+      continue;
+    }
+
+    if (customField.value && (customField.value.indexOf('child_of:') != -1)) {
       isChildTicket = true;
     }
   }
