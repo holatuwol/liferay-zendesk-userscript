@@ -408,6 +408,26 @@ function addTicketDescription(
   descriptionAncestor0.classList.add('event');
   descriptionAncestor0.classList.add('is-public');
 
+  var tags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
+  var tagSet = new Set(tags);
+
+  if (tagSet.has('partner_first_line_support')) {
+    var flsContainer = document.createElement('div');
+    flsContainer.classList.add('event');
+
+    var flsReminder = document.createElement('div');
+    flsReminder.classList.add('comment');
+
+    flsReminder.appendChild(document.createTextNode('REMINDER: '));
+    flsReminder.appendChild(document.createTextNode('Additional description, error logs, etc. collected by the partner are available in '));
+    flsReminder.appendChild(getJiraSearchLink('the linked FLS ticket', ticketId));
+    flsReminder.appendChild(document.createTextNode('.'));
+
+    flsContainer.appendChild(flsReminder);
+
+    descriptionAncestor0.appendChild(flsContainer);
+  }
+
   descriptionAncestor0.appendChild(description);
 
   var descriptionAncestor1 = document.createElement('div');

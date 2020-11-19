@@ -227,24 +227,11 @@ function addJIRASearchField(
   ticketId: string
 ) : void {
 
-  var query = `
-"Customer Ticket Permalink" = "https://${document.location.host}${document.location.pathname}" OR
-"Zendesk Ticket IDs" ~ ${ticketId} OR
-"Customer Ticket" = "https://${document.location.host}${document.location.pathname}"
-  `.trim();
-
-  var encodedQuery = encodeURIComponent(query);
-
-  var jiraSearchItems = [];
-
-  var jiraSearchLinkHREF = 'https://issues.liferay.com/issues/?jql=' + encodedQuery;
-
   var jiraSearchLinkContainer = document.createElement('div');
 
-  var jiraSearchLink = createAnchorTag("Linked Issues", jiraSearchLinkHREF);
-  jiraSearchLinkContainer.appendChild(jiraSearchLink);
+  jiraSearchLinkContainer.appendChild(getJiraSearchLink('Linked Issues', ticketId));
 
-  jiraSearchItems.push(jiraSearchLinkContainer);
+  var jiraSearchItems = [jiraSearchLinkContainer];
 
   generateFormField(propertyBox, 'lesa-ui-jirasearch', 'JIRA Search', jiraSearchItems);
 }

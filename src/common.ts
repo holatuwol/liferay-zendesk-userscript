@@ -92,3 +92,24 @@ function downloadBlob(
   downloadLink.click();
   document.body.removeChild(downloadLink);
 }
+
+/**
+ * Create a link to the JIRA linked issues.
+ */
+
+function getJiraSearchLink(
+  text: string,
+  ticketId : string
+) : HTMLAnchorElement {
+    var query = `
+"Customer Ticket Permalink" = "https://${document.location.host}${document.location.pathname}" OR
+"Zendesk Ticket IDs" ~ ${ticketId} OR
+"Customer Ticket" = "https://${document.location.host}${document.location.pathname}"
+  `.trim();
+
+  var encodedQuery = encodeURIComponent(query);
+
+  var jiraSearchLinkHREF = 'https://issues.liferay.com/issues/?jql=' + encodedQuery;
+
+  return createAnchorTag(text, jiraSearchLinkHREF);
+}
