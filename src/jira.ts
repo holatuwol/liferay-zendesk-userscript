@@ -279,7 +279,8 @@ function initJiraTicketValues(
   function setAffectsVersion(callback: Function) : void {
     var value = (productVersion.indexOf('7_0') != -1) ? '7.0.10' :
       (productVersion.indexOf('7_1') != -1) ? '7.1.10' :
-      (productVersion.indexOf('7_2') != -1) ? '7.2.10' : null;
+      (productVersion.indexOf('7_2') != -1) ? '7.2.10' :
+      (productVersion.indexOf('7_3') != -1) ? '7.3.10' : null;
 
     if (value) {
       addReactLabelValue('versions', value, callback);
