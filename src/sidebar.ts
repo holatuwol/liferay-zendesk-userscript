@@ -68,18 +68,12 @@ function addOrganizationField(
 
   if (accountCode) {
     organizationInfo = organizationCache[accountCode];
-  }
 
-  if (organizationInfo) {
-    var organizationFields = organizationInfo.organization_fields;
-    serviceLevel = organizationFields.sla.toUpperCase();
-
-    helpCenterLinkHREF = getCustomerPortalAccountsHREF({
-      mvcRenderCommandName: '/view_account_entry',
-      accountEntryId: organizationInfo.external_id
-    });
-  }
-  else if (accountCode) {
+    if (organizationInfo) {
+      var organizationFields = organizationInfo.organization_fields;
+      serviceLevel = organizationFields.sla.toUpperCase();
+    }
+    
     helpCenterLinkHREF = getCustomerPortalAccountsHREF({
       keywords: accountCode
     });
