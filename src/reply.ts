@@ -35,7 +35,15 @@ function addReplyStackeditButton(
   element: HTMLElement,
   callback: Function
  ) : void {
-      
+
+  var parentElement = <HTMLElement> element.parentElement;
+  var grandparentElement = <HTMLElement> parentElement.parentElement;
+  var list = <HTMLUListElement> grandparentElement.querySelector('.zendesk-editor--toolbar ul');
+
+  if (list.querySelector('.lesa-ui-stackedit-icon')) {
+    return;
+  }
+
   var img = document.createElement('img');
   img.title = 'Compose with Stackedit';
   img.classList.add('lesa-ui-stackedit-icon');
@@ -45,10 +53,6 @@ function addReplyStackeditButton(
   listItem.appendChild(img);
   listItem.onclick = composeWithStackedit.bind(null, element, callback);
 
-  var parentElement = <HTMLElement> element.parentElement;
-  var grandparentElement = <HTMLElement> parentElement.parentElement;
-  
-  var list = <HTMLUListElement> grandparentElement.querySelector('.zendesk-editor--toolbar ul');
   list.appendChild(listItem);
 }
 
@@ -57,6 +61,14 @@ function addReplyStackeditButton(
  */
 
 function addReplyUnderlineButton(element: HTMLElement) : void {
+  var parentElement = <HTMLElement> element.parentElement;
+  var grandparentElement = <HTMLElement> parentElement.parentElement;
+  var formattingButtons = <HTMLElement> grandparentElement.querySelector('.zendesk-editor--text-commands .zendesk-editor--group')
+
+  if (formattingButtons.querySelector('.underline')) {
+    return;
+  }
+
   var underlineSVGPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   underlineSVGPath.setAttribute('fill', 'currentColor');
   underlineSVGPath.setAttribute('d', 'M11 7.5c0 2.5-1.4 3.8-3.9 3.8-2.6 0-4.1-1.2-4.1-3.8V1.2h1.3v6.3c0 1.8 1 2.7 2.7 2.7 1.7 0 2.6-.9 2.6-2.7V1.2H11v6.3zm-9 5.3v-.7h10v.7H2z');
@@ -92,10 +104,6 @@ function addReplyUnderlineButton(element: HTMLElement) : void {
 
   var underlineButtonListItem = document.createElement('li');
   underlineButtonListItem.appendChild(underlineButton);
-
-  var parentElement = <HTMLElement> element.parentElement;
-  var grandparentElement = <HTMLElement> parentElement.parentElement;
-  var formattingButtons = <HTMLElement> grandparentElement.querySelector('.zendesk-editor--text-commands .zendesk-editor--group')
 
   formattingButtons.appendChild(underlineButtonListItem);
 }
