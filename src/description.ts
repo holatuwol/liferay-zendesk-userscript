@@ -116,6 +116,10 @@ function getSupportRegions(
   return new Set(supportRegions.map(x => x.toLowerCase()));
 }
 
+const middleEastCountries = new Set([
+  'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Kuwait', 'Bahrein', 'Oman', 'Jordan', 'Iraq', 'Lebanon'
+]);
+
 /**
  * Add a marker to show the LESA priority on the ticket.
  */
@@ -168,16 +172,27 @@ function addPriorityMarker(
     }
   }
 
-  if ((ticketInfo.ticket.status != 'closed') && (ticketInfo.organizations.length > 0)) {
-    var customerRegion = ticketInfo.organizations[0].organization_fields.support_region;
-    var assigneeText = (assigneeElement.textContent || '').trim();
-    var assigneeRegions = getSupportRegions(assigneeText);
+  if (ticketInfo.organizations.length > 0) {
+    var organizationFields = ticketInfo.organizations[0].organization_fields;
 
-    if (!assigneeRegions.has(customerRegion)) {
-      var customerRegionElement = document.createElement('span');
-      customerRegionElement.classList.add('lesa-ui-priority-major');
-      customerRegionElement.textContent = 'customer region: ' + customerRegion;
-      priorityElement.appendChild(customerRegionElement);
+    if (middleEastCountries.has(organizationFields.country)) {
+      var customerCountryElement = document.createElement('span');
+      customerCountryElement.classList.add('lesa-ui-priority-minor');
+      customerCountryElement.textContent = 'country: middle east';
+      priorityElement.appendChild(customerCountryElement);
+    }
+
+    if (ticketInfo.ticket.status != 'closed') {
+      var customerRegion = organizationFields.support_region;
+      var assigneeText = (assigneeElement.textContent || '').trim();
+      var assigneeRegions = getSupportRegions(assigneeText);
+
+      if (!assigneeRegions.has(customerRegion)) {
+        var customerRegionElement = document.createElement('span');
+        customerRegionElement.classList.add('lesa-ui-priority-major');
+        customerRegionElement.textContent = 'customer region: ' + customerRegion;
+        priorityElement.appendChild(customerRegionElement);
+     }
    }
   }
 
