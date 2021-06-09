@@ -151,6 +151,15 @@ div.lesa-ui-subtitle {
   width: 6em;
 }
 
+.lesa-ui-priority a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.lesa-ui-priority .lesa-ui-subject-emojis a {
+  color: #000;
+}
+
 .lesa-ui-subpriority {
   border: 1px #eee dashed;
   font-size: 0.8em;

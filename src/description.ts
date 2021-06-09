@@ -23,7 +23,6 @@ function getEmojiAnchorTag(tag: string) : HTMLAnchorElement {
   anchor.title = 'tags:' + tag;
   anchor.textContent = emojiMap[tag];
   anchor.href = 'https://' + document.location.host + '/agent/search/1?q=' + encodeURIComponent('tags:' + tag);
-  anchor.target = '_blank';
   return anchor;
 }
 
@@ -178,7 +177,14 @@ function addPriorityMarker(
     if (middleEastCountries.has(organizationFields.country)) {
       var customerCountryElement = document.createElement('span');
       customerCountryElement.classList.add('lesa-ui-priority-minor');
-      customerCountryElement.textContent = 'country: middle east';
+
+      var customerCountryLink = document.createElement('a');
+      customerCountryLink.textContent = 'country: middle east';
+
+      var query = Array.from(middleEastCountries).map((x) => 'country:"' + x + '"').join(' ');
+      customerCountryLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+
+      customerCountryElement.appendChild(customerCountryLink);
       priorityElement.appendChild(customerCountryElement);
     }
 
@@ -190,7 +196,14 @@ function addPriorityMarker(
       if (!assigneeRegions.has(customerRegion)) {
         var customerRegionElement = document.createElement('span');
         customerRegionElement.classList.add('lesa-ui-priority-major');
-        customerRegionElement.textContent = 'customer region: ' + customerRegion;
+
+        var customerRegionLink = document.createElement('a');
+        customerRegionLink.textContent = 'customer region: ' + customerRegion;
+
+        var query = 'support_region:' + customerRegion;
+        customerRegionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+
+        customerRegionElement.appendChild(customerRegionLink);
         priorityElement.appendChild(customerRegionElement);
      }
    }
