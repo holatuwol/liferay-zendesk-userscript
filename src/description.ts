@@ -131,7 +131,7 @@ function addPriorityMarker(
 ) : void {
 
   var ticketContainer = <HTMLElement> header.closest('.main_panes');
-  var assigneeElement = <HTMLElement> ticketContainer.querySelector('.js-zero-state-ticket-tutorial-assignee-field > div');
+  var assigneeElement = <HTMLElement> ticketContainer.querySelector('.js-zero-state-ticket-tutorial-assignee-field > div > div');
 
   if (!assigneeElement) {
     return;
@@ -169,6 +169,34 @@ function addPriorityMarker(
       criticalElement.textContent = tagSet.has('platinum') ? 'platinum critical' : 'critical';
       priorityElement.appendChild(criticalElement);
     }
+  }
+
+  if (tagSet.has('service_solution')) {
+    var solutionElement = document.createElement('span');
+    solutionElement.classList.add('lesa-ui-priority-minor');
+
+    var solutionLink = document.createElement('a');
+    solutionLink.textContent = 'Service Portal Customer';
+
+    var query = 'tags:service_solution';
+    solutionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+
+    solutionElement.appendChild(solutionLink);
+    priorityElement.appendChild(solutionElement);
+  }
+
+  if (tagSet.has('commerce_solution')) {
+    var solutionElement = document.createElement('span');
+    solutionElement.classList.add('lesa-ui-priority-minor');
+
+    var solutionLink = document.createElement('a');
+    solutionLink.textContent = 'Commerce Portal Customer';
+
+    var query = 'tags:commerce_solution';
+    solutionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+
+    solutionElement.appendChild(solutionLink);
+    priorityElement.appendChild(solutionElement);
   }
 
   if (ticketInfo.organizations.length > 0) {
