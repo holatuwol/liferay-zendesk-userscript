@@ -25,7 +25,7 @@ type JiraTicket = {
       name: string
     }
   }
-  conversations: Array<{value: string}>
+  conversation: Array<{value: string}>
 }
 
 interface JSZip {

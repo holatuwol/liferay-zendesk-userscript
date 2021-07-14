@@ -231,7 +231,7 @@ function getSupportOffices(
   }
 
   if (assigneeGroup.indexOf('- JP') != -1) {
-    supportOffices.push('APAC');
+    supportOffices.push('Japan');
   }
 
   if ((assigneeGroup.indexOf('Spain Pod') == 0) || (assigneeGroup.indexOf(' - ES') != -1)) {
@@ -291,7 +291,7 @@ function initJiraTicketValues(
   }
 
   function setDeliveryBaseFixPack(callback: Function) {
-    var conversations = ticket.conversations;
+    var conversations = ticket.conversation;
     var baselines = new Set();
 
     for (var i = 0; i < conversations.length; i++) {
@@ -395,7 +395,7 @@ function detachModalWindowHandler() : void {
 }
 
 if (unsafeWindow.location.hostname == '24475.apps.zdusercontent.com') {
-  setTimeout(initZafClient.bind(null, attachCopyFieldsLinkListener), 1000);
+  setTimeout(initZafClient.bind(null, attachCopyFieldsLinkListener), 3000);
 }
 else {
   setInterval(detachModalWindowHandler, 1000);
