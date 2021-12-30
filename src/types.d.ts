@@ -3,6 +3,7 @@ type AccountMetadata = {
 }
 
 type AttachmentLinkMetadata = {
+  element: HTMLAnchorElement
   text: string
   href: string
   download: string

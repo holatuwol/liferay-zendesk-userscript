@@ -79,6 +79,7 @@ function extractAttachmentLinkMetadata(
   var timeElement = <HTMLTimeElement> comment.querySelector('time');
 
   return {
+    element: attachmentLink,
     text: attachmentFileName,
     href: attachmentLink.href,
     download: attachmentFileName,
@@ -107,6 +108,7 @@ function extractExternalLinkMetadata(
   // in the link has a truncated name), we need to decode the query string.
 
   return {
+    element: externalLink,
     text: <string> externalLink.textContent,
     href: externalLink.href,
     download: <string> externalLink.textContent,
@@ -174,8 +176,12 @@ function addAttachmentRow(
 
   container.appendChild(attachmentCheckbox);
 
-  var attachmentLink = createAnchorTag(attachment.text, attachment.href, attachment.download);
+  var attachmentLink = createAnchorTag(attachment.text, null);
   attachmentLink.classList.add('attachment');
+
+  attachmentLink.onclick = function(e) {
+    attachment.element.click();
+  };
 
   var attachmentWrapper = document.createElement('span');
   attachmentWrapper.appendChild(attachmentLink);
