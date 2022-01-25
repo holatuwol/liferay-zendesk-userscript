@@ -178,6 +178,10 @@ function getProductVersionId(
   version: string
 ) : string {
 
+  if (version == '7.4') {
+    return '206638675';
+  }
+
   if (version == '7.3') {
     return '175004848';
   }
