@@ -40,7 +40,7 @@ function downloadAttachment(
 
   var href = <string> checkbox.getAttribute('data-href');
   var download = <string> checkbox.getAttribute('data-download');
-  var link = <HTMLAnchorElement> document.querySelector('.lesa-ui-attachment-info a[href="' + href + '"]');
+  var link = <HTMLAnchorElement> document.querySelector('.lesa-ui-attachment-info a[data-href="' + href + '"]');
 
   link.classList.add('downloading');
 
@@ -177,6 +177,7 @@ function addAttachmentRow(
   container.appendChild(attachmentCheckbox);
 
   var attachmentLink = createAnchorTag(attachment.text, null);
+  attachmentLink.setAttribute('data-href', attachment.href);
   attachmentLink.classList.add('attachment');
 
   attachmentLink.onclick = function(e) {
