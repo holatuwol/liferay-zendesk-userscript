@@ -55,19 +55,19 @@ function getEmojiAnchorTags(tags: Array<string>) : HTMLSpanElement | null {
  */
 
 function isSupportRegion(
-	assigneeText: string,
-	regionText: string
+  assigneeText: string,
+  regionText: string
 ) : boolean {
 
-	if (assigneeText.indexOf('- ' + regionText) != -1) {
-		return true;
-	}
+  if (assigneeText.indexOf('- ' + regionText) != -1) {
+    return true;
+  }
 
-	if (assigneeText.indexOf('/' + regionText + '/') != -1) {
-		return true;
-	}
+  if (assigneeText.indexOf('/' + regionText + '/') != -1) {
+    return true;
+  }
 
-	return false;
+  return false;
 }
 
 /**
@@ -120,6 +120,36 @@ const middleEastCountries = new Set([
 ]);
 
 /**
+ * Add a sort button.
+ */
+
+function addSortButton(
+  conversation: HTMLDivElement,
+  header: HTMLElement,
+) : void {
+
+  var button = document.createElement('button');
+  button.textContent = 'asc'
+
+  var conversationLog = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-log-container"]');
+
+  var lastChild = <HTMLElement> header.lastChild;
+
+  button.onclick = function() {
+    if (conversationLog.style.flexDirection == 'column') {
+      conversationLog.style.flexDirection = 'column-reverse';
+      button.textContent = 'desc';
+    }
+    else {
+      conversationLog.style.flexDirection = 'column';
+      button.textContent = 'asc';
+    }
+  };
+
+  lastChild.prepend(button);
+}
+
+/**
  * Add a marker to show the LESA priority on the ticket.
  */
 
@@ -131,7 +161,7 @@ function addPriorityMarker(
 ) : void {
 
   var ticketContainer = <HTMLElement> header.closest('.main_panes');
-  var assigneeElement = <HTMLElement> ticketContainer.querySelector('.js-zero-state-ticket-tutorial-assignee-field > div > div');
+  var assigneeElement = <HTMLElement> ticketContainer.querySelector(isAgentWorkspace ? 'div[data-test-id="assignee-field-selected-agent-tag"] > span' : '.js-zero-state-ticket-tutorial-assignee-field > div > div');
 
   if (!assigneeElement) {
     return;
@@ -243,7 +273,16 @@ function addPriorityMarker(
     priorityElement.appendChild(emojiContainer);
   }
 
-  header.insertBefore(priorityElement, header.querySelector('.round-avatar'));
+  if (isAgentWorkspace) {
+    var dividers = header.querySelectorAll('div[class^="Divider"]');
+    var divider = <HTMLElement> dividers[dividers.length - 1];
+
+    divider.after(priorityElement);
+    priorityElement.after(divider.cloneNode());
+  }
+  else {
+    header.insertBefore(priorityElement, header.querySelector('.round-avatar'));
+  }
 }
 
 /**
@@ -406,16 +445,15 @@ function addTicketDescription(
   conversation: HTMLDivElement
 ) : void {
 
-  var header = <HTMLElement | null> conversation.querySelector('.pane_header');
+  var header = <HTMLElement | null> conversation.querySelector(isAgentWorkspace ? 'div[data-test-id="ticket-call-controls-action-bar"]' : '.pane_header');
 
   if (!header) {
     return;
   }
 
-  // Add a marker indicating the LESA priority based on critical workflow rules
-
-  addPriorityMarker(header, conversation, ticketId, ticketInfo);
-  addSubjectTextWrap(header, ticketId, ticketInfo);
+  if (isAgentWorkspace) {
+    header = <HTMLElement> header.previousSibling;
+  }
 
   // Check to see if we have any descriptions that we need to remove.
 
@@ -437,38 +475,43 @@ function addTicketDescription(
     return;
   }
 
-  // Since comments are listed in reverse order, the last comment is the first
-  // comment (from a time perspective), and can be used as a description.
-
-  var comments = conversation.querySelectorAll('.event .zd-comment');
+  var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment');
 
   if (comments.length == 0) {
     return;
   }
 
-  var lastComment = comments[comments.length - 1];
+  var firstComment = comments[isAgentWorkspace ? 0 : comments.length - 1];
 
-  if (isDummyComment(ticketInfo, lastComment)) {
-    lastComment = comments[comments.length - 2];
+  if (isDummyComment(ticketInfo, firstComment)) {
+    firstComment = comments[isAgentWorkspace ? 1 : comments.length - 2];
   }
 
   var description = document.createElement('div');
 
   description.classList.add('comment');
   description.classList.add('zd-comment');
-  description.innerHTML = lastComment.innerHTML;
+  description.innerHTML = firstComment.innerHTML;
 
-  // Create the element class hierarchy so that the text in the comment renders correctly.
+  // Add a marker indicating the LESA priority based on critical workflow rules
+
+  addPriorityMarker(header, conversation, ticketId, ticketInfo);
+  addSubjectTextWrap(header, ticketId, ticketInfo);
 
   var descriptionAncestor0 = document.createElement('div');
-  descriptionAncestor0.classList.add('event');
+
   descriptionAncestor0.classList.add('is-public');
+
+  if (!isAgentWorkspace) {
+    descriptionAncestor0.classList.add('event');
+  }
 
   var tags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
   var tagSet = new Set(tags);
 
   if (tagSet.has('partner_first_line_support')) {
     var flsContainer = document.createElement('div');
+
     flsContainer.classList.add('event');
 
     var flsReminder = document.createElement('div');
@@ -504,8 +547,19 @@ function addTicketDescription(
   var attachmentsContainer = createAttachmentsContainer(ticketId, ticketInfo, conversation);
 
   if (attachmentsContainer) {
-    descriptionAncestor1.appendChild(attachmentsContainer);
+    if (isAgentWorkspace) {
+      addHeaderLinkModal('attachments-modal', 'Attachments', header, attachmentsContainer);
+    }
+    else {
+      descriptionAncestor1.appendChild(attachmentsContainer);
+    }
   }
 
-  header.appendChild(descriptionAncestor1);
+  if (isAgentWorkspace) {
+    addHeaderLinkModal('description-modal', 'Description', header, descriptionAncestor1);
+    addSortButton(conversation, header);
+  }
+  else {
+    header.appendChild(descriptionAncestor1);
+  }
 }

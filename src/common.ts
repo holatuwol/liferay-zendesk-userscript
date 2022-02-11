@@ -1,3 +1,5 @@
+var isAgentWorkspace = false;
+
 /**
  * Generate an anchor tag with the specified text, href, and download attributes.
  * If the download attribute has an extension that looks like it will probably be

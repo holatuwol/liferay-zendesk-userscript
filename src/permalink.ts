@@ -15,8 +15,6 @@ function clearHighlightedComments() : void {
  * query string parameter.
  */
 
-var integerRegex = /^[0-9]*$/
-
 function highlightComment(commentId?: string) : void {
   if (!commentId && !document.location.search) {
     clearHighlightedComments();
@@ -34,17 +32,17 @@ function highlightComment(commentId?: string) : void {
     }
   }
 
-  if (!commentId || !integerRegex.test(commentId)) {
+  if (!commentId || (commentId.indexOf('"') != -1)) {
     return;
   }
 
-  var comment = document.querySelector('div[data-comment-id="' + commentId + '"]');
+  var comment = document.querySelector('time[datetime="' + commentId + '"], div[data-comment-id="' + commentId + '"]');
 
   if (!comment) {
     return;
   }
 
-  var event = <HTMLElement> comment.closest('.event');
+  var event = <HTMLElement> comment.closest(isAgentWorkspace ? 'article' : '.event');
 
   if (event.classList.contains('lesa-ui-event-highlighted')) {
     return;
@@ -87,17 +85,18 @@ function addPermaLinks(
   conversation: HTMLDivElement
 ) : void {
 
-  var permalinks = conversation.querySelectorAll('div[data-comment-id] div.lesa-ui-permalink');
+  var permalinks = conversation.querySelectorAll(isAgentWorkspace ? 'article div.lesa-ui-permalink' : 'div[data-comment-id] div.lesa-ui-permalink');
 
   if (permalinks.length > 0) {
     return;
   }
 
-  var comments = conversation.querySelectorAll('div[data-comment-id]');
-  var isPublicTab = document.querySelector('.publicConversation.is-selected')
+  var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : 'div[data-comment-id]');
+  var isPublicTab = !isAgentWorkspace && document.querySelector('.publicConversation.is-selected');
 
   for (var i = 0; i < comments.length; i++) {
-    var commentId = comments[i].getAttribute('data-comment-id');
+    var timeElement = <HTMLElement> comments[i].querySelector('time');
+    var commentId = timeElement.getAttribute('datetime');
 
     var permalinkContainer = document.createElement('div');
     permalinkContainer.classList.add('lesa-ui-permalink');
@@ -112,8 +111,15 @@ function addPermaLinks(
     var permalink = createPermaLinkInputField(permalinkHREF);
     permalinkContainer.appendChild(permalink);
 
-    var commentHeader = <HTMLElement> comments[i].querySelector('.content .header');
-    commentHeader.appendChild(permalinkContainer);
+    if (isAgentWorkspace) {
+      var actionHeader = <HTMLElement> comments[i].querySelector('.omnilog-header-actions');
+      var commentHeader = <HTMLElement> actionHeader.parentElement;
+      commentHeader.after(permalinkContainer);
+    }
+    else {
+      var commentHeader = <HTMLElement> comments[i].querySelector('.content .header');
+      commentHeader.appendChild(permalinkContainer);
+    }
   }
 }
 
@@ -233,7 +239,7 @@ function fixPermaLinkAnchors(
   conversation: HTMLDivElement
 ) : void {
 
-  var permalinks = conversation.querySelectorAll('div[data-comment-id] div.lesa-ui-permalink');
+  var permalinks = conversation.querySelectorAll(isAgentWorkspace ? 'article div.lesa-ui-permalink' : 'div[data-comment-id] div.lesa-ui-permalink');
 
   if (permalinks.length > 0) {
     return;

@@ -27,6 +27,10 @@ a.generating::after {
   color: #999;
 }
 
+article {
+  border-top: 1px solid #ebebeb;
+}
+
 div.lesa-ui-subtitle {
   display: flex;
   flex-direction: column;
@@ -37,6 +41,15 @@ div.lesa-ui-subtitle {
   display: flex;
   flex-direction: column;
   margin-bottom: 0.5em;
+}
+
+#attachments-modal .lesa-ui-attachments,
+#description-modal .lesa-ui-description {
+  margin: 0.5em;
+}
+
+#description-modal .event {
+  border-top: 0px;
 }
 
 .lesa-ui-attachment-info {
@@ -51,10 +64,13 @@ div.lesa-ui-subtitle {
 }
 
 .lesa-ui-attachment-info .lesa-ui-attachment-extra-info {
-  border-top: 1px solid #eee;
   grid-column: 1 / 2 span;
   padding: 0.2em 0.5em;
   text-align: right;
+}
+
+.lesa-ui-description .lesa-ui-attachment-info .lesa-ui-attachment-extra-info {
+  border-top: 1px solid #eee;
 }
 
 .lesa-ui-attachment-info a {
@@ -94,8 +110,10 @@ div.lesa-ui-subtitle {
   overflow-y: auto;
 }
 
-.lesa-ui-event-highlighted {
+.lesa-ui-event-highlighted,
+article.lesa-ui-event-highlighted {
   background-color: #eee;
+  scroll-margin-top: 1em;
 }
 
 .lesa-ui-form-field {
@@ -138,14 +156,18 @@ div.lesa-ui-subtitle {
 }
 
 .lesa-ui-priority:not(:empty) {
+  margin-top: 6px;
   margin-bottom: 8px;
 }
 
 .lesa-ui-priority span {
   color: #fff;
   border-radius: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
   margin-right: 8px;
-  padding: 4px;
+  padding: 2px;
   text-align: center;
   text-transform: uppercase;
   width: 6em;
@@ -154,6 +176,10 @@ div.lesa-ui-subtitle {
 .lesa-ui-priority a {
   color: #fff;
   text-decoration: none;
+}
+
+.lesa-ui-priority > *:last-child {
+  margin-right: 0;
 }
 
 .lesa-ui-priority .lesa-ui-subject-emojis a {
@@ -192,24 +218,29 @@ div.lesa-ui-subtitle {
   margin-right: 2px;
 }
 
-.rich_text .comment_input .lesa-ui-playbook-reminder {
+.rich_text .comment_input .lesa-ui-playbook-reminder,
+#editor-view .lesa-ui-playbook-reminder {
   display: none;
 }
 
-.rich_text .comment_input.is-public .lesa-ui-playbook-reminder:not(:empty) {
+.rich_text .comment_input.is-public .lesa-ui-playbook-reminder:not(:empty),
+#editor-view .lesa-ui-playbook-reminder:not(:empty) {
   background-color: #eef2fa;
   border: 1px solid #d8dcde;
   border-radius: 0 3px 0 0 !important;
   color: #2e5aac;
   display: block;
+  margin-bottom: 1em;
   padding: 10px;
 }
 
-.rich_text .comment_input.is-public .lesa-ui-playbook-reminder a {
+.rich_text .comment_input.is-public .lesa-ui-playbook-reminder a,
+#editor-view .lesa-ui-playbook-reminder a {
   text-decoration: underline;
 }
 
-#modals .modal-header {
+#modals .modal-header,
+#attachments-modal .modal-header {
   cursor: move;
 }
 `;

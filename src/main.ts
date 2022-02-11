@@ -16,7 +16,6 @@ function enablePublicConversation(
     publicTab.setAttribute('data-count', fullTab.getAttribute('data-count') || '0');
   }
 }
-
 /**
  * Apply updates to the page based on the retrieved ticket information. Since the
  * ticket corresponds to a "conversation", find that conversation.
@@ -32,13 +31,18 @@ function checkTicketConversation(
   var conversation = <HTMLDivElement> document.querySelector('div[data-side-conversations-anchor-id="' + ticketId + '"]');
 
   if (conversation) {
-    var editor = conversation.querySelector('.editor');
+    isAgentWorkspace = conversation.querySelectorAll('article').length > 0;
+
+    var editor = document.querySelector(isAgentWorkspace ? 'div[data-test-id="omnicomposer-rich-text-ckeditor"]' : '.editor');
 
     if (!editor) {
       return;
     }
 
-    enablePublicConversation(ticketId, ticketInfo, conversation);
+    if (!isAgentWorkspace) {
+      enablePublicConversation(ticketId, ticketInfo, conversation);
+    }
+
     addReplyFormattingButtons(ticketId, ticketInfo, conversation);
     addJiraLinks(ticketId, ticketInfo, conversation);
     addPlaybookReminder(ticketId, ticketInfo, conversation);

@@ -190,7 +190,7 @@ function addJiraLinks(
 
   conversation.classList.add('lesa-ui-jiralink');
 
-  var comments = <Array<HTMLDivElement>> Array.from(conversation.querySelectorAll('div[data-comment-id]'));
+  var comments = <Array<HTMLDivElement>> Array.from(conversation.querySelectorAll(isAgentWorkspace ? 'article' : 'div[data-comment-id]'));
 
   for (var i = 0; i < comments.length; i++) {
     addJiraLinksToElement(comments[i]);
@@ -207,7 +207,7 @@ function addPlaybookReminder(
   conversation: HTMLDivElement
 ) : void {
 
-  var editor = conversation.querySelector('.editor');
+  var editor = conversation.querySelector(isAgentWorkspace ? 'div[data-test-id="omnicomposer-rich-text-ckeditor"]' : '.editor');
 
   if (!editor) {
     return;

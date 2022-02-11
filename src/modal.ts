@@ -1,3 +1,58 @@
+function addHeaderLinkModal(
+  modalId: string,
+  linkText: string,
+  header: HTMLElement,
+  content: HTMLDivElement,
+) : void {
+
+    var modal = document.createElement('div');
+    modal.setAttribute('id', modalId);
+    modal.classList.add('modal', 'modal-resizable', 'in', 'hide');
+
+    var iframe = document.createElement('div');
+    iframe.classList.add('iframe_app_view_wrapper')
+
+    var modalHeader = document.createElement('header');
+    modalHeader.classList.add('modal-header');
+
+    var closeLink = document.createElement('a');
+    closeLink.classList.add('close');
+
+    closeLink.textContent = '\u00d7';
+    closeLink.onclick = function() {
+      modal.classList.add('hide');
+    }
+
+    modalHeader.appendChild(closeLink);
+
+    var headerText = document.createElement('h3');
+    headerText.textContent = linkText;
+
+    modalHeader.appendChild(headerText);
+
+    iframe.appendChild(modalHeader);
+
+    content.classList.add('modal-body', 'app_view_wrapper', 'app_view', 'apps_modal');
+
+    iframe.appendChild(content);
+
+    modal.appendChild(iframe);
+
+    header.after(modal);
+
+    var openLink = document.createElement('a');
+    openLink.textContent = linkText;
+    openLink.onclick = function() {
+      modal.classList.remove('hide');
+    }
+
+    var dividers = header.querySelectorAll('div[class^="Divider"]');
+    var divider = <HTMLElement> dividers[dividers.length - 1];
+
+    divider.after(openLink);
+    openLink.after(divider.cloneNode());
+}
+
 function makeDraggableModals() : void {
   var headers = document.querySelectorAll("#modals .modal-header");
 

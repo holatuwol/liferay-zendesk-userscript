@@ -66,7 +66,7 @@ function extractAttachmentLinkMetadata(
   attachmentLink: HTMLAnchorElement
 ) : AttachmentLinkMetadata {
 
-  var comment = <HTMLDivElement> attachmentLink.closest('div[data-comment-id]');
+  var comment = <HTMLDivElement> attachmentLink.closest(isAgentWorkspace ? 'article' : 'div[data-comment-id]');
 
   // Since we're using the query string in order to determine the name (since the actual text
   // in the link has a truncated name), we need to decode the query string.
@@ -75,7 +75,8 @@ function extractAttachmentLinkMetadata(
   encodedFileName = encodedFileName.replace(/\+/g, '%20');
   var attachmentFileName = decodeURIComponent(encodedFileName);
 
-  var authorElement = <HTMLElement> comment.querySelector('div.actor .name');
+  var authorElement = <HTMLElement> comment.querySelector(isAgentWorkspace ? 'span[data-test-id="omni-log-item-sender"]' : 'div.actor .name');
+
   var timeElement = <HTMLTimeElement> comment.querySelector('time');
 
   return {
@@ -99,9 +100,10 @@ function extractExternalLinkMetadata(
   externalLink: HTMLAnchorElement
 ) : AttachmentLinkMetadata {
 
-  var comment = <HTMLDivElement> externalLink.closest('div[data-comment-id]');
+  var comment = <HTMLDivElement> externalLink.closest(isAgentWorkspace ? 'article' : 'div[data-comment-id]');
 
-  var authorElement = <HTMLElement> comment.querySelector('div.actor .name');
+  var authorElement = <HTMLElement> comment.querySelector(isAgentWorkspace ? 'span[data-test-id="omni-log-item-sender"]' : 'div.actor .name');
+
   var timeElement = <HTMLTimeElement> comment.querySelector('time');
 
   // Since we're using the query string in order to determine the name (since the actual text
@@ -142,7 +144,7 @@ function addAttachmentDate(
 
   var attachmentCommentLink = createAnchorTag(newDate, null);
   attachmentCommentLink.classList.add('attachment-comment-link');
-  attachmentCommentLink.onclick = highlightComment.bind(null, attachment.commentId);
+  attachmentCommentLink.onclick = highlightComment.bind(null, attachment.timestamp);
 
   attachmentExtraInfo.appendChild(attachmentCommentLink)
   container.appendChild(attachmentExtraInfo);
@@ -282,7 +284,7 @@ function createAttachmentsContainer(
 
   var attachmentThumbnails = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('a[data-test-id="attachment-thumbnail"]'));
 
-  var externalLinks = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('.is-public .zd-comment > a:not(.attachment)'));
+  var externalLinks = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll((isAgentWorkspace ? '' : '.is-public ') + '.zd-comment > a:not(.attachment)'));
   externalLinks = externalLinks.filter(isLiferayLargeAttachment);
 
   if (attachmentLinks.length + attachmentThumbnails.length + externalLinks.length == 0) {
@@ -292,11 +294,13 @@ function createAttachmentsContainer(
   var attachmentsContainer = document.createElement('div');
   attachmentsContainer.classList.add('lesa-ui-attachments');
 
-  var attachmentsLabel = document.createElement('div');
-  attachmentsLabel.classList.add('lesa-ui-attachments-label');
-  attachmentsLabel.innerHTML = 'Attachments:';
+  if (!isAgentWorkspace) {
+    var attachmentsLabel = document.createElement('div');
+    attachmentsLabel.classList.add('lesa-ui-attachments-label');
+    attachmentsLabel.innerHTML = 'Attachments:';
 
-  attachmentsContainer.appendChild(attachmentsLabel);
+    attachmentsContainer.appendChild(attachmentsLabel);
+  }
 
   // Accumulate the attachments, and then sort them by date
 
