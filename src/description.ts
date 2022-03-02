@@ -161,11 +161,6 @@ function addPriorityMarker(
 ) : void {
 
   var ticketContainer = <HTMLElement> header.closest('.main_panes');
-  var assigneeElement = <HTMLElement> ticketContainer.querySelector(isAgentWorkspace ? 'div[data-test-id="assignee-field-selected-agent-tag"] > span' : '.js-zero-state-ticket-tutorial-assignee-field > div > div');
-
-  if (!assigneeElement) {
-    return;
-  }
 
   var priorityElement = header.querySelector('.lesa-ui-priority');
 
@@ -246,7 +241,9 @@ function addPriorityMarker(
       priorityElement.appendChild(customerCountryElement);
     }
 
-    if (ticketInfo.ticket.status != 'closed') {
+    var assigneeElement = <HTMLElement> ticketContainer.querySelector(isAgentWorkspace ? 'div[data-test-id="assignee-field-selected-agent-tag"] > span, div[data-test-id="assignee-field-selected-group-tag"]' : '.js-zero-state-ticket-tutorial-assignee-field > div > div');
+
+    if (assigneeElement && (ticketInfo.ticket.status != 'closed')) {
       var customerRegion = organizationFields.support_region;
       var assigneeText = (assigneeElement.textContent || '').trim();
       var assigneeRegions = getSupportRegions(assigneeText);
