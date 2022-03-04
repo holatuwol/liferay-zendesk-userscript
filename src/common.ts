@@ -96,6 +96,18 @@ function downloadBlob(
 }
 
 /**
+ * Retrieve the value for a cookie.
+ */
+
+function getCookieValue(name: string) : string {
+  var nameEquals = name + '=';
+
+  var matchingCookies = document.cookie.split('; ').filter(it => it.indexOf(nameEquals) == 0);
+
+  return (matchingCookies.length == 0) ? '' : matchingCookies[0].substring(nameEquals.length);
+}
+
+/**
  * Create a link to the JIRA linked issues.
  */
 

@@ -243,6 +243,15 @@ article.lesa-ui-event-highlighted {
 #attachments-modal .modal-header {
   cursor: move;
 }
+
+.fNgWaW {
+  padding: 2px 0px;
+  height: 14px;
+  width: 1px;
+  background: rgb(194, 200, 204);
+  display: flex;
+  margin: 0px 8px;
+}
 `;
 }
 

@@ -46,11 +46,13 @@ function addHeaderLinkModal(
       modal.classList.remove('hide');
     }
 
-    var dividers = header.querySelectorAll('div[class^="Divider"]');
-    var divider = <HTMLElement> dividers[dividers.length - 1];
+    var viaLabel = <HTMLDivElement> header.querySelector('div[data-test-id="omni-header-via-label"]');
 
-    divider.after(openLink);
-    openLink.after(divider.cloneNode());
+    var divider = document.createElement('div');
+    divider.classList.add('Divider-sc-2k6bz0-9', 'fNgWaW');
+
+    viaLabel.before(divider);
+    divider.before(openLink);
 }
 
 function makeDraggableModals() : void {

@@ -129,9 +129,14 @@ function addSortButton(
 ) : void {
 
   var button = document.createElement('button');
-  button.textContent = 'asc'
+
+  var sort = getCookieValue('_lesa-ui-comment-sort') || 'asc';
+
+  button.textContent = sort;
 
   var conversationLog = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-log-container"]');
+
+  conversationLog.style.flexDirection = (sort == 'asc') ? 'column' : 'column-reverse';
 
   var lastChild = <HTMLElement> header.lastChild;
 
@@ -139,10 +144,12 @@ function addSortButton(
     if (conversationLog.style.flexDirection == 'column') {
       conversationLog.style.flexDirection = 'column-reverse';
       button.textContent = 'desc';
+      document.cookie = '_lesa-ui-comment-sort=desc';
     }
     else {
       conversationLog.style.flexDirection = 'column';
       button.textContent = 'asc';
+      document.cookie = '_lesa-ui-comment-sort=asc';
     }
   };
 
@@ -271,11 +278,18 @@ function addPriorityMarker(
   }
 
   if (isAgentWorkspace) {
-    var dividers = header.querySelectorAll('div[class^="Divider"]');
-    var divider = <HTMLElement> dividers[dividers.length - 1];
+	var viaLabel = <HTMLDivElement> header.querySelector('div[data-test-id="omni-header-via-label"]');
 
-    divider.after(priorityElement);
-    priorityElement.after(divider.cloneNode());
+    
+	var divider = document.createElement('div');
+	divider.classList.add('Divider-sc-2k6bz0-9');
+
+	if (priorityElement.childNodes.length > 0) {
+		divider.classList.add('fNgWaW');
+	}
+
+	viaLabel.before(divider);
+	divider.before(priorityElement);
   }
   else {
     header.insertBefore(priorityElement, header.querySelector('.round-avatar'));
