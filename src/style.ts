@@ -48,6 +48,12 @@ div.lesa-ui-subtitle {
   margin: 0.5em;
 }
 
+#attachments-modal,
+#description-modal {
+  height: 60vh;
+  width: 50vw;
+}
+
 #description-modal .event {
   border-top: 0px;
 }

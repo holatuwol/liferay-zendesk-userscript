@@ -56,7 +56,7 @@ function addHeaderLinkModal(
 }
 
 function makeDraggableModals() : void {
-  var headers = document.querySelectorAll("#modals .modal-header");
+  var headers = document.querySelectorAll(".modal-header");
 
   for (var i = 0; i < headers.length; i++) {
     var header = <HTMLDivElement> headers[i];
@@ -70,6 +70,21 @@ function makeDraggableModals() : void {
   }
 }
 
+function moveModal(
+  element: HTMLDivElement,
+  dragEvent : DragEvent,
+  dropEvent : DragEvent
+) : void {
+
+  var rect = element.getBoundingClientRect();
+  var elementX = rect.left + (unsafeWindow.pageXOffset || document.documentElement.scrollLeft);
+  var elementY = rect.top + (unsafeWindow.pageYOffset || document.documentElement.scrollTop);
+
+  element.style.transform = 'translate(0px, 0px)';
+  element.style.left = (dropEvent.clientX - dragEvent.clientX + elementX) + 'px';
+  element.style.top = (dropEvent.clientY - dragEvent.clientY + elementY) + 'px';
+}
+
 function makeDraggableModal(
   header: HTMLDivElement,
   element: HTMLDivElement
@@ -77,25 +92,13 @@ function makeDraggableModal(
 
   element.setAttribute('draggable', 'true');
 
-  var dragX = 0;
-  var dragY = 0;
-  var elementX = 0;
-  var elementY = 0;
+  var dragEvent = <DragEvent | null> null;
 
   element.addEventListener('dragstart', function(e : DragEvent) {
-    dragX = e.clientX;
-    dragY = e.clientY;
-
-    var rect = element.getBoundingClientRect();
-
-    elementX = rect.left + (unsafeWindow.pageXOffset || document.documentElement.scrollLeft);
-    elementY = rect.top + (unsafeWindow.pageYOffset || document.documentElement.scrollTop);
+    dragEvent = e;
   });
 
   element.addEventListener('dragend', function(e : DragEvent) {
-    element.style.transform = 'translate(0px, 0px)';
-    element.style.position = 'absolute';
-    element.style.left = (e.clientX - dragX + elementX) + 'px';
-    element.style.top = (e.clientY - dragY + elementY) + 'px';
+  	moveModal(element, <DragEvent> dragEvent, e);
   });
 }

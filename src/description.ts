@@ -365,35 +365,42 @@ function createKnowledgeCaptureContainer(
   conversation: HTMLDivElement
 ) : HTMLDivElement | null {
 
-  if (!ticketInfo.audits) {
-    return null;
+  var knowledgeCaptureList = document.createElement('ul');
+
+  if (ticketInfo.audits) {
+    var knowledgeCaptureEvents = ticketInfo.audits.map(function(x) {
+      return x.events.filter(function(x) {
+        return x.type == 'KnowledgeCaptured';
+      });
+    }).reduce(function(array, x) {
+      return array.concat(x);
+    }, []);
+
+    knowledgeCaptureList = knowledgeCaptureEvents.reduce(function(list, x) {
+      var item = document.createElement('li');
+      item.appendChild(createAnchorTag(x.body.article.title, x.body.article.html_url));
+      list.appendChild(item);
+      return list;
+    }, knowledgeCaptureList);
   }
 
-  var knowledgeCaptureEvents = ticketInfo.audits.map(function(x) {
-    return x.events.filter(function(x) {
-      return x.type == 'KnowledgeCaptured';
-    });
-  }).reduce(function(array, x) {
-    return array.concat(x);
-  }, []);
-
-  if (knowledgeCaptureEvents.length == 0) {
-    return null;
-  }
-
-  var knowledgeCaptureList = knowledgeCaptureEvents.reduce(function(list, x) {
+  Array.from(conversation.querySelectorAll('a[href*="/hc/"]')).reduce(function(list, x) {
     var item = document.createElement('li');
-    item.appendChild(createAnchorTag(x.body.article.title, x.body.article.html_url));
+    item.appendChild(x.cloneNode(true));
     list.appendChild(item);
     return list;
-  }, document.createElement('ul'));
+  }, knowledgeCaptureList);
+
+  if (knowledgeCaptureList.childNodes.length == 0) {
+    return null;
+  }
 
   var knowledgeCaptureContainer = document.createElement('div');
   knowledgeCaptureContainer.classList.add('lesa-ui-knowledge-capture');
 
   var knowledgeCaptureLabel = document.createElement('div');
   knowledgeCaptureLabel.classList.add('lesa-ui-knowledge-capture-label');
-  knowledgeCaptureLabel.innerHTML = (knowledgeCaptureEvents.length == 1) ? 'Fast Track Article:' : 'Fast Track Articles:';
+  knowledgeCaptureLabel.innerHTML = (knowledgeCaptureList.childNodes.length == 1) ? 'Fast Track Article:' : 'Fast Track Articles:';
 
   knowledgeCaptureContainer.appendChild(knowledgeCaptureLabel);
   knowledgeCaptureContainer.appendChild(knowledgeCaptureList);
