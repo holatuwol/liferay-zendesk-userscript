@@ -98,6 +98,10 @@ div.lesa-ui-subtitle {
   white-space: nowrap;
 }
 
+.lesa-ui-knowledge-capture-label:not(:first-child) {
+  margin-top: 1em;
+}
+
 .lesa-ui-knowledge-capture ul {
   margin-left: 1em;
 }

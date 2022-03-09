@@ -365,7 +365,7 @@ function createKnowledgeCaptureContainer(
   conversation: HTMLDivElement
 ) : HTMLDivElement | null {
 
-  var knowledgeCaptureList = document.createElement('ul');
+  var fastTrackList = document.createElement('ul');
 
   if (ticketInfo.audits) {
     var knowledgeCaptureEvents = ticketInfo.audits.map(function(x) {
@@ -376,34 +376,47 @@ function createKnowledgeCaptureContainer(
       return array.concat(x);
     }, []);
 
-    knowledgeCaptureList = knowledgeCaptureEvents.reduce(function(list, x) {
+    fastTrackList = knowledgeCaptureEvents.reduce(function(list, x) {
       var item = document.createElement('li');
       item.appendChild(createAnchorTag(x.body.article.title, x.body.article.html_url));
       list.appendChild(item);
       return list;
-    }, knowledgeCaptureList);
+    }, fastTrackList);
   }
+
+  var otherArticleList = document.createElement('ul');
 
   Array.from(conversation.querySelectorAll('a[href*="/hc/"]')).reduce(function(list, x) {
     var item = document.createElement('li');
     item.appendChild(x.cloneNode(true));
     list.appendChild(item);
     return list;
-  }, knowledgeCaptureList);
+  }, otherArticleList);
 
-  if (knowledgeCaptureList.childNodes.length == 0) {
+  if ((otherArticleList.childNodes.length == 0) && (fastTrackList.childNodes.length == 0)) {
     return null;
   }
 
   var knowledgeCaptureContainer = document.createElement('div');
   knowledgeCaptureContainer.classList.add('lesa-ui-knowledge-capture');
 
-  var knowledgeCaptureLabel = document.createElement('div');
-  knowledgeCaptureLabel.classList.add('lesa-ui-knowledge-capture-label');
-  knowledgeCaptureLabel.innerHTML = (knowledgeCaptureList.childNodes.length == 1) ? 'Fast Track Article:' : 'Fast Track Articles:';
+  if (otherArticleList.childNodes.length > 0) {
+    var fastTrackLabel = document.createElement('div');
+    fastTrackLabel.classList.add('lesa-ui-knowledge-capture-label');
+    fastTrackLabel.innerHTML = (fastTrackList.childNodes.length == 1) ? 'Fast Track Article:' : 'Fast Track Articles:';
 
-  knowledgeCaptureContainer.appendChild(knowledgeCaptureLabel);
-  knowledgeCaptureContainer.appendChild(knowledgeCaptureList);
+    knowledgeCaptureContainer.appendChild(fastTrackLabel);
+    knowledgeCaptureContainer.appendChild(fastTrackList);
+  }
+
+  if (otherArticleList.childNodes.length > 0) {
+    var otherArticleLabel = document.createElement('div');
+    otherArticleLabel.classList.add('lesa-ui-knowledge-capture-label');
+    otherArticleLabel.innerHTML = (otherArticleList.childNodes.length == 1) ? 'Other Linked Article:' : 'Other Linked Articles:';
+
+    knowledgeCaptureContainer.appendChild(otherArticleLabel);
+    knowledgeCaptureContainer.appendChild(otherArticleList);
+  }
 
   return knowledgeCaptureContainer;
 }
