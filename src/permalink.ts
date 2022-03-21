@@ -19,7 +19,7 @@ function highlightComment(commentId?: string) : void {
   if (!commentId && !document.location.search) {
     var logContainer = <HTMLElement | null> document.querySelector('div[data-test-id="omni-log-container"]');
 
-    if (logContainer) {
+    if (logContainer && !logContainer.getAttribute('data-scrolled-into-view')) {
       var sort = getCookieValue('_lesa-ui-comment-sort') || 'asc';
 
       logContainer.style.flexDirection = (sort == 'asc') ? 'column' : 'column-reverse';
@@ -27,6 +27,8 @@ function highlightComment(commentId?: string) : void {
       var event = <HTMLElement> document.getElementById('convo_log_sentinel_1');
 
       event.scrollIntoView();
+
+      logContainer.setAttribute('data-scrolled-into-view', 'true');
     }
 
     clearHighlightedComments();
