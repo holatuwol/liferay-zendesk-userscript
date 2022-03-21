@@ -262,6 +262,14 @@ article.lesa-ui-event-highlighted {
   display: flex;
   margin: 0px 8px;
 }
+
+button[data-test-id="omnilog-jump-button"] {
+  display: none;
+}
+
+div[data-test-id="editor-view"] {
+  display: none;
+}
 `;
 }
 

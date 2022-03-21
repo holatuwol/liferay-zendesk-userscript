@@ -50,12 +50,6 @@ function downloadAttachment(
       link.classList.remove('downloading');
       callback(download, blob);
   });
-
-  var xhr = new XMLHttpRequest();
-  xhr.responseType = 'blob';
-
-  xhr.open('GET', href);
-  xhr.send(null);
 }
 
 /**

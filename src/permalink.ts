@@ -17,6 +17,13 @@ function clearHighlightedComments() : void {
 
 function highlightComment(commentId?: string) : void {
   if (!commentId && !document.location.search) {
+    var logContainer = <HTMLElement | null> document.querySelector('div[data-test-id="omni-log-container"]');
+
+    if (logContainer && logContainer.style.flexDirection == 'column-reverse') {
+      var event = <HTMLElement> document.getElementById('convo_log_sentinel_1');
+      event.scrollIntoView();
+    }
+
     clearHighlightedComments();
 
     return;

@@ -125,11 +125,17 @@ function addReplyFormattingButtons(
 
   conversation.classList.add('lesa-ui-stackedit');
 
-  var newComments = <Array<HTMLElement>> Array.from(conversation.querySelectorAll('.zendesk-editor--rich-text-container .zendesk-editor--rich-text-comment'));
+  var legacyComments = <Array<HTMLElement>> Array.from(conversation.querySelectorAll('.zendesk-editor--rich-text-container .zendesk-editor--rich-text-comment'));
 
-  for (var i = 0; i < newComments.length; i++) {
-    addReplyUnderlineButton(newComments[i]);
-    addReplyStackeditButton(newComments[i], addJiraLinksToElement);
+  for (var i = 0; i < legacyComments.length; i++) {
+    addReplyUnderlineButton(legacyComments[i]);
+    addReplyStackeditButton(legacyComments[i], addJiraLinksToElement);
+  }
+
+  var workspaceComments = <Array<HTMLElement>> Array.from(conversation.querySelectorAll('div[data-test-id="editor-view"]'));
+
+  for (var i = 0; i < workspaceComments.length; i++) {
+    hideReplyEditor(workspaceComments[i]);
   }
 }
 
@@ -246,3 +252,13 @@ function addPlaybookReminder(
 
   parentElement.insertBefore(playbookReminderElement, editor);
 }
+
+/**
+ * Hides the reply editor, and generates a start reply button
+ */
+
+function hideReplyEditor(element: HTMLElement) : void {  
+  element.style.minHeight = '0px';
+  element.style.flexBasis = '0%';
+  element.style.display = 'block';
+};

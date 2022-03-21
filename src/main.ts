@@ -214,7 +214,7 @@ function checkForSubtitles() : void {
   for (var i = 0; i < subtitles.length; i++) {
     var subtitle = subtitles[i];
 
-    var textContent = (subtitle.children[0].textContent || '').trim();
+    var textContent = ((subtitle.children.length > 0 && subtitle.children[0].textContent) || '').trim();
 
     if (textContent[0] != '#') {
       continue;
