@@ -136,8 +136,6 @@ function addSortButton(
 
   var conversationLog = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-log-container"]');
 
-  conversationLog.style.flexDirection = (sort == 'asc') ? 'column' : 'column-reverse';
-
   var lastChild = <HTMLElement> header.lastChild;
 
   button.onclick = function() {

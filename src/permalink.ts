@@ -19,8 +19,13 @@ function highlightComment(commentId?: string) : void {
   if (!commentId && !document.location.search) {
     var logContainer = <HTMLElement | null> document.querySelector('div[data-test-id="omni-log-container"]');
 
-    if (logContainer && logContainer.style.flexDirection == 'column-reverse') {
+    if (logContainer) {
+      var sort = getCookieValue('_lesa-ui-comment-sort') || 'asc';
+
+      logContainer.style.flexDirection = (sort == 'asc') ? 'column' : 'column-reverse';
+
       var event = <HTMLElement> document.getElementById('convo_log_sentinel_1');
+
       event.scrollIntoView();
     }
 
