@@ -15,20 +15,32 @@ function clearHighlightedComments() : void {
  * query string parameter.
  */
 
-function highlightComment(commentId?: string) : void {
-  if (!commentId && !document.location.search) {
-    var logContainer = <HTMLElement | null> document.querySelector('div[data-test-id="omni-log-container"]');
+function highlightComment(
+  conversation: HTMLElement,
+  ticketId: string,
+  commentId: string
+) : void {
 
-    if (logContainer && !logContainer.getAttribute('data-scrolled-into-view')) {
+  if (!commentId && !document.location.search) {
+    var logContainer = <HTMLElement | null> conversation.querySelector('div[data-test-id="omni-log-container"]');
+
+    if (logContainer && logContainer.getAttribute('data-sort-ticket-id') != ticketId) {
+
+      var sortedComments = document.querySelectorAll('div[data-sort-ticket-id]');
+
+      for (var i = 0; i < sortedComments.length; i++) {
+        sortedComments[i].removeAttribute('data-sort-ticket-id');
+      }
+
       var sort = getCookieValue('_lesa-ui-comment-sort') || 'asc';
 
       logContainer.style.flexDirection = (sort == 'asc') ? 'column' : 'column-reverse';
 
-      var event = <HTMLElement> document.getElementById('convo_log_sentinel_1');
+      var event = <HTMLElement> conversation.querySelector('div[id^="convo_log_sentinel_"]');
 
       event.scrollIntoView();
 
-      logContainer.setAttribute('data-scrolled-into-view', 'true');
+      logContainer.setAttribute('data-sort-ticket-id', ticketId);
     }
 
     clearHighlightedComments();
@@ -154,6 +166,7 @@ function skipSinglePageApplication(href: string) : boolean {
  */
 
 function fixZenDeskLink(
+  conversation: HTMLElement,
   anchor: HTMLAnchorElement,
   ticketId: string
 ) : void {
@@ -177,7 +190,7 @@ function fixZenDeskLink(
   if (href.substring(x + '?comment='.length, y) == ticketId) {
     var commentId = href.substring(y + '?comment='.length);
 
-    anchor.onclick = highlightComment.bind(null, commentId);
+    anchor.onclick = highlightComment.bind(null, conversation, ticketId, commentId);
   }
   else {
     var commentURL = 'https://' + document.location.host + '/agent' + href.substring(x);
@@ -192,6 +205,7 @@ function fixZenDeskLink(
  */
 
 function fixHelpCenterLink(
+  conversation: HTMLElement,
   anchor: HTMLAnchorElement,
   ticketId: string
 ) : void {
@@ -235,7 +249,7 @@ function fixHelpCenterLink(
   var linkTicketId = href.substring(y + '/requests/'.length, Math.min(href.indexOf('?'), z));
 
   if (linkTicketId == ticketId) {
-    anchor.onclick = highlightComment.bind(null, commentId);
+    anchor.onclick = highlightComment.bind(null, conversation, ticketId, commentId);
   }
   else {
     anchor.onclick = skipSinglePageApplication.bind(null, commentURL);
@@ -264,7 +278,7 @@ function fixPermaLinkAnchors(
   for (var i = 0; i < anchors.length; i++) {
     var anchor = anchors[i];
 
-    fixZenDeskLink(anchor, ticketId);
-    fixHelpCenterLink(anchor, ticketId);
+    fixZenDeskLink(conversation, anchor, ticketId);
+    fixHelpCenterLink(conversation, anchor, ticketId);
   }
 }

@@ -129,6 +129,7 @@ function addSortButton(
 ) : void {
 
   var button = document.createElement('button');
+  button.setAttribute('data-test-id', 'comment-sort');
 
   var sort = getCookieValue('_lesa-ui-comment-sort') || 'asc';
 
@@ -136,7 +137,7 @@ function addSortButton(
 
   var conversationLog = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-log-container"]');
 
-  var lastChild = <HTMLElement> header.lastChild;
+  var buttons = <HTMLElement> header.children[1];
 
   button.onclick = function() {
     if (conversationLog.style.flexDirection == 'column') {
@@ -151,7 +152,7 @@ function addSortButton(
     }
   };
 
-  lastChild.prepend(button);
+  buttons.prepend(button);
 }
 
 /**
@@ -276,18 +277,17 @@ function addPriorityMarker(
   }
 
   if (isAgentWorkspace) {
-	var viaLabel = <HTMLDivElement> header.querySelector('div[data-test-id="omni-header-via-label"]');
-
+    var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
     
-	var divider = document.createElement('div');
-	divider.classList.add('Divider-sc-2k6bz0-9');
+    var divider = document.createElement('div');
+    divider.classList.add('Divider-sc-2k6bz0-9');
 
-	if (priorityElement.childNodes.length > 0) {
-		divider.classList.add('fNgWaW');
-	}
+    if (priorityElement.childNodes.length > 0) {
+      divider.classList.add('fNgWaW');
+    }
 
-	viaLabel.before(divider);
-	divider.before(priorityElement);
+    viaLabel.before(divider);
+    divider.before(priorityElement);
   }
   else {
     header.insertBefore(priorityElement, header.querySelector('.round-avatar'));
@@ -474,14 +474,17 @@ function addTicketDescription(
   conversation: HTMLDivElement
 ) : void {
 
-  var header = <HTMLElement | null> conversation.querySelector(isAgentWorkspace ? 'div[data-test-id="ticket-call-controls-action-bar"]' : '.pane_header');
+  var header = <HTMLElement | null> null;
+
+  if (isAgentWorkspace) {
+    header = <HTMLElement> conversation.querySelector('div.omni-conversation-pane > div > div');
+  }
+  else {
+    header = conversation.querySelector('.pane_header');
+  }
 
   if (!header) {
     return;
-  }
-
-  if (isAgentWorkspace) {
-    header = <HTMLElement> header.previousSibling;
   }
 
   // Check to see if we have any descriptions that we need to remove.
@@ -577,7 +580,7 @@ function addTicketDescription(
 
   if (attachmentsContainer) {
     if (isAgentWorkspace) {
-      addHeaderLinkModal('attachments-modal', 'Attachments', header, attachmentsContainer);
+      addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, attachmentsContainer);
     }
     else {
       descriptionAncestor1.appendChild(attachmentsContainer);
@@ -585,7 +588,7 @@ function addTicketDescription(
   }
 
   if (isAgentWorkspace) {
-    addHeaderLinkModal('description-modal', 'Description', header, descriptionAncestor1);
+    addHeaderLinkModal('description-modal', 'Description', header, conversation, descriptionAncestor1);
     addSortButton(conversation, header);
   }
   else {

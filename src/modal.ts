@@ -2,6 +2,7 @@ function addHeaderLinkModal(
   modalId: string,
   linkText: string,
   header: HTMLElement,
+  conversation: HTMLElement,
   content: HTMLDivElement,
 ) : void {
 
@@ -46,7 +47,7 @@ function addHeaderLinkModal(
       modal.classList.remove('hide');
     }
 
-    var viaLabel = <HTMLDivElement> header.querySelector('div[data-test-id="omni-header-via-label"]');
+    var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
 
     var divider = document.createElement('div');
     divider.classList.add('Divider-sc-2k6bz0-9', 'fNgWaW');

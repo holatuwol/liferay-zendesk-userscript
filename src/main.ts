@@ -49,13 +49,11 @@ function checkTicketConversation(
     return;
   }
 
-  var hasEditor = document.querySelectorAll('div[data-test-id="omnicomposer-rich-text-ckeditor"], .editor').length > 0;
+  isAgentWorkspace = hasAgentWorkspaceComments;
 
-  if (!hasEditor) {
+  if (!isAgentWorkspace && document.querySelectorAll('.editor').length == 0) {
     return;
   }
-
-  isAgentWorkspace = hasAgentWorkspaceComments;
 
   if (!isAgentWorkspace) {
     enablePublicConversation(ticketId, ticketInfo, conversation);
@@ -69,7 +67,7 @@ function checkTicketConversation(
   addPermaLinks(ticketId, ticketInfo, conversation);
   updateWindowTitle(ticketId, ticketInfo);
 
-  highlightComment();
+  highlightComment(conversation, ticketId, '');
 }
 
 /**
