@@ -162,10 +162,14 @@ function checkForConversations() : void {
  */
 
 function updateSubtitle(
+  title: HTMLElement,
   subtitle: HTMLElement,
   ticketId: string,
   ticketInfo: TicketMetadata
 ) : void {
+
+  title.textContent = ticketInfo.ticket.raw_subject;
+  title.setAttribute('title', ticketInfo.ticket.raw_subject);
 
   var accountCode = getAccountCode(ticketId, ticketInfo);
 
@@ -207,10 +211,13 @@ function updateSubtitle(
  */
 
 function checkForSubtitles() : void {
+  var tabs = <Array<HTMLElement>> Array.from(document.querySelectorAll('div[data-test-id="header-tab"]'));
   var subtitles = <Array<HTMLElement>> Array.from(document.querySelectorAll('div[data-test-id="header-tab-subtitle"]'));
 
-  for (var i = 0; i < subtitles.length; i++) {
-    var subtitle = subtitles[i];
+  for (var i = 0; i < tabs.length; i++) {
+    var tab = tabs[i];
+
+    var subtitle = <HTMLElement> tab.querySelector('div[data-test-id="header-tab-subtitle"]');
 
     var textContent = ((subtitle.children.length > 0 && subtitle.children[0].textContent) || '').trim();
 
@@ -218,9 +225,11 @@ function checkForSubtitles() : void {
       continue;
     }
 
+    var title = <HTMLElement> tab.querySelector('div[data-test-id="header-tab-title"]');
+
     var ticketId = textContent.substring(1);
 
-    checkTicket(ticketId, updateSubtitle.bind(null, subtitle));
+    checkTicket(ticketId, updateSubtitle.bind(null, title, subtitle));
   }
 }
 
