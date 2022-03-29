@@ -267,7 +267,7 @@ button[data-test-id="omnilog-jump-button"] {
   display: none;
 }
 
-div[data-test-id="editor-view"] {
+div.omni-conversation-pane[data-ticket-id] div[data-test-id="editor-view"] {
   display: none;
 }
 `;
