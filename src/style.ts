@@ -266,10 +266,6 @@ article.lesa-ui-event-highlighted {
 button[data-test-id="omnilog-jump-button"] {
   display: none;
 }
-
-div.omni-conversation-pane[data-ticket-id] div[data-test-id="editor-view"] {
-  display: none;
-}
 `;
 }
 

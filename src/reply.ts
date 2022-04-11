@@ -135,7 +135,7 @@ function addReplyFormattingButtons(
   var workspaceComments = <Array<HTMLElement>> Array.from(conversation.querySelectorAll('div[data-test-id="editor-view"]'));
 
   for (var i = 0; i < workspaceComments.length; i++) {
-    hideReplyEditor(conversation, workspaceComments[i]);
+    shrinkReplyEditor(conversation, workspaceComments[i]);
   }
 }
 
@@ -254,27 +254,23 @@ function addPlaybookReminder(
 }
 
 /**
- * Hides the reply editor, and generates a start reply button
+ * Shrinks the reply editor.
  */
 
-function hideReplyEditor(
+function shrinkReplyEditor(
   conversation: HTMLElement,
   element: HTMLElement
 ) : void {
 
   var interval = setInterval(
     function() {
-      var button = <HTMLButtonElement> conversation.querySelector('button[data-test-id="omnicomposer-collapse-button"]');
-
-      if (!button) {
+      if (!element.style.flexBasis) {
         return;
       }
 
-      clearInterval(interval);
+      element.style.flexBasis = '10%';
 
-      button.onclick = function() {
-        element.style.display = 'block';
-      }
+      clearInterval(interval);
     },
     1000
   );
