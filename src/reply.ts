@@ -268,7 +268,15 @@ function shrinkReplyEditor(
         return;
       }
 
-      element.style.flexBasis = '10%';
+      var editor = element.querySelector('div[data-test-id="ticket-rich-text-editor"]');
+
+      if (!editor) {
+        return;
+      }
+
+      if (!editor.textContent) {
+        element.style.flexBasis = '10%';
+      }
 
       clearInterval(interval);
     },
