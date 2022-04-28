@@ -398,7 +398,7 @@ function createKnowledgeCaptureContainer(
   var knowledgeCaptureContainer = document.createElement('div');
   knowledgeCaptureContainer.classList.add('lesa-ui-knowledge-capture');
 
-  if (otherArticleList.childNodes.length > 0) {
+  if (fastTrackList.childNodes.length > 0) {
     var fastTrackLabel = document.createElement('div');
     fastTrackLabel.classList.add('lesa-ui-knowledge-capture-label');
     fastTrackLabel.innerHTML = (fastTrackList.childNodes.length == 1) ? 'Fast Track Article:' : 'Fast Track Articles:';
