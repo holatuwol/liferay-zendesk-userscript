@@ -199,7 +199,10 @@ function addJiraLinks(
   var comments = <Array<HTMLDivElement>> Array.from(conversation.querySelectorAll(isAgentWorkspace ? 'article' : 'div[data-comment-id]'));
 
   for (var i = 0; i < comments.length; i++) {
-    addJiraLinksToElement(comments[i]);
+    var comment = comments[i].querySelector('div[data-test-id="omni-log-message-content"]');
+    if (comment) {
+      addJiraLinksToElement(<HTMLDivElement> comment);
+    }
   }
 }
 

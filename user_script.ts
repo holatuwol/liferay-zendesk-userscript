@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           ZenDesk for TSEs
 // @namespace      holatuwol
-// @version        14.8
+// @version        14.9
 // @updateURL      https://raw.githubusercontent.com/holatuwol/liferay-faster-deploy/master/userscripts/zendesk.user.js
 // @downloadURL    https://raw.githubusercontent.com/holatuwol/liferay-faster-deploy/master/userscripts/zendesk.user.js
 // @include        /https:\/\/liferay-?support[0-9]*.zendesk.com\/agent\/.*/
