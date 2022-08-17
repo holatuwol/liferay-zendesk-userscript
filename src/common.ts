@@ -70,7 +70,13 @@ function downloadFile(
     }
   }
 
-  xhr.open('GET', href);
+  if (href.indexOf('https://help.liferay.com') == 0) {
+    xhr.open('GET', href.substring('https://help.liferay.com'.length));
+  }
+  else {
+    xhr.open('GET', href);
+  }
+
   xhr.send(null);
 }
 

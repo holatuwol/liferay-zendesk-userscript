@@ -121,7 +121,12 @@ function addPermaLinks(
   var isPublicTab = !isAgentWorkspace && document.querySelector('.publicConversation.is-selected');
 
   for (var i = 0; i < comments.length; i++) {
-    var timeElement = <HTMLElement> comments[i].querySelector('time');
+    var timeElement = comments[i].querySelector('time');
+
+    if (!timeElement) {
+      continue;
+    }
+
     var commentId = timeElement.getAttribute('datetime');
 
     var permalinkContainer = document.createElement('div');
