@@ -1,4 +1,15 @@
 /**
+ * Updates all help.liferay.com/attachments links to point to the current domain.
+ */
+
+function fixAttachmentLinks() {
+  Array.from(document.querySelectorAll('a[href^="https://help.liferay.com/attachments/')).forEach(it => {
+    var href = <string> it.getAttribute('href');
+    it.setAttribute('href', href.substring('https://help.liferay.com'.length));
+  });
+}
+
+/**
  * Shows the public conversation tab so that you can get help.liferay.com links to
  * share with customers.
  */
@@ -145,6 +156,7 @@ function checkForConversations() : void {
     var pos = ticketId.indexOf('/');
 
     if (pos != -1) {
+      fixAttachmentLinks();
       revokeObjectURLs();
     }
     else {
@@ -154,6 +166,7 @@ function checkForConversations() : void {
   else {
     updateWindowTitle();
     revokeObjectURLs();
+    fixAttachmentLinks();
   }
 }
 
