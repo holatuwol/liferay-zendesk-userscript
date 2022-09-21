@@ -48,12 +48,6 @@ div.lesa-ui-subtitle {
   margin: 0.5em;
 }
 
-#attachments-modal,
-#description-modal {
-  height: 60vh;
-  width: 50vw;
-}
-
 #description-modal .event {
   border-top: 0px;
 }
@@ -73,6 +67,13 @@ div.lesa-ui-subtitle {
   grid-column: 1 / 2 span;
   padding: 0.2em 0.5em;
   text-align: right;
+  margin-bottom: 0.5em;
+}
+
+.lesa-ui-attachment-info .lesa-ui-attachment-extra-info:not(:first-child) {
+  margin-top: 1em;
+  border-top: 1px solid lightgray;
+  padding-top: 0.5em;
 }
 
 .lesa-ui-description .lesa-ui-attachment-info .lesa-ui-attachment-extra-info {

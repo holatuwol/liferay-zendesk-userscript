@@ -1,59 +1,73 @@
+function createModal(
+  modalId: string,
+  linkText: string,
+  header: HTMLElement,
+  conversation: HTMLElement,
+  callback: Function,
+) : void {
+
+  var modal = document.createElement('div');
+  modal.setAttribute('id', modalId);
+  modal.classList.add('modal', 'modal-resizable', 'in');
+
+  var iframe = document.createElement('div');
+  iframe.classList.add('iframe_app_view_wrapper')
+
+  var modalHeader = document.createElement('header');
+  modalHeader.classList.add('modal-header');
+
+  var closeLink = document.createElement('a');
+  closeLink.classList.add('close');
+
+  closeLink.textContent = '\u00d7';
+  closeLink.onclick = function() {
+    modal.remove();
+  }
+
+  modalHeader.appendChild(closeLink);
+
+  var headerText = document.createElement('h3');
+  headerText.textContent = linkText;
+
+  modalHeader.appendChild(headerText);
+
+  iframe.appendChild(modalHeader);
+
+  modal.appendChild(iframe);
+
+  header.after(modal);
+
+  var contentWrapper = document.createElement('div');
+  contentWrapper.classList.add('modal-body', 'app_view_wrapper');
+
+  var content = callback();
+
+  content.classList.add('app_view', 'apps_modal');
+
+  contentWrapper.appendChild(content);
+
+  iframe.appendChild(contentWrapper);
+}
+
 function addHeaderLinkModal(
   modalId: string,
   linkText: string,
   header: HTMLElement,
   conversation: HTMLElement,
-  content: HTMLDivElement,
+  callback: Function,
 ) : void {
 
-    var modal = document.createElement('div');
-    modal.setAttribute('id', modalId);
-    modal.classList.add('modal', 'modal-resizable', 'in', 'hide');
+  var openLink = document.createElement('a');
+  openLink.textContent = linkText;
+  openLink.onclick = createModal.bind(null, modalId, linkText, header, conversation, callback);
 
-    var iframe = document.createElement('div');
-    iframe.classList.add('iframe_app_view_wrapper')
+  var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
 
-    var modalHeader = document.createElement('header');
-    modalHeader.classList.add('modal-header');
+  var divider = document.createElement('div');
+  divider.classList.add('Divider-sc-2k6bz0-9', 'fNgWaW', 'lesa-ui-modal-header-link');
 
-    var closeLink = document.createElement('a');
-    closeLink.classList.add('close');
-
-    closeLink.textContent = '\u00d7';
-    closeLink.onclick = function() {
-      modal.classList.add('hide');
-    }
-
-    modalHeader.appendChild(closeLink);
-
-    var headerText = document.createElement('h3');
-    headerText.textContent = linkText;
-
-    modalHeader.appendChild(headerText);
-
-    iframe.appendChild(modalHeader);
-
-    content.classList.add('modal-body', 'app_view_wrapper', 'app_view', 'apps_modal');
-
-    iframe.appendChild(content);
-
-    modal.appendChild(iframe);
-
-    header.after(modal);
-
-    var openLink = document.createElement('a');
-    openLink.textContent = linkText;
-    openLink.onclick = function() {
-      modal.classList.remove('hide');
-    }
-
-    var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
-
-    var divider = document.createElement('div');
-    divider.classList.add('Divider-sc-2k6bz0-9', 'fNgWaW');
-
-    viaLabel.before(divider);
-    divider.before(openLink);
+  viaLabel.before(divider);
+  divider.before(openLink);
 }
 
 function makeDraggableModals() : void {

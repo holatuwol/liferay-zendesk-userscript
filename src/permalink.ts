@@ -81,7 +81,10 @@ function highlightComment(
   clearHighlightedComments();
 
   event.classList.add('lesa-ui-event-highlighted');
-  event.scrollIntoView();
+
+  setTimeout(function() {
+    event.scrollIntoView();
+  }, 1000);
 }
 
 /**

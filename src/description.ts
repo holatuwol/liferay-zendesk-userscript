@@ -489,22 +489,31 @@ function addTicketDescription(
 
   // Check to see if we have any descriptions that we need to remove.
 
-  var oldDescriptions = conversation.querySelectorAll('.lesa-ui-description');
+  if (isAgentWorkspace) {
+    var oldLinks = conversation.querySelectorAll('.lesa-ui-modal-header-link');
 
-  var hasNewDescription = false;
-
-  for (var i = 0; i < oldDescriptions.length; i++) {
-    if (oldDescriptions[i].getAttribute('data-ticket-id') == ticketId) {
-      hasNewDescription = true;
-    }
-    else {
-      revokeObjectURLs();
-      header.removeChild(oldDescriptions[i]);
+    if (oldLinks.length > 0) {
+      return;
     }
   }
+  else {
+    var oldDescriptions = conversation.querySelectorAll('.lesa-ui-description');
 
-  if (hasNewDescription) {
-    return;
+    var hasNewDescription = false;
+
+    for (var i = 0; i < oldDescriptions.length; i++) {
+      if (oldDescriptions[i].getAttribute('data-ticket-id') == ticketId) {
+        hasNewDescription = true;
+      }
+      else {
+        revokeObjectURLs();
+        header.removeChild(oldDescriptions[i]);
+      }
+    }
+
+    if (hasNewDescription) {
+      return;
+    }
   }
 
   var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment');
@@ -561,37 +570,32 @@ function addTicketDescription(
 
   descriptionAncestor0.appendChild(description);
 
-  var descriptionAncestor1 = document.createElement('div');
-  descriptionAncestor1.classList.add('lesa-ui-description');
-  descriptionAncestor1.classList.add('rich_text');
-  descriptionAncestor1.setAttribute('data-ticket-id', ticketId);
-
-  descriptionAncestor1.appendChild(descriptionAncestor0);
-
   // Generate something to hold all of our attachments.
 
-  var knowledgeCaptureContainer = createKnowledgeCaptureContainer(ticketId, ticketInfo, conversation);
-
-  if (knowledgeCaptureContainer) {
-    descriptionAncestor1.appendChild(knowledgeCaptureContainer);
-  }
-
-  var attachmentsContainer = createAttachmentsContainer(ticketId, ticketInfo, conversation);
-
-  if (attachmentsContainer) {
-    if (isAgentWorkspace) {
-      addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, attachmentsContainer);
-    }
-    else {
-      descriptionAncestor1.appendChild(attachmentsContainer);
-    }
-  }
-
   if (isAgentWorkspace) {
-    addHeaderLinkModal('description-modal', 'Description', header, conversation, descriptionAncestor1);
+    addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
     addSortButton(conversation, header);
   }
   else {
+    var descriptionAncestor1 = document.createElement('div');
+    descriptionAncestor1.classList.add('lesa-ui-description');
+    descriptionAncestor1.classList.add('rich_text');
+    descriptionAncestor1.setAttribute('data-ticket-id', ticketId);
+
+    descriptionAncestor1.appendChild(descriptionAncestor0);
+
+    var knowledgeCaptureContainer = createKnowledgeCaptureContainer(ticketId, ticketInfo, conversation);
+
+    if (knowledgeCaptureContainer) {
+      descriptionAncestor1.appendChild(knowledgeCaptureContainer);
+    }
+
+    var attachmentsContainer = createAttachmentsContainer(ticketId, ticketInfo, conversation);
+
+    if (attachmentsContainer) {
+      descriptionAncestor1.appendChild(attachmentsContainer);
+    }
+
     header.appendChild(descriptionAncestor1);
   }
 }
