@@ -3,9 +3,18 @@
  */
 
 function fixAttachmentLinks() {
-  Array.from(document.querySelectorAll('a[href^="https://help.liferay.com/attachments/')).forEach(it => {
-    var href = <string> it.getAttribute('href');
-    it.setAttribute('href', href.substring('https://help.liferay.com'.length));
+  fixAttachmentLinksHelper('a', 'href');
+  fixAttachmentLinksHelper('img', 'src');
+}
+
+function fixAttachmentLinksHelper(
+  tagName: string,
+  attributeName: string
+) : void {
+
+  Array.from(document.querySelectorAll(tagName + '[' + attributeName + '^="https://help.liferay.com/attachments/')).forEach(it => {
+    var value = <string> it.getAttribute(attributeName);
+    it.setAttribute(attributeName, value.substring('https://help.liferay.com'.length));
   });
 }
 
@@ -156,7 +165,6 @@ function checkForConversations() : void {
     var pos = ticketId.indexOf('/');
 
     if (pos != -1) {
-      fixAttachmentLinks();
       revokeObjectURLs();
     }
     else {
@@ -166,7 +174,6 @@ function checkForConversations() : void {
   else {
     updateWindowTitle();
     revokeObjectURLs();
-    fixAttachmentLinks();
   }
 }
 
@@ -254,6 +261,7 @@ if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
     setInterval(checkForConversations, 1000);
     setInterval(checkForSubtitles, 1000);
     setInterval(checkSidebarTags, 1000);
+    setInterval(fixAttachmentLinks, 1000);
     setInterval(makeDraggableModals, 1000);
   }
 }
