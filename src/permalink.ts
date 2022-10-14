@@ -65,6 +65,12 @@ function highlightComment(
   var comment = document.querySelector('time[datetime="' + commentId + '"], div[data-comment-id="' + commentId + '"]');
 
   if (!comment) {
+    var showMoreButton = <HTMLButtonElement | null>document.querySelector('button[data-test-id="convolog-show-more-button"]');
+
+    if (showMoreButton) {
+      showMoreButton.click();
+    }
+
     return;
   }
 
@@ -114,12 +120,6 @@ function addPermaLinks(
   conversation: HTMLDivElement
 ) : void {
 
-  var permalinks = conversation.querySelectorAll(isAgentWorkspace ? 'article div.lesa-ui-permalink' : 'div[data-comment-id] div.lesa-ui-permalink');
-
-  if (permalinks.length > 0) {
-    return;
-  }
-
   var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : 'div[data-comment-id]');
   var isPublicTab = !isAgentWorkspace && document.querySelector('.publicConversation.is-selected');
 
@@ -128,6 +128,32 @@ function addPermaLinks(
 
     if (!timeElement) {
       continue;
+    }
+
+    var commentHeader = null;
+
+    if (isAgentWorkspace) {
+      var actionsElement = <HTMLElement>comments[i].querySelector('.omnilog-header-actions');
+      commentHeader = actionsElement.parentElement
+    }
+    else {
+      commentHeader = comments[i].querySelector('.content .header');
+    }
+
+    if (!commentHeader) {
+      continue;
+    }
+
+    if (isAgentWorkspace) {
+      var parentElement = <HTMLElement>commentHeader.parentElement;
+      if (parentElement.querySelector('.lesa-ui-permalink')) {
+        continue;
+      }
+    }
+    else {
+      if (commentHeader.querySelector('.lesa-ui-permalink')) {
+        continue;
+      }
     }
 
     var commentId = timeElement.getAttribute('datetime');
@@ -146,12 +172,9 @@ function addPermaLinks(
     permalinkContainer.appendChild(permalink);
 
     if (isAgentWorkspace) {
-      var actionHeader = <HTMLElement> comments[i].querySelector('.omnilog-header-actions');
-      var commentHeader = <HTMLElement> actionHeader.parentElement;
       commentHeader.after(permalinkContainer);
     }
     else {
-      var commentHeader = <HTMLElement> comments[i].querySelector('.content .header');
       commentHeader.appendChild(permalinkContainer);
     }
   }
