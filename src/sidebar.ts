@@ -146,25 +146,42 @@ function getPatcherPortalAccountsHREF(
  * Retrieve the Liferay version from the sidebar.
  */
 
-function getProductVersion(
-  propertyBox: HTMLElement
-) : string {
+function getProductVersion(tags: string[]) : string {
+  var propertyBoxes = getPropertyBoxes();
 
-  var parentElement = <HTMLElement> propertyBox.parentElement;
-  var productVersionField = parentElement.querySelector('.custom_field_360006076471 div[data-garden-id="dropdowns.select"]');
+  for (var i = 0; i < propertyBoxes.length; i++) {
+    var propertyBox = propertyBoxes[i];
 
-  if (!productVersionField) {
-    return '';
+    var parentElement = <HTMLElement> propertyBox.parentElement;
+    var productVersionField = parentElement.querySelector('.custom_field_360006076471 div[data-garden-id="dropdowns.select"]');
+
+    if (productVersionField) {
+      var version = (productVersionField.textContent || '').trim();
+
+      if (version.indexOf('7.') == 0) {
+        return version;
+      }
+
+      if (version.indexOf('6.') == 0) {
+        return '6.x';
+      }
+    }
   }
 
-  var version = (productVersionField.textContent || '').trim();
+  for (var i = 0; i < tags.length; i++) {
+    var tag = tags[i];
 
-  if (version.indexOf('7.') == 0) {
-    return version;
-  }
+    var x = tag.indexOf('7_');
 
-  if (version.indexOf('6.') == 0) {
-    return '6.x';
+    if (x == 0) {
+      return '7.' + tag.charAt(2);
+    }
+
+    x = tag.indexOf('_7_');
+
+    if (x != -1) {
+      return '7.' + tag.charAt(x + 3);
+    }
   }
 
   return '';
@@ -227,7 +244,7 @@ function addPatcherPortalField(
 
     patcherPortalItems.push(createAnchorTag('All Builds', allBuildsLinkHREF));
 
-    var version = getProductVersion(propertyBox);
+    var version = getProductVersion(ticketInfo.ticket && ticketInfo.ticket.tags ? ticketInfo.ticket.tags : []);
 
     if (version) {
       var versionBuildsLinkHREF = getPatcherPortalAccountsHREF('/view', {

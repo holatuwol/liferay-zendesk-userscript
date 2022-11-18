@@ -1,48 +1,46 @@
-function addExtendedPremiumSupportMarker(
+function addServiceLifeMarker(
   priorityElement: HTMLElement,
   ticketId: string,
   tags: string[]
 ) : void {
 
-  var href = 'https://liferay.atlassian.net/wiki/spaces/SUPPORT/pages/1998783040/EOSL+Guide+For+Support';
+  var limitedSupport = false;
+  var endOfSoftwareLife = false;
+  var extendedPremiumSupport = false;
 
   for (var i = 0; i < tags.length; i++) {
-    if (tags[i].indexOf('eps') == -1) {
-      continue;
+    if (tags[i].indexOf('eps') != -1) {
+      extendedPremiumSupport = true;
+      break;
     }
-
-    var premiumElement = document.createElement('span');
-    premiumElement.classList.add('lesa-ui-priority-minor');
-
-    var premiumLink = document.createElement('a');
-    premiumLink.textContent = 'Extended Premium Support';
-    premiumLink.href = href;
-    premiumLink.target = '_blank';
-
-    premiumElement.appendChild(premiumLink);
-    priorityElement.appendChild(premiumElement);
-
-    return;
   }
 
-  var propertyBoxes = getPropertyBoxes();
+  var version = getProductVersion(tags);
 
-  for (var i = 0; i < propertyBoxes.length; i++) {
-    var version = getProductVersion(propertyBoxes[i]);
+  if ((version == '6.x') || (version == '7.0') || (version == '7.1')) {
+    limitedSupport = true;
+    endOfSoftwareLife = true;
+  }
 
-    if ((version == '6.x') || (version == '7.0') || (version == '7.1')) {
-      var eoslElement = document.createElement('span');
-      eoslElement.classList.add('lesa-ui-priority-major');
+  var serviceLifeLink = null;
+  var href = 'https://liferay.atlassian.net/wiki/spaces/SUPPORT/pages/1998783040/EOSL+Guide+For+Support';
 
-      var eoslLink = document.createElement('a');
-      eoslLink.textContent = 'End of Software Life';
-      eoslLink.href = href;
-      eoslLink.target = '_blank';
+  if (extendedPremiumSupport) {
+    serviceLifeLink = createAnchorTag('Extended Premium Support', href);
+  }
+  else if (endOfSoftwareLife) {
+    serviceLifeLink = createAnchorTag('End of Software Life', href);
+  }
+  else if (limitedSupport) {
+    serviceLifeLink = createAnchorTag('Limited Support', href);
+  }
 
-      eoslElement.appendChild(eoslLink);
-      priorityElement.appendChild(eoslElement);
-      return;
-    }
+  if (serviceLifeLink) {
+    var serviceLifeElement = document.createElement('span');
+    serviceLifeElement.classList.add('lesa-ui-priority-minor');
+
+    serviceLifeElement.appendChild(serviceLifeLink);
+    priorityElement.appendChild(serviceLifeElement);
   }
 }
 
@@ -271,7 +269,6 @@ function getEmojiAnchorTags(tags: Array<string>) : HTMLSpanElement | null {
   return emojiContainer;
 }
 
-
 /**
  * Add a marker to show the LESA priority on the ticket.
  */
@@ -306,7 +303,7 @@ function addPriorityMarker(
   var tags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
   var tagSet = new Set(tags);
 
-  addExtendedPremiumSupportMarker(priorityElement, ticketId, tags);
+  addServiceLifeMarker(priorityElement, ticketId, tags);
   addCriticalMarker(priorityElement, ticketInfo, tagSet);
   addCustomerTypeMarker(priorityElement, tagSet);
   addRegionMarker(priorityElement, ticketInfo, ticketContainer);
