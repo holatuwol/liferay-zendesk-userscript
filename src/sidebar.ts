@@ -319,7 +319,7 @@ function hideSidebarSelectOptions(
  */
 
 function checkSidebarTags() {
-  var spans = <Array<HTMLAnchorElement>> Array.from(document.querySelectorAll('div[data-garden-id="tags.tag_view"] span'));
+  var spans = <Array<HTMLAnchorElement>> Array.from(document.querySelectorAll('.tags span'));
 
   for (var i = 0; i < spans.length; i++) {
     var span = spans[i];
