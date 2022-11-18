@@ -178,7 +178,7 @@ article.lesa-ui-event-highlighted {
   font-weight: 600;
   line-height: 16px;
   margin-right: 8px;
-  padding: 2px;
+  padding: 0.5em;
   text-align: center;
   text-transform: uppercase;
   width: 6em;

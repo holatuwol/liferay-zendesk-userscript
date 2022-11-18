@@ -151,7 +151,7 @@ function getProductVersion(
 ) : string {
 
   var parentElement = <HTMLElement> propertyBox.parentElement;
-  var productVersionField = parentElement.querySelector('.custom_field_360006076471 .zd-selectmenu-base-content');
+  var productVersionField = parentElement.querySelector('.custom_field_360006076471 div[data-garden-id="dropdowns.select"]');
 
   if (!productVersionField) {
     return '';
@@ -265,11 +265,18 @@ function addJIRASearchField(
 }
 
 function hideSidebarSelectOption(
+  parentElement: HTMLElement,
   hiddenMenuItemTexts: Set<string>
 ) : void {
 
-  var menu = <HTMLUListElement>document.querySelector('.zd-state-focus.zd-state-open ul');
-  var menuItems = <Array<HTMLLIElement>> Array.from(menu.querySelectorAll('li'));
+  var menu = <HTMLUListElement> parentElement.querySelector('ul[data-garden-id="dropdowns.menu"]');
+
+  if (menu == null) {
+    setTimeout(hideSidebarSelectOption.bind(null, parentElement, hiddenMenuItemTexts), 500);
+    return;
+  }
+
+  var menuItems = <HTMLLIElement[]> Array.from(menu.querySelectorAll('li'));
   var menuItemCount = menuItems.length;
 
   for (var i = 0; i < menuItems.length; i++) {
@@ -297,12 +304,11 @@ function hideSidebarSelectOptions(
 ) : void {
 
   var workspaceElement = <HTMLElement> propertyBox.closest('.workspace');
-
   var longTermResolutionButton = <HTMLElement | null> workspaceElement.querySelector('.custom_field_360013378112');
 
   if (longTermResolutionButton) {
     longTermResolutionButton.onclick = hideSidebarSelectOption.bind(
-      null, new Set(['Documentation (Archived)', 'Partner Audit'])
+      null, longTermResolutionButton, new Set(['Partner Audit'])
     );
   }
 }
@@ -313,19 +319,38 @@ function hideSidebarSelectOptions(
  */
 
 function checkSidebarTags() {
-  var tags = <Array<HTMLAnchorElement>> Array.from(document.querySelectorAll('.zd-tag-item a'));
+  var spans = <Array<HTMLAnchorElement>> Array.from(document.querySelectorAll('div[data-garden-id="tags.tag_view"] span'));
 
-  for (var i = 0; i < tags.length; i++) {
-    var anchor = tags[i];
+  for (var i = 0; i < spans.length; i++) {
+    var span = spans[i];
 
-    if (anchor.href || !anchor.textContent) {
+    if (span.querySelector('a') || !span.textContent) {
       continue;
     }
 
-    anchor.title = 'tags:' + anchor.textContent;
-    anchor.href = 'https://' + document.location.host + '/agent/search/1?q=' + encodeURIComponent('tags:' + anchor.textContent);
-    anchor.target = '_blank';
+    var href = 'https://' + document.location.host + '/agent/search/1?q=' + encodeURIComponent('tags:' + span.textContent);
+
+    span.innerHTML = '<a href="' + href + '" title="tags:' + span.textContent.replace(/"/, '&quot;') + '" target="_blank">' + span.textContent + '</a>';
   }
+}
+
+function getPropertyBoxes(
+  ticketId?: string
+) : HTMLElement[] {
+
+  var propertyBoxes = <HTMLElement[]> Array.from(document.querySelectorAll('.property_box'));
+
+  var visiblePropertyBoxes = propertyBoxes.filter(it => {
+    var workspaceElement = <HTMLElement | null> it.closest('.workspace');
+
+    return workspaceElement && workspaceElement.style.display != 'none';
+  });
+
+  if (ticketId) {
+    return visiblePropertyBoxes.filter(it => it.getAttribute('data-ticket-id') != ticketId);
+  }
+
+  return visiblePropertyBoxes;
 }
 
 /**
@@ -337,32 +362,7 @@ function updateSidebarBoxContainer(
   ticketInfo: TicketMetadata
 ) : void {
 
-  var sidebars = document.querySelectorAll('.sidebar_box_container');
-
-  if (sidebars.length == 0) {
-    return;
-  }
-
-  var propertyBoxes = <Array<HTMLElement>> [];
-
-  for (var i = 0; i < sidebars.length; i++) {
-    var propertyBox = <HTMLElement> sidebars[i].querySelector('.property_box');
-
-    if (!propertyBox) {
-      continue;
-    }
-
-    var workspace = <HTMLElement> propertyBox.closest('.workspace');
-
-    if (workspace.style.display == 'none') {
-      continue;
-    }
-
-    if (propertyBox.getAttribute('data-ticket-id') != ticketId) {
-      propertyBox.setAttribute('data-ticket-id', ticketId);
-      propertyBoxes.push(propertyBox);
-    }
-  }
+  var propertyBoxes = getPropertyBoxes(ticketId);
 
   if (propertyBoxes.length == 0) {
     return;

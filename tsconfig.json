@@ -13,6 +13,7 @@
     "src/types.d.ts",
     "src/common.ts",
     "src/ticket.ts",
+    "src/priority.ts",
     "src/sidebar.ts",
     "src/attachments.ts",
     "src/description.ts",
