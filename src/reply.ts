@@ -247,7 +247,7 @@ function addPlaybookReminder(
     var criticalMarkers = ['production', 'production_completely_shutdown', 'production_severely_impacted_inoperable'].filter(Set.prototype.has.bind(tagSet));
 
     if (criticalMarkers.length >= 2) {
-      reminders.push(['platinum critical', 'https://grow.liferay.com/people/How+To+Handle+Critical+Tickets', 'playbook']);
+      reminders.push(['platinum critical', 'https://liferay.atlassian.net/wiki/spaces/SUPPORT/pages/2093908830/How+To+Handle+Critical+Tickets', 'playbook']);
     }
   }
 
