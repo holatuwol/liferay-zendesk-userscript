@@ -152,6 +152,10 @@ function checkTicketMetadata(
   ].join('');
 
   xhr.open('GET', ticketDetailsURL);
+
+  xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
+  xhr.setRequestHeader('Pragma', 'no-cache');
+
   xhr.send();
 }
 
@@ -208,6 +212,10 @@ function checkUser(
   ].join('');
 
   xhr.open('GET', userDetailsURL);
+
+  xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
+  xhr.setRequestHeader('Pragma', 'no-cache');
+
   xhr.send();
 }
 
@@ -259,6 +267,10 @@ function checkEvents(
   ].join('');
 
   xhr.open('GET', auditEventsURL);
+
+  xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
+  xhr.setRequestHeader('Pragma', 'no-cache');
+
   xhr.send();
 }
 
@@ -299,5 +311,9 @@ function setAccountInfo(
   ].join('');
 
   xhr.open('GET', accountDetailsURL);
+
+  xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
+  xhr.setRequestHeader('Pragma', 'no-cache');
+
   xhr.send();
 }

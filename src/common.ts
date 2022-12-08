@@ -77,6 +77,9 @@ function downloadFile(
     xhr.open('GET', href);
   }
 
+  xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
+  xhr.setRequestHeader('Pragma', 'no-cache');
+
   xhr.send(null);
 }
 
