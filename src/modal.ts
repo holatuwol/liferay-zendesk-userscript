@@ -1,3 +1,40 @@
+function initializeModal(
+  conversation: HTMLElement,
+  contentWrapper: HTMLDivElement,
+  callback: Function
+) : void {
+
+  var content = callback();
+  var loadingElement = contentWrapper.querySelector('.loading');
+
+  if (content == null) {
+    if (!loadingElement) {
+      loadingElement = document.createElement('div');
+      loadingElement.classList.add('loading');
+
+      contentWrapper.appendChild(loadingElement);
+    }
+
+    var commentCount = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment').length;
+
+    loadingElement.innerHTML = 'Loading older comments (' + commentCount + ' loaded so far)...';
+
+    contentWrapper.appendChild(loadingElement);
+
+    setTimeout(initializeModal.bind(null, conversation, contentWrapper, callback), 500);
+
+    return;
+  }
+
+  content.classList.add('app_view', 'apps_modal');
+
+  if (loadingElement) {
+    loadingElement.remove();
+  }
+
+  contentWrapper.appendChild(content);
+}
+
 function createModal(
   modalId: string,
   linkText: string,
@@ -5,6 +42,7 @@ function createModal(
   conversation: HTMLElement,
   callback: Function,
 ) : void {
+
 
   var modal = document.createElement('div');
   modal.setAttribute('id', modalId);
@@ -39,14 +77,9 @@ function createModal(
 
   var contentWrapper = document.createElement('div');
   contentWrapper.classList.add('modal-body', 'app_view_wrapper');
-
-  var content = callback();
-
-  content.classList.add('app_view', 'apps_modal');
-
-  contentWrapper.appendChild(content);
-
   iframe.appendChild(contentWrapper);
+
+  initializeModal(conversation, contentWrapper, callback);
 }
 
 function addHeaderLinkModal(

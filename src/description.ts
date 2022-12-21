@@ -256,35 +256,76 @@ function addTicketDescription(
     }
   }
 
-  var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment');
-
-  if (comments.length == 0) {
-    return;
-  }
-
-  var firstComment = comments[isAgentWorkspace ? 0 : comments.length - 1];
-
-  if (isDummyComment(ticketInfo, firstComment)) {
-    firstComment = comments[isAgentWorkspace ? 1 : comments.length - 2];
-  }
-
-  var description = document.createElement('div');
-
-  description.classList.add('comment');
-  description.classList.add('zd-comment');
-  description.innerHTML = firstComment.innerHTML;
-
   // Add a marker indicating the LESA priority based on critical workflow rules
 
   addPriorityMarker(header, conversation, ticketId, ticketInfo);
   addSubjectTextWrap(header, ticketId, ticketInfo);
 
-  var descriptionAncestor0 = document.createElement('div');
+  // Generate something to hold all of our attachments.
 
-  descriptionAncestor0.classList.add('is-public');
+  if (isAgentWorkspace) {
+    addHeaderLinkModal('description-modal', 'Description', header, conversation, createDescriptionContainer.bind(null, ticketId, ticketInfo, conversation));
+    addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
+    addSortButton(conversation, header);
+  }
+  else {
+    var descriptionAncestor1 = document.createElement('div');
+    descriptionAncestor1.classList.add('lesa-ui-description');
+    descriptionAncestor1.classList.add('rich_text');
+    descriptionAncestor1.setAttribute('data-ticket-id', ticketId);
+
+    var descriptionContainer = createDescriptionContainer(ticketId, ticketInfo, conversation);
+
+    if (descriptionContainer) {
+      descriptionAncestor1.appendChild(descriptionContainer);
+    }
+
+    var knowledgeCaptureContainer = createKnowledgeCaptureContainer(ticketId, ticketInfo, conversation);
+
+    if (knowledgeCaptureContainer) {
+      descriptionAncestor1.appendChild(knowledgeCaptureContainer);
+    }
+
+    var attachmentsContainer = createAttachmentsContainer(ticketId, ticketInfo, conversation);
+
+    if (attachmentsContainer) {
+      descriptionAncestor1.appendChild(attachmentsContainer);
+    }
+
+    header.appendChild(descriptionAncestor1);
+  }
+}
+
+function createDescriptionContainer(
+  ticketId: string,
+  ticketInfo: TicketMetadata,
+  conversation: HTMLDivElement
+) : HTMLDivElement | null {
+
+  var showMoreButton = <HTMLButtonElement | null>document.querySelector('button[data-test-id="convolog-show-more-button"]');
+
+  if (showMoreButton) {
+    showMoreButton.click();
+
+    return null;
+  }
+
+  if (document.querySelector('[role="progressbar"]')) {
+    return null;
+  }
+
+  var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment');
+
+  if (comments.length == 0) {
+    return null;
+  }
+
+  var descriptionContainer = document.createElement('div');
+
+  descriptionContainer.classList.add('is-public');
 
   if (!isAgentWorkspace) {
-    descriptionAncestor0.classList.add('event');
+    descriptionContainer.classList.add('event');
   }
 
   var tags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
@@ -305,37 +346,22 @@ function addTicketDescription(
 
     flsContainer.appendChild(flsReminder);
 
-    descriptionAncestor0.appendChild(flsContainer);
+    descriptionContainer.appendChild(flsContainer);
   }
 
-  descriptionAncestor0.appendChild(description);
+  var firstComment = comments[isAgentWorkspace ? 0 : comments.length - 1];
 
-  // Generate something to hold all of our attachments.
-
-  if (isAgentWorkspace) {
-    addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
-    addSortButton(conversation, header);
+  if (isDummyComment(ticketInfo, firstComment)) {
+    firstComment = comments[isAgentWorkspace ? 1 : comments.length - 2];
   }
-  else {
-    var descriptionAncestor1 = document.createElement('div');
-    descriptionAncestor1.classList.add('lesa-ui-description');
-    descriptionAncestor1.classList.add('rich_text');
-    descriptionAncestor1.setAttribute('data-ticket-id', ticketId);
 
-    descriptionAncestor1.appendChild(descriptionAncestor0);
+  var description = document.createElement('div');
 
-    var knowledgeCaptureContainer = createKnowledgeCaptureContainer(ticketId, ticketInfo, conversation);
+  description.classList.add('comment');
+  description.classList.add('zd-comment');
+  description.innerHTML = firstComment.innerHTML;
 
-    if (knowledgeCaptureContainer) {
-      descriptionAncestor1.appendChild(knowledgeCaptureContainer);
-    }
+  descriptionContainer.appendChild(description);
 
-    var attachmentsContainer = createAttachmentsContainer(ticketId, ticketInfo, conversation);
-
-    if (attachmentsContainer) {
-      descriptionAncestor1.appendChild(attachmentsContainer);
-    }
-
-    header.appendChild(descriptionAncestor1);
-  }
+  return descriptionContainer;
 }
