@@ -265,6 +265,7 @@ function addTicketDescription(
 
   if (isAgentWorkspace) {
     addHeaderLinkModal('description-modal', 'Description', header, conversation, createDescriptionContainer.bind(null, ticketId, ticketInfo, conversation));
+    addHeaderLinkModal('description-modal', 'Fast Track', header, conversation, createKnowledgeCaptureContainer.bind(null, ticketId, ticketInfo, conversation));
     addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
     addSortButton(conversation, header);
   }
