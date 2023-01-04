@@ -126,7 +126,16 @@ function createKnowledgeCaptureContainer(
 
   Array.from(conversation.querySelectorAll('a[href*="/hc/"]')).reduce(function(list, x) {
     var item = document.createElement('li');
-    item.appendChild(x.cloneNode(true));
+
+    if (x.textContent != x.getAttribute('href')) {
+      item.appendChild(document.createTextNode(x.textContent + ' - '));
+    }
+
+    var link = <HTMLAnchorElement> x.cloneNode(true);
+    link.textContent = link.href;
+
+    item.appendChild(link);
+
     list.appendChild(item);
     return list;
   }, otherArticleList);
@@ -138,14 +147,19 @@ function createKnowledgeCaptureContainer(
   var knowledgeCaptureContainer = document.createElement('div');
   knowledgeCaptureContainer.classList.add('lesa-ui-knowledge-capture');
 
-  if (fastTrackList.childNodes.length > 0) {
-    var fastTrackLabel = document.createElement('div');
-    fastTrackLabel.classList.add('lesa-ui-knowledge-capture-label');
-    fastTrackLabel.innerHTML = (fastTrackList.childNodes.length == 1) ? 'Fast Track Article:' : 'Fast Track Articles:';
+  var fastTrackLabel = document.createElement('div');
+  fastTrackLabel.classList.add('lesa-ui-knowledge-capture-label');
+  fastTrackLabel.innerHTML = (fastTrackList.childNodes.length == 1) ? 'Fast Track Article:' : 'Fast Track Articles:';
 
-    knowledgeCaptureContainer.appendChild(fastTrackLabel);
-    knowledgeCaptureContainer.appendChild(fastTrackList);
+  knowledgeCaptureContainer.appendChild(fastTrackLabel);
+
+  if (fastTrackList.childNodes.length == 0) {
+    var item = document.createElement('li');
+    item.textContent = 'No matching articles.';
+    fastTrackList.appendChild(item);
   }
+
+  knowledgeCaptureContainer.appendChild(fastTrackList);
 
   if (otherArticleList.childNodes.length > 0) {
     var otherArticleLabel = document.createElement('div');
@@ -302,18 +316,6 @@ function createDescriptionContainer(
   ticketInfo: TicketMetadata,
   conversation: HTMLDivElement
 ) : HTMLDivElement | null {
-
-  var showMoreButton = <HTMLButtonElement | null>document.querySelector('button[data-test-id="convolog-show-more-button"]');
-
-  if (showMoreButton) {
-    showMoreButton.click();
-
-    return null;
-  }
-
-  if (document.querySelector('[role="progressbar"]')) {
-    return null;
-  }
 
   var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment');
 

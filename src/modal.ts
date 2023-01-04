@@ -8,22 +8,38 @@ function initializeModal(
   var loadingElement = contentWrapper.querySelector('.loading');
 
   if (content == null) {
-    if (!loadingElement) {
-      loadingElement = document.createElement('div');
-      loadingElement.classList.add('loading');
+    var showMoreButton = <HTMLButtonElement | null>document.querySelector('button[data-test-id="convolog-show-more-button"]');
+
+    if (showMoreButton) {
+      if (!loadingElement) {
+        loadingElement = document.createElement('div');
+        loadingElement.classList.add('loading');
+
+        contentWrapper.appendChild(loadingElement);
+      }
+
+      var commentCount = conversation.querySelectorAll('article').length;
+
+      loadingElement.innerHTML = 'Loading older comments (' + commentCount + ' loaded so far)...';
 
       contentWrapper.appendChild(loadingElement);
+
+      showMoreButton.click();
+
+      setTimeout(initializeModal.bind(null, conversation, contentWrapper, callback), 500);
+
+      return;
     }
 
-    var commentCount = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment').length;
+    if (document.querySelector('[role="progressbar"]')) {
+      setTimeout(initializeModal.bind(null, conversation, contentWrapper, callback), 500);
 
-    loadingElement.innerHTML = 'Loading older comments (' + commentCount + ' loaded so far)...';
+      return;
+    }
 
-    contentWrapper.appendChild(loadingElement);
+    content = document.createElement('div');
 
-    setTimeout(initializeModal.bind(null, conversation, contentWrapper, callback), 500);
-
-    return;
+    content.appendChild(document.createTextNode('No data found.'));
   }
 
   content.classList.add('app_view', 'apps_modal');
