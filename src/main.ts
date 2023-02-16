@@ -253,6 +253,104 @@ function checkForSubtitles() : void {
   }
 }
 
+/**
+ * Set the old compact ticket status column style and change "Open-Pending" color to differenciate it from the "Open" one
+ * For more information, see https://liferay.slack.com/archives/CL8DNJYB0/p1675440794494529
+ */
+function oldTicketStatusColumn() {
+  var viewPage = ((unsafeWindow.location.pathname.indexOf('/agent/filters') == 0) || (unsafeWindow.location.pathname.indexOf('/agent/dashboard') == 0));
+  /* update status column */
+  var badges = <Array<HTMLElement>> Array.from(document.querySelectorAll('div[data-cy-test-id="status-badge-state"]'));
+  for (var badge of badges) {
+    updateBadge(badge);
+    /* Change the status text to the abreviate form only if we are in a view page and we are not in a popup */
+    if (viewPage && badge.textContent && (badge.textContent.length > 2) && (badge.textContent[0] != ' ') && !isBadgeInPopup(badge)) {
+        if (badge.textContent === 'On-hold') {
+           badge.textContent = ' H ';
+        }
+        else if (badge.textContent === 'Open-Pending') {
+           badge.textContent = 'OP';
+        }
+        else {
+           badge.textContent = ' ' + badge.textContent[0] + ' ';
+        }
+    }
+  }
+
+  /* Update Open-Pending badge color inside the ticket */
+  var ticketBadges = <Array<HTMLElement>> Array.from(document.querySelectorAll('span.ticket_status_label'));
+  for (var badge of ticketBadges) {
+    updateBadge(badge);
+  }
+
+  if(!viewPage) {
+     return;
+  }
+
+  /* remove "Ticket status" text from headers */
+  var headers = <Array<HTMLElement>> Array.from(document.querySelectorAll('th[data-garden-id="tables.header_cell"]:not([processed="true"]'));
+  for (var header of headers) {
+    header.setAttribute('processed', 'true');
+  }
+  if (headers[3] !== undefined) {
+    headers[3].textContent = '';
+  }
+  /* remove the padding of second column */
+  var secondColumn = <Array<HTMLElement>> Array.from(document.querySelectorAll('td.sc-15v8wy4-1:not([processed="true"]'));
+  for (var cell of secondColumn) {
+    cell.style.paddingLeft = '0px';
+    cell.style.paddingRight = '2px';
+    cell.setAttribute('processed', 'true');
+  }
+  if (headers[1] !== undefined) {
+    headers[1].style.paddingLeft = '0px';
+    headers[1].style.paddingRight = '2px';
+  }
+  /* remove empty third column */
+  var thirdColumn = <Array<HTMLElement>> Array.from(document.querySelectorAll('td.oeot8n-0'));
+  for (var cell of thirdColumn) {
+    cell.remove()
+  }
+  if (headers[2] !== undefined) {
+    headers[2].remove();
+  }
+}
+function updateBadge(badge: HTMLElement) {
+  /* Change badge colors for Open-Pending */
+  if (badge.textContent === 'Open-Pending') {
+    badge.style.setProperty("background-color", "#c782fc", "important");
+  }
+  /* Closed status was lost now is shown as Resolved, we can get it again from badge attributes */
+  else if ((badge.getAttribute('data-test-id') === 'status-badge-closed') || badge.classList.contains('closed')) {
+    badge.style.setProperty("background-color", "#dcdee0", "important");
+    badge.style.setProperty("color", "#04363d", "important");
+
+    badge.textContent = 'Closed'
+  }
+}
+function isBadgeInPopup(badge: HTMLElement) {
+  if (!badge.parentElement) {
+    return false;
+  }
+  var grandParent = badge.parentElement.parentElement;
+  if (!grandParent) {
+    return false;
+  }
+  if (grandParent.getAttribute('data-test-id') === "ticket_table_tooltip-header-ticket-info") {
+    return true;
+  }
+  if (!grandParent.parentElement) {
+    return false;
+  }
+  if (grandParent.parentElement.getAttribute('data-test-id') === "header-tab-tooltip") {
+    return true;
+  }
+  if (grandParent.parentElement.getAttribute('data-cy-test-id') === "submit_button-menu") {
+    return true;
+  }
+  return false;
+}
+
 // Since there's an SPA framework in place that I don't fully understand,
 // attempt to do everything once per second.
 
@@ -263,5 +361,6 @@ if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
     setInterval(checkSidebarTags, 1000);
     setInterval(fixAttachmentLinks, 1000);
     setInterval(makeDraggableModals, 1000);
+    setInterval(oldTicketStatusColumn, 1000);
   }
 }
