@@ -1,10 +1,7 @@
 function addArticleCodeButton(
-  toolbarContainer : HTMLDivElement,
+  toolbar : HTMLElement,
   tinymce : TinyMCE
 ) : void {
-  // Gets the buttons toolbar
-  var toolbar = <HTMLDivElement> toolbarContainer.querySelector('.ssc-view-3d4f1d68.ssc-group-f60b19bf');
-
   // Creates the code format container button
   var codeFormatButton = document.createElement('div');
   codeFormatButton.classList.add('ssc-view-3d4f1d68', 'src-components-EditorToolbar-ToolbarButton---button---2IfvR');
@@ -111,18 +108,18 @@ function addArticleSubmissionListeners(tinymce : TinyMCE) : void {
 }
 
 function addArticleFormattingButtons(tinymce : TinyMCE) : void {
-  var toolbarContainers = <Array<HTMLDivElement>> Array.from(document.querySelectorAll('div[class*="ssc-container-84a82f2f src-components-EditorToolbar-index---bar---"]'));
+  var preButtons = <Array<HTMLDivElement>> Array.from(document.querySelectorAll('div[data-test-id="toolbarPreButton"]'));
 
-  for (var i = 0; i < toolbarContainers.length; i++) {
-    var toolbarContainer = toolbarContainers[i];
+  for (var i = 0; i < preButtons.length; i++) {
+    var toolbar = preButtons[i].parentElement;
 
-    if (toolbarContainer.classList.contains('lesa-ui-stackedit')) {
+    if (toolbar == null || toolbar.classList.contains('lesa-ui-stackedit')) {
       continue;
     }
 
-    toolbarContainer.classList.add('lesa-ui-stackedit');
+    toolbar.classList.add('lesa-ui-stackedit');
 
-    addArticleCodeButton(toolbarContainer, tinymce);
+    addArticleCodeButton(toolbar, tinymce);
   }
 }
 
