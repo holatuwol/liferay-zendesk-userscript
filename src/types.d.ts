@@ -42,6 +42,7 @@ type OrganizationMetadata = {
   external_id: string;
   organization_fields: {
     account_code: string;
+    account_key: string;
     country: string;
     sla: string;
     support_region: string;
