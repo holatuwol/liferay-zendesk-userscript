@@ -47,6 +47,7 @@ type OrganizationMetadata = {
     sla: string;
     support_region: string;
   }
+  tags: string[];
 }
 
 interface Stackedit {

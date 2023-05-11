@@ -1,21 +1,39 @@
 function addServiceLifeMarker(
   priorityElement: HTMLElement,
   ticketId: string,
-  tags: string[]
+  ticketTags: string[],
+  organizationTags: string[]
 ) : void {
 
   var limitedSupport = false;
   var endOfSoftwareLife = false;
-  var extendedPremiumSupport = false;
+  var extendedPremiumSupport = null;
 
-  for (var i = 0; i < tags.length; i++) {
-    if (tags[i].indexOf('eps') != -1) {
-      extendedPremiumSupport = true;
-      break;
+  var version = getProductVersion(ticketTags);
+
+  for (var i = 0; i < organizationTags.length; i++) {
+    var tag = organizationTags[i];
+
+    if ((tag == 'neg_7_0_eps') && (version == '7.0')) {
+      extendedPremiumSupport = 'Declined 7.0 EPS';
+    }
+    else if ((tag == 'neg_7_1_eps') && (version == '7.1')) {
+      extendedPremiumSupport = 'Declined 7.1 EPS';
+    }
+    else if ((tag == 'neg_7_2_eps') && (version == '7.2')) {
+      extendedPremiumSupport = 'Declined 7.2 EPS';
     }
   }
 
-  var version = getProductVersion(tags);
+  if (extendedPremiumSupport == null) {
+    for (var i = 0; i < ticketTags.length; i++) {
+      if ((ticketTags[i].indexOf('eps') != -1)) {
+        extendedPremiumSupport = 'Extended Premium Support';
+        break;
+      }
+    }
+  }
+
 
   if ((version == '6.x') || (version == '7.0') || (version == '7.1')) {
     limitedSupport = true;
@@ -25,8 +43,8 @@ function addServiceLifeMarker(
   var serviceLifeLink = null;
   var href = 'https://liferay.atlassian.net/wiki/spaces/SUPPORT/pages/1998783040/EOSL+Guide+For+Support';
 
-  if (extendedPremiumSupport) {
-    serviceLifeLink = createAnchorTag('Extended Premium Support', href);
+  if (extendedPremiumSupport != null) {
+    serviceLifeLink = createAnchorTag(extendedPremiumSupport, href);
   }
   else if (endOfSoftwareLife) {
     serviceLifeLink = createAnchorTag('End of Software Life', href);
@@ -44,25 +62,50 @@ function addServiceLifeMarker(
   }
 }
 
-function addCriticalMarker(
-  priorityElement: HTMLElement,
+function getCriticalMarkerText(
   ticketInfo: TicketMetadata,
   tagSet: Set<string>
-) : void {
+) : string | null {
+
   var subpriority = ticketInfo.ticket.priority || 'none';
 
   if ((subpriority != 'high') && (subpriority != 'urgent')) {
-    return;
+    return null;
+  }
+
+  if (tagSet.has('premium')) {
+    return 'premium critical';
   }
 
   var criticalMarkers = ['production', 'production_completely_shutdown', 'production_severely_impacted_inoperable'].filter(Set.prototype.has.bind(tagSet));
 
   if (criticalMarkers.length >= 2) {
-    var criticalElement = document.createElement('span');
-    criticalElement.classList.add('lesa-ui-priority-critical');
-    criticalElement.textContent = tagSet.has('platinum') ? 'platinum critical' : 'critical';
-    priorityElement.appendChild(criticalElement);
+    if (tagSet.has('platinum')) {
+      return 'platinum critical'
+    }
+
+    return 'critical';
   }
+
+  return null;
+}
+
+function addCriticalMarker(
+  priorityElement: HTMLElement,
+  ticketInfo: TicketMetadata,
+  tagSet: Set<string>
+) : void {
+
+  var markerText = getCriticalMarkerText(ticketInfo, tagSet);
+
+  if (markerText == null) {
+    return;
+  }
+
+  var criticalElement = document.createElement('span');
+  criticalElement.classList.add('lesa-ui-priority-critical');
+  criticalElement.textContent = markerText;
+  priorityElement.appendChild(criticalElement);
 }
 
 function addCustomerTypeMarker(
@@ -300,15 +343,18 @@ function addPriorityMarker(
   // Check to see if the ticket matches the rules for a regular
   // high priority ticket (production, severely impacted or worse)
 
-  var tags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
-  var tagSet = new Set(tags);
+  var ticketTags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
+  var ticketTagSet = new Set(ticketTags);
 
-  addServiceLifeMarker(priorityElement, ticketId, tags);
-  addCriticalMarker(priorityElement, ticketInfo, tagSet);
-  addCustomerTypeMarker(priorityElement, tagSet);
+  var organizationTags = (ticketInfo && ticketInfo.organizations) ? ticketInfo.organizations.map(it => it.tags || []).reduce((acc, it) => acc.concat(it)) : [];
+  organizationTags = Array.from(new Set(organizationTags));
+
+  addServiceLifeMarker(priorityElement, ticketId, ticketTags, organizationTags);
+  addCriticalMarker(priorityElement, ticketInfo, ticketTagSet);
+  addCustomerTypeMarker(priorityElement, ticketTagSet);
   addRegionMarker(priorityElement, ticketInfo, ticketContainer);
 
-  var emojiContainer = getEmojiAnchorTags(tags);
+  var emojiContainer = getEmojiAnchorTags(ticketTags);
 
   if (emojiContainer != null) {
     priorityElement.appendChild(emojiContainer);

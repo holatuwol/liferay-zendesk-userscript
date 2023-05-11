@@ -210,6 +210,11 @@ function addJiraLinks(
  * Add a playbook reminder to the given editor.
  */
 
+var reminderLinks = <Record<string, string>> {
+  'platinum critical': '<a href="https://liferay.atlassian.net/wiki/spaces/SUPPORT/pages/2093908830/How+To+Handle+Critical+Tickets" target="_blank">playbook</a>',
+  'premium critical': '<a href="https://liferay.atlassian.net/wiki/spaces/LXC/pages/2156265703/LXC+Global+Critical+Ticket+Workflow" target="_blank">workflow</a>',
+};
+
 function addPlaybookReminder(
   ticketId: string,
   ticketInfo: TicketMetadata,
@@ -241,17 +246,13 @@ function addPlaybookReminder(
   var tags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
   var tagSet = new Set(tags);
 
-  var subpriority = ticketInfo.ticket.priority || 'none';
+  var markerText = getCriticalMarkerText(ticketInfo, tagSet);
 
-  if (((subpriority == 'high') || (subpriority == 'urgent')) && tagSet.has('platinum')) {
-    var criticalMarkers = ['production', 'production_completely_shutdown', 'production_severely_impacted_inoperable'].filter(Set.prototype.has.bind(tagSet));
-
-    if (criticalMarkers.length >= 2) {
-      reminders.push(['platinum critical', 'https://liferay.atlassian.net/wiki/spaces/SUPPORT/pages/2093908830/How+To+Handle+Critical+Tickets', 'playbook']);
-    }
+  if ((markerText != null) && (markerText in reminderLinks)) {
+    reminders.push([markerText, reminderLinks[markerText]]);
   }
 
-  playbookReminderElement.innerHTML = reminders.map(x => 'This is a <strong>' + x[0] + '</strong> ticket. Please remember to follow the <a href="' + x[1] + '">' + x[2] + '</a> !').join('<br/>');
+  playbookReminderElement.innerHTML = reminders.map(x => 'This is a <strong>' + x[0] + '</strong> ticket. Please remember to follow the ' + x[1] + '!').join('<br/>');
 
   parentElement.insertBefore(playbookReminderElement, editor);
 }
