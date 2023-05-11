@@ -120,31 +120,10 @@ function getPatcherPortalAccountsHREF(
 }
 
 /**
- * Retrieve the Liferay version from the sidebar.
+ * Retrieve the Liferay version from the tags.
  */
 
 function getProductVersion(tags: string[]) : string {
-  var propertyBoxes = getPropertyBoxes();
-
-  for (var i = 0; i < propertyBoxes.length; i++) {
-    var propertyBox = propertyBoxes[i];
-
-    var parentElement = <HTMLElement> propertyBox.parentElement;
-    var productVersionField = parentElement.querySelector('.custom_field_360006076471 div[data-garden-id="dropdowns.select"]');
-
-    if (productVersionField) {
-      var version = (productVersionField.textContent || '').trim();
-
-      if (version.indexOf('7.') == 0) {
-        return version;
-      }
-
-      if (version.indexOf('6.') == 0) {
-        return '6.x';
-      }
-    }
-  }
-
   for (var i = 0; i < tags.length; i++) {
     var tag = tags[i];
 
@@ -158,6 +137,16 @@ function getProductVersion(tags: string[]) : string {
 
     if (x != -1) {
       return '7.' + tag.charAt(x + 3);
+    }
+
+    x = tag.indexOf('6_');
+    if (x == 0) {
+      return '6.x';
+    }
+
+    x = tag.indexOf('_6_');
+    if (x != -1) {
+      return '6.x';
     }
   }
 
