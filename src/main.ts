@@ -350,16 +350,18 @@ function removeTicketStatusColumn() : void {
     statusHeaderCell.textContent = ' ';
 
     /* remove the padding of the column 2 before the status column */
-    var cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr:nth-child(' + (statusIndex - 1) + ')'));
+    var cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr > td:nth-child(' + (statusIndex - 1) + '), tr > th:nth-child(' + (statusIndex - 1) + ')'));
     for (var cell of cells) {
-      cell.style.paddingLeft = '0px';
-      cell.style.paddingRight = '2px';
+      cell.style.paddingLeft = '0';
     }
 
     /* remove the column 1 before the status column */
-    cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr:nth-child(' + (statusIndex) + ')'));
+    cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr > td:nth-child(' + (statusIndex) + '), tr > th:nth-child(' + (statusIndex) + ')'));
     for (var cell of cells) {
-      cell.remove();
+      cell.style.width = '0';
+      cell.style.minWidth = '0';
+      cell.style.maxWidth = '0';
+      cell.style.padding = '0';
     }
   }
 }
