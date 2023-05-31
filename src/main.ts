@@ -253,27 +253,40 @@ function checkForSubtitles() : void {
   }
 }
 
+function abbreviateBadgeText(badge: HTMLElement) : void {
+  if (!badge.textContent || (badge.textContent.length <= 2) || (badge.textContent[0] == '\u00A0')) {
+    return;
+  }
+
+  if (badge.textContent === 'On-hold') {
+    badge.textContent = '\u00A0H\u00A0';
+  }
+  else if (badge.textContent === 'Open-Pending') {
+    badge.textContent = 'OP';
+  }
+  else {
+    badge.textContent = '\u00A0' + badge.textContent[0] + '\u00A0';
+  }
+}
+
 /**
  * Set the old compact ticket status column style and change "Open-Pending" color to differenciate it from the "Open" one
  * For more information, see https://liferay.slack.com/archives/CL8DNJYB0/p1675440794494529
  */
 function fixOldTicketStatusColumnStyle() : void {
-  var viewPage = ((unsafeWindow.location.pathname.indexOf('/agent/filters') == 0) || (unsafeWindow.location.pathname.indexOf('/agent/dashboard') == 0));
+  var pathname = unsafeWindow.location.pathname;
+  var viewPage = (pathname.indexOf('/agent/dashboard') == 0) ||
+    ((pathname.indexOf('/agent/filters/') == 0) && (pathname.indexOf('/suspended') == -1)) ||
+    ((pathname.indexOf('/agent/search/') == 0) && (document.querySelector('div[data-test-id="search_tables_tab-tickets"][aria-selected="true"]') != null));
+
   /* update status column */
   var badges = <Array<HTMLElement>> Array.from(document.querySelectorAll('div[data-cy-test-id="status-badge-state"]'));
+
   for (var badge of badges) {
     updateBadge(badge);
-    /* Change the status text to the abreviate form only if we are in a view page and we are not in a popup */
-    if (viewPage && badge.textContent && (badge.textContent.length > 2) && (badge.textContent[0] != ' ') && !isBadgeInPopup(badge)) {
-        if (badge.textContent === 'On-hold') {
-           badge.textContent = '\u00A0H\u00A0';
-        }
-        else if (badge.textContent === 'Open-Pending') {
-           badge.textContent = 'OP';
-        }
-        else {
-           badge.textContent = '\u00A0' + badge.textContent[0] + '\u00A0';
-        }
+    /* Change the status text to the abbreviate form only if we are in a view page and we are not in a popup */
+    if (viewPage && !isBadgeInPopup(badge)) {
+      abbreviateBadgeText(badge);
     }
   }
 
@@ -283,36 +296,71 @@ function fixOldTicketStatusColumnStyle() : void {
     updateBadge(badge);
   }
 
-  if(!viewPage) {
-     return;
+  if (viewPage) {
+    removeTicketStatusColumn();
+    unsafeWindow.dispatchEvent(new Event('resize'));
   }
+}
 
-  /* remove "Ticket status" text from headers */
-  var headers = <Array<HTMLElement>> Array.from(document.querySelectorAll('th[data-garden-id="tables.header_cell"]:not([processed="true"]'));
-  for (var header of headers) {
-    header.setAttribute('processed', 'true');
-  }
-  if (headers[3] !== undefined) {
-    headers[3].textContent = '';
-  }
-  /* remove the padding of second column */
-  var secondColumn = <Array<HTMLElement>> Array.from(document.querySelectorAll('td.sc-15v8wy4-1:not([processed="true"]'));
-  for (var cell of secondColumn) {
-    cell.style.paddingLeft = '0px';
-    cell.style.paddingRight = '2px';
-    cell.setAttribute('processed', 'true');
-  }
-  if (headers[1] !== undefined) {
-    headers[1].style.paddingLeft = '0px';
-    headers[1].style.paddingRight = '2px';
-  }
-  /* remove empty third column */
-  var thirdColumn = <Array<HTMLElement>> Array.from(document.querySelectorAll('td.oeot8n-0'));
-  for (var cell of thirdColumn) {
-    cell.remove()
-  }
-  if (headers[2] !== undefined) {
-    headers[2].remove();
+function removeTicketStatusColumn() : void {
+  var tables = <Array<HTMLTableElement>> Array.from(document.querySelectorAll('table[data-onboarding-id="table_main"], table[data-test-id="table_header"]'));
+
+  for (var i = 0; i < tables.length; i++) {
+    var table = tables[i];
+
+    var statusIndex = -1;
+
+    var badge = table.querySelector('div[data-cy-test-id="status-badge-state"]');
+
+    if (!badge) {
+      if (table.getAttribute('data-test-id') == 'table_header') {
+        var container = <HTMLDivElement> table.closest('div[data-test-id="table_container"]');
+        var sibling = container.querySelector('table[data-test-id="table_main"]');
+
+        if (sibling) {
+          badge = sibling.querySelector('div[data-cy-test-id="status-badge-state"]');
+        }
+      }
+    }
+
+    if (badge) {
+      var cell = <HTMLTableCellElement> badge.closest('td');
+      var row = <HTMLTableRowElement> cell.closest('tr');
+
+      for (var j = 0; j < row.cells.length; j++) {
+        if (row.cells[j] == cell) {
+          statusIndex = j;
+          break;
+        }
+      }
+    }
+
+    if (statusIndex == -1) {
+      continue;
+    }
+
+    var statusHeaderCell = (<HTMLTableSectionElement> table.tHead).rows[0].cells[statusIndex];
+
+    if (statusHeaderCell.getAttribute('processed') == 'true') {
+      continue
+    }
+
+    /* remove "Ticket status" text from headers */
+    statusHeaderCell.setAttribute('processed', 'true');
+    statusHeaderCell.textContent = ' ';
+
+    /* remove the padding of the column 2 before the status column */
+    var cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr:nth-child(' + (statusIndex - 1) + ')'));
+    for (var cell of cells) {
+      cell.style.paddingLeft = '0px';
+      cell.style.paddingRight = '2px';
+    }
+
+    /* remove the column 1 before the status column */
+    cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr:nth-child(' + (statusIndex) + ')'));
+    for (var cell of cells) {
+      cell.remove();
+    }
   }
 }
 
