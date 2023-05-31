@@ -339,25 +339,29 @@ function removeTicketStatusColumn() : void {
       continue;
     }
 
-    var statusHeaderCell = (<HTMLTableSectionElement> table.tHead).rows[0].cells[statusIndex];
+    var headerCells = <Array<HTMLTableCellElement>> Array.from((<HTMLTableSectionElement> table.tHead).rows[0].cells);
+    var statusHeaderCell = headerCells[statusIndex];
 
     if (statusHeaderCell.getAttribute('processed') == 'true') {
       continue
     }
 
     /* remove "Ticket status" text from headers */
-    statusHeaderCell.setAttribute('processed', 'true');
     statusHeaderCell.textContent = ' ';
 
+    for (var headerCell of headerCells) {
+      headerCell.setAttribute('processed', 'true');
+    }
+
     /* remove the padding of the column 2 before the status column */
-    var cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr:nth-child(' + (statusIndex - 1) + ')'));
+    var cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('td:nth-child(' + (statusIndex - 1) + ')'));
     for (var cell of cells) {
       cell.style.paddingLeft = '0px';
       cell.style.paddingRight = '2px';
     }
 
     /* remove the column 1 before the status column */
-    cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('tr:nth-child(' + (statusIndex) + ')'));
+    cells = <Array<HTMLTableCellElement>> Array.from(table.querySelectorAll('td:nth-child(' + (statusIndex) + ')'));
     for (var cell of cells) {
       cell.remove();
     }
