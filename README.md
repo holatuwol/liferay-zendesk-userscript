@@ -25,7 +25,7 @@ To install this built script, open up your user script manager for your browser,
 
 Eric Yan highlighted a problem where finding attachments was difficult with Help Center (though this might be a training problem; we have no idea where to look for it), so I've created a user script to fix a few of the problems I've experienced with the ZenDesk UI.
 
-**As of May 30, 2023 - 12:30 Pacific (version 16.8)**
+**As of May 31, 2023 - 11:35 Pacific (version 17.2)**
 
 The script adds the following to the ticket:
 
@@ -79,3 +79,5 @@ Finally, in other areas of the UI, the script does the following:
 
 - Adds the account code to all open tabs
 - Updates the window title to make it easier to find tickets via browser history
+- Changes the color for the open-pending ticket label so that it’s different from open
+- Shortens the text label describing ticket status to one letter (except open-pending, which is OP)
