@@ -108,38 +108,38 @@ function addCriticalMarker(
   priorityElement.appendChild(criticalElement);
 }
 
+function addCustomerTypeMarkerHelper(
+  priorityElement: HTMLElement,
+  tagSet: Set<string>,
+  tag: string,
+  text: string
+) : void {
+
+  if (!tagSet.has(tag)) {
+    return;
+  }
+
+  var element = document.createElement('span');
+  element.classList.add('lesa-ui-priority-minor');
+
+  var query = 'tags:' + tag;
+
+  var link = document.createElement('a');
+  link.textContent = text;
+  link.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+
+  element.appendChild(link);
+  priorityElement.appendChild(element);
+}
+
 function addCustomerTypeMarker(
   priorityElement: HTMLElement,
   tagSet: Set<string>
 ) : void {
 
-  if (tagSet.has('service_solution')) {
-    var solutionElement = document.createElement('span');
-    solutionElement.classList.add('lesa-ui-priority-minor');
-
-    var solutionLink = document.createElement('a');
-    solutionLink.textContent = 'Service Portal Customer';
-
-    var query = 'tags:service_solution';
-    solutionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
-
-    solutionElement.appendChild(solutionLink);
-    priorityElement.appendChild(solutionElement);
-  }
-
-  if (tagSet.has('commerce_solution')) {
-    var solutionElement = document.createElement('span');
-    solutionElement.classList.add('lesa-ui-priority-minor');
-
-    var solutionLink = document.createElement('a');
-    solutionLink.textContent = 'Commerce Portal Customer';
-
-    var query = 'tags:commerce_solution';
-    solutionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
-
-    solutionElement.appendChild(solutionLink);
-    priorityElement.appendChild(solutionElement);
-  }
+  addCustomerTypeMarkerHelper(priorityElement, tagSet, 'gs_opportunity', 'GS Opportunity');
+  addCustomerTypeMarkerHelper(priorityElement, tagSet, 'service_solution', 'Service Portal Customer');
+  addCustomerTypeMarkerHelper(priorityElement, tagSet, 'commerce_solution', 'Commerce Portal Customer');
 }
 
 /**

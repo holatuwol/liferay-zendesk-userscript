@@ -25,7 +25,7 @@ To install this built script, open up your user script manager for your browser,
 
 Eric Yan highlighted a problem where finding attachments was difficult with Help Center (though this might be a training problem; we have no idea where to look for it), so I've created a user script to fix a few of the problems I've experienced with the ZenDesk UI.
 
-**As of May 31, 2023 - 11:35 Pacific (version 17.2)**
+**As of June 12, 2023 - 13:40 Pacific (version 17.3)**
 
 The script adds the following to the ticket:
 
@@ -38,6 +38,7 @@ The script adds the following markers to the top of the ticket:
 
 - `CRITICAL` marker, `PREMIUM CRITICAL` marker, or `PLATINUM CRITICAL` marker, based on the rules in [Help Center Statuses and Priority](https://liferay.atlassian.net/wiki/spaces/SUPPORT/pages/1741783196/Help+Center+Statuses+and+Priorities)
 - `CUSTOMER REGION` marker if the assignee region is different from the customer region
+- `GS OPPORTUNITY`, `SERVICE PORTAL CUSTOMER`, `COMMERCE PORTAL CUSTOMER` when the ticket has the corresponding label
 - `⚠️` emoji marker if the ticket has any of the following labels: `cas_fire`, `cas_hot`, `cas_priority`
 
 The script also provides a marker related to whether the customer has accepted Extended Premium Support:
