@@ -230,12 +230,12 @@ article.lesa-ui-event-highlighted {
 }
 
 .rich_text .comment_input .lesa-ui-playbook-reminder,
-#editor-view .lesa-ui-playbook-reminder {
+div[data-test-id="editor-view"] .lesa-ui-playbook-reminder {
   display: none;
 }
 
 .rich_text .comment_input.is-public .lesa-ui-playbook-reminder:not(:empty),
-#editor-view .lesa-ui-playbook-reminder:not(:empty) {
+div[data-test-id="editor-view"] .lesa-ui-playbook-reminder:not(:empty) {
   background-color: #eef2fa;
   border: 1px solid #d8dcde;
   border-radius: 0 3px 0 0 !important;
@@ -246,7 +246,7 @@ article.lesa-ui-event-highlighted {
 }
 
 .rich_text .comment_input.is-public .lesa-ui-playbook-reminder a,
-#editor-view .lesa-ui-playbook-reminder a {
+div[data-test-id="editor-view"] .lesa-ui-playbook-reminder a {
   text-decoration: underline;
 }
 
