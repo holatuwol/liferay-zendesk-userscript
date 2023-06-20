@@ -132,7 +132,7 @@ function getJiraSearchLink(
 
   var encodedQuery = encodeURIComponent(query);
 
-  var jiraSearchLinkHREF = 'https://issues.liferay.com/issues/?jql=' + encodedQuery;
+  var jiraSearchLinkHREF = 'https://liferay.atlassian.net/issues/?jql=' + encodedQuery;
 
   return createAnchorTag(text, jiraSearchLinkHREF);
 }

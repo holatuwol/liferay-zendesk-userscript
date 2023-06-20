@@ -14,11 +14,11 @@ function addJiraLinksToElement(element: HTMLElement) : void {
   newHTML = element.innerHTML.replace(jiraTicketURLLink, '$1$2');
 
   if (element.contentEditable == 'true') {
-    newHTML = newHTML.replace(jiraTicketId, '$1<a href="https://issues.liferay.com/browse/$2">$2</a>');
+    newHTML = newHTML.replace(jiraTicketId, '$1<a href="https://liferay.atlassian.net/browse/$2">$2</a>');
     newHTML = newHTML.replace(jiraTicketURL, '$1<a href="$2$3">$2$3</a>');
   }
   else {
-    newHTML = newHTML.replace(jiraTicketId, '$1<a href="https://issues.liferay.com/browse/$2" target="_blank">$2</a>');
+    newHTML = newHTML.replace(jiraTicketId, '$1<a href="https://liferay.atlassian.net/browse/$2" target="_blank">$2</a>');
     newHTML = newHTML.replace(jiraTicketURL, '$1<a href="$2$3" target="_blank">$2$3</a>');
   }
   if (element.innerHTML != newHTML) {

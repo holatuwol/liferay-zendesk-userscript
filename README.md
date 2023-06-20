@@ -25,7 +25,7 @@ To install this built script, open up your user script manager for your browser,
 
 Eric Yan highlighted a problem where finding attachments was difficult with Help Center (though this might be a training problem; we have no idea where to look for it), so I've created a user script to fix a few of the problems I've experienced with the ZenDesk UI.
 
-**As of June 12, 2023 - 13:40 Pacific (version 17.3)**
+**As of June 19, 2023 - 22:00 Pacific (version 17.5)**
 
 The script adds the following to the ticket:
 
