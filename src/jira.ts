@@ -262,14 +262,14 @@ function initPatchTicketValues(
   }
 
   function setCustomerTicketCreationDate(callback: Function) : void {
-    setReactInputValue('span[data-test-id=customfield_11126] input', new Date(ticket.createdAt), callback);
+    setReactInputValue('span[data-test-id=customfield_10134] input', new Date(ticket.createdAt), callback);
   }
 
   function setSupportOffice(callback: Function) : void {
     var assigneeGroup = ticket.assignee.group.name;
     var supportOffices = Array.from(getSupportOffices(assigneeGroup));
 
-    addReactLabelValues('customfield_11523', supportOffices, callback);
+    addReactLabelValues('customfield_10133', supportOffices, callback);
   }
 
   function setAffectsVersion(callback: Function) : void {
@@ -278,6 +278,7 @@ function initPatchTicketValues(
       (productVersion.indexOf('7_2') != -1) ? '7.2.10' :
       (productVersion.indexOf('7_3') != -1) ? '7.3.10' :
       (productVersion.indexOf('7_4') != -1) ? '7.4.13' :
+      (productVersion.indexOf('lxc') != -1) ? '7.4.13' :
       null;
 
     if (value) {
@@ -286,28 +287,6 @@ function initPatchTicketValues(
     else if (callback) {
       callback();
     }
-  }
-
-  function setDeliveryBaseFixPack(callback: Function) {
-    var conversations = ticket.conversation;
-    var baselines = new Set();
-
-    for (var i = 0; i < conversations.length; i++) {
-      var conversationText = conversations[i].value;
-      var baselineRegExp = /(de|dxp)-[0-9][0-9]*/gi;
-
-      var matcher = null;
-
-      while (matcher = baselineRegExp.exec(conversationText)) {
-        baselines.add(matcher[0].toUpperCase());
-      }
-    }
-
-    var versionNumber = (productVersion.indexOf('7_0') != -1) ? '7010' :
-      (productVersion.indexOf('7_1') != -1) ? '7110' :
-      (productVersion.indexOf('7_2') != -1) ? '7210' : null;
-
-    setReactInputValue('input[data-test-id=customfield_22551]', Array.from(baselines).join(' '), callback)
   }
 
   function focusSummary(callback: Function) {
@@ -322,7 +301,7 @@ function initPatchTicketValues(
     }
   }
 
-  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setSupportOffice, setAffectsVersion, setDeliveryBaseFixPack, focusSummary];
+  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setSupportOffice, setAffectsVersion, focusSummary];
 
   var nestedFunction = callOrder.reverse().reduce(function(accumulator, x) { return x.bind(null, accumulator); });
   nestedFunction();
@@ -340,7 +319,7 @@ function initZafClient() : void {
     return;
   }
 
-  function initJiraTicketValues() {
+  function initJiraTicketValues() : void {
     var issueTypeMenu = document.querySelector('div[data-test-id="issuetype-menu"]');
     if (!issueTypeMenu) {
       setTimeout(initJiraTicketValues, 1000);
@@ -352,13 +331,14 @@ function initZafClient() : void {
       return;
     }
 
-    var parentGuid = document.location.hash.substring('#parentGuid='.length);
     var client = unsafeWindow.ZAFClient.init();
-    var parentClient = client.instance(parentGuid);
-    parentClient.get(['ticket', 'ticket.customField:custom_field_360006076471']).then(initPatchTicketValues);
+    client.context().then(function(context: ZendeskClientContext) : void {
+      var parentGuid = document.location.hash.substring('#parentGuid='.length);
+      client.instance(parentGuid).get(['ticket', 'ticket.customField:custom_field_360006076471']).then(initPatchTicketValues);
+    });
   }
 
-  setReactSearchSelectValue('projectId', 'LPP');
+  setReactSearchSelectValue('projectId', 'LPP', initJiraTicketValues);
 }
 
 function detachModalWindowHandler() : void {

@@ -138,3 +138,10 @@ type ZendeskClientInstance = {
   instance: (s: string) => ZendeskClientInstance;
   on: (s: string, callback: Function) => void;
 }
+
+type ZendeskClientContext = {
+  host: string;
+  instanceGuid: string;
+  location: string;
+  product: string;
+}
