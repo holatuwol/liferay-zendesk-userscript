@@ -267,6 +267,16 @@ div[data-test-id="editor-view"] .lesa-ui-playbook-reminder a {
 button[data-test-id="omnilog-jump-button"] {
   display: none;
 }
+
+.tags span a {
+  color: rgb(73, 84, 92);
+  font-weight: normal;
+}
+
+.tags span.important-tag a {
+  color: rebeccapurple;
+  font-weight: 600;
+}
 `;
 }
 

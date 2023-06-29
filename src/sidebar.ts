@@ -298,8 +298,12 @@ function hideSidebarSelectOptions(
 
 /**
  * Make tags in the sidebar clickable, so we can easily find tickets
- * with similar tags.
+ * with similar tags. Also, highlight certain important tags.
  */
+
+var importantTags = new Set([
+  'fcr_eligible'
+]);
 
 function checkSidebarTags() {
   var spans = <Array<HTMLAnchorElement>> Array.from(document.querySelectorAll('.tags span'));
@@ -309,6 +313,10 @@ function checkSidebarTags() {
 
     if (span.querySelector('a') || !span.textContent) {
       continue;
+    }
+
+    if (importantTags.has(span.textContent)) {
+      span.classList.add('important-tag');
     }
 
     var href = 'https://' + document.location.host + '/agent/search/1?q=' + encodeURIComponent('tags:' + span.textContent);
