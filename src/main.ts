@@ -80,7 +80,6 @@ function checkTicketConversation(
   }
 
   addReplyFormattingButtons(ticketId, ticketInfo, conversation);
-  addJiraLinks(ticketId, ticketInfo, conversation);
   addPlaybookReminder(ticketId, ticketInfo, conversation);
   addTicketDescription(ticketId, ticketInfo, conversation);
   fixPermaLinkAnchors(ticketId, ticketInfo, conversation);

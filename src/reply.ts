@@ -1,39 +1,10 @@
 /**
- * Recursively scan LPS tickets and LPE tickets, and replace any
- * plain text with HTML.
- */
-
-var jiraTicketId = /([^/])(LP[EPS]-[0-9]+)/g;
-var jiraTicketURL = /([^"])(https:\/\/issues\.liferay\.com\/browse\/)(LP[EPS]-[0-9]+)/g;
-
-var jiraTicketIdLink = /<a [^>]*href="https:\/\/issues\.liferay\.com\/browse\/(LP[EPS]-[0-9]+)"[^>]*>\1<\/a>/g;
-var jiraTicketURLLink = /<a [^>]*href="(https:\/\/issues\.liferay\.com\/browse\/)(LP[EPS]-[0-9]+)"[^>]*>\1\2<\/a>/g;
-
-function addJiraLinksToElement(element: HTMLElement) : void {
-  var newHTML = element.innerHTML.replace(jiraTicketIdLink, '$1');
-  newHTML = element.innerHTML.replace(jiraTicketURLLink, '$1$2');
-
-  if (element.contentEditable == 'true') {
-    newHTML = newHTML.replace(jiraTicketId, '$1<a href="https://liferay.atlassian.net/browse/$2">$2</a>');
-    newHTML = newHTML.replace(jiraTicketURL, '$1<a href="$2$3">$2$3</a>');
-  }
-  else {
-    newHTML = newHTML.replace(jiraTicketId, '$1<a href="https://liferay.atlassian.net/browse/$2" target="_blank">$2</a>');
-    newHTML = newHTML.replace(jiraTicketURL, '$1<a href="$2$3" target="_blank">$2$3</a>');
-  }
-  if (element.innerHTML != newHTML) {
-    element.innerHTML = newHTML;
-  }
-}
-
-/**
  * Adds a button which loads a window which allows you to compose a
  * post with Markdown.
  */
 
 function addReplyStackeditButton(
-  element: HTMLElement,
-  callback: Function
+  element: HTMLElement
  ) : void {
 
   var parentElement = <HTMLElement> element.parentElement;
@@ -51,7 +22,7 @@ function addReplyStackeditButton(
 
   var listItem = document.createElement('li');
   listItem.appendChild(img);
-  listItem.onclick = composeWithStackedit.bind(null, element, callback);
+  listItem.onclick = composeWithStackedit.bind(null, element);
 
   list.appendChild(listItem);
 }
@@ -129,7 +100,7 @@ function addReplyFormattingButtons(
 
   for (var i = 0; i < legacyComments.length; i++) {
     addReplyUnderlineButton(legacyComments[i]);
-    addReplyStackeditButton(legacyComments[i], addJiraLinksToElement);
+    addReplyStackeditButton(legacyComments[i]);
   }
 
   var workspaceComments = <Array<HTMLElement>> Array.from(conversation.querySelectorAll('div[data-test-id="editor-view"]'));
@@ -177,33 +148,6 @@ function composeWithStackedit(
       callback(element);
     }
   });
-}
-
-/**
- * Scan the ticket for LPS tickets and LPE tickets, and replace any
- * plain text with HTML.
- */
-
-function addJiraLinks(
-  ticketId: string,
-  ticketInfo: TicketMetadata,
-  conversation: HTMLDivElement
-) : void {
-
-  if (conversation.classList.contains('lesa-ui-jiralink')) {
-    return;
-  }
-
-  conversation.classList.add('lesa-ui-jiralink');
-
-  var comments = <Array<HTMLDivElement>> Array.from(conversation.querySelectorAll(isAgentWorkspace ? 'article' : 'div[data-comment-id]'));
-
-  for (var i = 0; i < comments.length; i++) {
-    var comment = comments[i].querySelector('div[data-test-id="omni-log-message-content"]');
-    if (comment) {
-      addJiraLinksToElement(<HTMLDivElement> comment);
-    }
-  }
 }
 
 /**
