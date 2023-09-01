@@ -234,7 +234,7 @@ function getSupportOffices(
     supportOffices.push('Japan');
   }
 
-  if ((assigneeGroup.indexOf('Spain Pod') == 0) || (assigneeGroup.indexOf(' - ES') != -1)) {
+  if ((assigneeGroup.indexOf('Spain Pod') == 0) || ((assigneeGroup.indexOf(' - ES') != -1) && (assigneeGroup.indexOf('- BR') == -1) )) {
     supportOffices.push('Spain');
   }
 

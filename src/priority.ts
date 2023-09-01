@@ -196,7 +196,7 @@ function getSupportRegions(
     supportRegions.push('Japan');
   }
 
-  if ((assigneeText.indexOf('Spain Pod') == 0) || (isSupportRegion(assigneeText, 'ES'))) {
+  if ((assigneeText.indexOf('Spain Pod') == 0) || (isSupportRegion(assigneeText, 'ES') && !isSupportRegion(assigneeText, 'BR'))) {
     supportRegions.push('Spain');
   }
 
