@@ -237,26 +237,30 @@ function addRegionMarker(
     priorityElement.appendChild(customerCountryElement);
   }
 
-  var assigneeElement = <HTMLElement> ticketContainer.querySelector(isAgentWorkspace ? 'div[data-test-id="assignee-field-selected-agent-tag"] > span, div[data-test-id="assignee-field-selected-group-tag"]' : '.js-zero-state-ticket-tutorial-assignee-field > div > div');
+  var assigneeElement = <HTMLElement> ticketContainer.querySelector('.js-zero-state-ticket-tutorial-assignee-field > div > div');
 
-  if (assigneeElement && (ticketInfo.ticket.status != 'closed')) {
-    var customerRegion = organizationFields.support_region;
-    var assigneeText = (assigneeElement.textContent || '').trim();
-    var assigneeRegions = getSupportRegions(assigneeText);
+  if (ticketInfo.ticket.status == 'closed') {
+    return;
+  }
 
-    if (!assigneeRegions.has(customerRegion)) {
-      var customerRegionElement = document.createElement('span');
-      customerRegionElement.classList.add('lesa-ui-priority-major');
+  var customerRegion = organizationFields.support_region;
+  var assigneeText = ((assigneeElement && assigneeElement.textContent) || '').trim();
+  var assigneeRegions = getSupportRegions(assigneeText);
 
-      var customerRegionLink = document.createElement('a');
-      customerRegionLink.textContent = 'customer region: ' + customerRegion;
+  var subpriority = ticketInfo.ticket.priority || 'none';
 
-      var query = 'support_region:' + customerRegion;
-      customerRegionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+  if ((subpriority == 'high') || (subpriority == 'urgent') || !assigneeRegions.has(customerRegion)) {
+    var customerRegionElement = document.createElement('span');
+    customerRegionElement.classList.add('lesa-ui-priority-major');
 
-      customerRegionElement.appendChild(customerRegionLink);
-      priorityElement.appendChild(customerRegionElement);
-    }
+    var customerRegionLink = document.createElement('a');
+    customerRegionLink.textContent = 'customer region: ' + customerRegion;
+
+    var query = 'support_region:' + customerRegion;
+    customerRegionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+
+    customerRegionElement.appendChild(customerRegionLink);
+    priorityElement.appendChild(customerRegionElement);
   }
 }
 
@@ -349,10 +353,10 @@ function addPriorityMarker(
   var organizationTags = (ticketInfo && ticketInfo.organizations) ? ticketInfo.organizations.map(it => it.tags || []).reduce((acc, it) => acc.concat(it)) : [];
   organizationTags = Array.from(new Set(organizationTags));
 
+  addRegionMarker(priorityElement, ticketInfo, ticketContainer);
   addServiceLifeMarker(priorityElement, ticketId, ticketTags, organizationTags);
   addCriticalMarker(priorityElement, ticketInfo, ticketTagSet);
   addCustomerTypeMarker(priorityElement, ticketTagSet);
-  addRegionMarker(priorityElement, ticketInfo, ticketContainer);
 
   var emojiContainer = getEmojiAnchorTags(ticketTags);
 
