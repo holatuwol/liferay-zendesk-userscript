@@ -137,6 +137,10 @@ article.lesa-ui-event-highlighted {
   margin-bottom: 1em;
 }
 
+.lesa-ui-orgnotes {
+  color: darkgreen;
+}
+
 .lesa-ui-permalink > input,
 .lesa-ui-form-field.lesa-ui-helpcenter > input {
   background-color: transparent;

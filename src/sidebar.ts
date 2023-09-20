@@ -70,6 +70,13 @@ function addOrganizationField(
     organizationInfo = organizationCache[accountCode];
   }
 
+  if (organizationInfo && organizationInfo.notes) {
+    var notesContainer = document.createElement('div');
+    notesContainer.textContent = organizationInfo.notes;
+    notesContainer.innerHTML = notesContainer.innerHTML.replace(/(https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+))/g, '<a href="$1">#$2</a>')
+    generateFormField(propertyBox, 'lesa-ui-orgnotes', 'Notes', [notesContainer]);
+  }
+
   if (organizationInfo) {
     var organizationFields = organizationInfo.organization_fields;
     serviceLevel.push(organizationFields.sla.toUpperCase());
@@ -364,5 +371,6 @@ function updateSidebarBoxContainer(
     addJIRASearchField(propertyBoxes[i], ticketId);
     addPatcherPortalField(propertyBoxes[i], ticketId, ticketInfo);
     hideSidebarSelectOptions(propertyBoxes[i], ticketId, ticketInfo);
+    propertyBoxes[i].setAttribute('data-ticket-id', ticketId);
   }
 }

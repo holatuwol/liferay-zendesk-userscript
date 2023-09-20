@@ -40,6 +40,7 @@ declare var JSZip : JSZip;
 
 type OrganizationMetadata = {
   external_id: string;
+  notes?: string;
   organization_fields: {
     account_code: string;
     account_key: string;
