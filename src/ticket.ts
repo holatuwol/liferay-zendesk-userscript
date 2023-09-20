@@ -9,18 +9,18 @@ var accountInfo: AccountMetadata | null = null;
  */
 
 function getAccountCode(
-  ticketId: string,
+  ticketId: string | null,
   ticketInfo: TicketMetadata,
   propertyBox?: HTMLElement
 ) : string | null {
 
-  if (accountCodeCache.hasOwnProperty(ticketId)) {
+  if (ticketId && accountCodeCache.hasOwnProperty(ticketId)) {
     return accountCodeCache[ticketId];
   }
 
   var accountCode = null;
 
-  if (ticketInfo.organizations && (ticketInfo.organizations.length == 1)) {
+  if (ticketInfo && ticketInfo.organizations && (ticketInfo.organizations.length == 1)) {
     var organizationInfo = ticketInfo.organizations[0];
     var organizationFields = organizationInfo.organization_fields;
 
@@ -35,7 +35,7 @@ function getAccountCode(
     }
   }
 
-  if (accountCode) {
+  if (ticketId && accountCode) {
     accountCodeCache[ticketId] = accountCode;
   }
 

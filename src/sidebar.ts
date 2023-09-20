@@ -9,6 +9,16 @@ function generateFormField(
   formElements: Array<Node>
 ) : void {
 
+  var oldFormFields = propertyBox.querySelectorAll('.' + className);
+
+  for (var i = 0; i < oldFormFields.length; i++) {
+    propertyBox.removeChild(oldFormFields[i]);
+  }
+
+  if (formElements.length == 0) {
+    return;
+  }
+
   var formField = document.createElement('div');
   formField.classList.add('ember-view');
   formField.classList.add('form_field');
@@ -24,12 +34,6 @@ function generateFormField(
     formField.appendChild(formElements[i]);
   }
 
-  var oldFormFields = propertyBox.querySelectorAll('.' + className);
-
-  for (var i = 0; i < oldFormFields.length; i++) {
-    propertyBox.removeChild(oldFormFields[i]);
-  }
-
   propertyBox.appendChild(formField);
 }
 /**
@@ -39,7 +43,7 @@ function generateFormField(
 
 function addOrganizationField(
   propertyBox: HTMLElement,
-  ticketId: string,
+  ticketId: string | null,
   ticketInfo: TicketMetadata
 ) : void {
 
@@ -70,13 +74,18 @@ function addOrganizationField(
     organizationInfo = organizationCache[accountCode];
   }
 
+  var notesItems = [];
+
   if (organizationInfo && organizationInfo.notes) {
     var notesContainer = document.createElement('div');
     notesContainer.textContent = organizationInfo.notes;
     notesContainer.innerHTML = notesContainer.innerHTML.replace(/(https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)\?comment=[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z)/g, '<a href="$1" target="_blank">#$2</a>')
     notesContainer.innerHTML = notesContainer.innerHTML.replace(/(https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+))/g, '<a href="$1">#$2</a>')
-    generateFormField(propertyBox, 'lesa-ui-orgnotes', 'Notes', [notesContainer]);
+
+    notesItems.push(notesContainer);
   }
+
+  generateFormField(propertyBox, 'lesa-ui-orgnotes', 'Notes', notesItems);
 
   if (organizationInfo) {
     var organizationFields = organizationInfo.organization_fields;
@@ -203,7 +212,7 @@ function getProductVersionId(
 
 function addPatcherPortalField(
   propertyBox: HTMLElement,
-  ticketId: string,
+  ticketId: string | null,
   ticketInfo: TicketMetadata
 ) : void {
 
@@ -229,7 +238,7 @@ function addPatcherPortalField(
       patcherPortalItems.push(createAnchorTag(version + ' Builds', versionBuildsLinkHREF));
     }
   }
-  else {
+  else if (ticketId) {
     patcherPortalItems.push(document.createTextNode('N/A'));
   }
 
@@ -243,14 +252,16 @@ function addPatcherPortalField(
 
 function addJIRASearchField(
   propertyBox: HTMLElement,
-  ticketId: string
+  ticketId: string | null
 ) : void {
 
   var jiraSearchLinkContainer = document.createElement('div');
+  var jiraSearchItems = [];
 
-  jiraSearchLinkContainer.appendChild(getJiraSearchLink('Linked Issues', ticketId));
-
-  var jiraSearchItems = [jiraSearchLinkContainer];
+  if (ticketId) {
+    jiraSearchLinkContainer.appendChild(getJiraSearchLink('Linked Issues', ticketId));
+    jiraSearchItems.push(jiraSearchLinkContainer);
+  }
 
   generateFormField(propertyBox, 'lesa-ui-jirasearch', 'JIRA Search', jiraSearchItems);
 }
@@ -290,7 +301,7 @@ function hideSidebarSelectOption(
  */
 function hideSidebarSelectOptions(
   propertyBox: HTMLElement,
-  ticketId: string,
+  ticketId: string | null,
   ticketInfo: TicketMetadata
 ) : void {
 
@@ -334,7 +345,7 @@ function checkSidebarTags() {
 }
 
 function getPropertyBoxes(
-  ticketId?: string
+  ticketId?: string | null
 ) : HTMLElement[] {
 
   var propertyBoxes = <HTMLElement[]> Array.from(document.querySelectorAll('.property_box:not(.ticket_properties)'));
@@ -357,7 +368,7 @@ function getPropertyBoxes(
  */
 
 function updateSidebarBoxContainer(
-  ticketId: string,
+  ticketId: string | null,
   ticketInfo: TicketMetadata
 ) : void {
 
@@ -372,6 +383,6 @@ function updateSidebarBoxContainer(
     addJIRASearchField(propertyBoxes[i], ticketId);
     addPatcherPortalField(propertyBoxes[i], ticketId, ticketInfo);
     hideSidebarSelectOptions(propertyBoxes[i], ticketId, ticketInfo);
-    propertyBoxes[i].setAttribute('data-ticket-id', ticketId);
+    propertyBoxes[i].setAttribute('data-ticket-id', ticketId || '');
   }
 }
