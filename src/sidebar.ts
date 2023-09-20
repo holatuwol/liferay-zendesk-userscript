@@ -336,7 +336,7 @@ function getPropertyBoxes(
   ticketId?: string
 ) : HTMLElement[] {
 
-  var propertyBoxes = <HTMLElement[]> Array.from(document.querySelectorAll('.property_box'));
+  var propertyBoxes = <HTMLElement[]> Array.from(document.querySelectorAll('.property_box:not(.ticket_properties)'));
 
   var visiblePropertyBoxes = propertyBoxes.filter(it => {
     var workspaceElement = <HTMLElement | null> it.closest('.workspace');
