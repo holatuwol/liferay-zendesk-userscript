@@ -36,6 +36,62 @@ function generateFormField(
 
   propertyBox.appendChild(formField);
 }
+
+/**
+ * Utility method to replace ticket URLs on any nested HTML. The first matching
+ * group is the text we use for the link. The function will attempt to decode
+ * the text, as if it were a URI component, and fall back to the text itself.
+ */
+
+function replaceHelpCenterTicketURLs(
+  element : Node,
+  urlPattern : RegExp,
+  replacePrefix : string,
+  target?: string
+) : void {
+
+  if (element.nodeType == Node.TEXT_NODE) {
+    var matchResult = null;
+    var parentNode = <Node> element.parentNode;
+    var elementText = element.textContent || '';
+
+    while ((matchResult = urlPattern.exec(elementText)) != null) {
+      var newText1 = document.createTextNode(elementText.substring(0, matchResult.index));
+      var newText2 = document.createTextNode(elementText.substring(matchResult.index + matchResult[0].length));
+
+      var newLink = document.createElement('a');
+      newLink.href = matchResult[0];
+
+      var newLinkText = (matchResult.length > 1) ? matchResult[1] : matchResult[0].substring(matchResult[0].lastIndexOf('/') + 1);
+
+      try {
+        newLinkText = replacePrefix + decodeURIComponent(newLinkText);
+      }
+      catch (e) {
+        newLink.textContent = replacePrefix + matchResult[1];
+      }
+
+      if (target) {
+        newLink.setAttribute('target', target);
+      }
+
+      parentNode.insertBefore(newText1, element);
+      parentNode.insertBefore(newLink, element);
+      parentNode.insertBefore(newText2, element);
+
+      parentNode.removeChild(element);
+
+      element = newText2;
+      elementText = element.textContent || '';
+    }
+  }
+  else {
+    for (var i = 0; i < element.childNodes.length; i++) {
+      replaceHelpCenterTicketURLs(element.childNodes[0], urlPattern, replacePrefix, target);
+    }
+  }
+}
+
 /**
  * Add the Organization field to the sidebar, which will contain a link to Help Center
  * for the account details and the customer's SLA level.
@@ -78,9 +134,10 @@ function addOrganizationField(
 
   if (organizationInfo && organizationInfo.notes) {
     var notesContainer = document.createElement('div');
-    notesContainer.textContent = organizationInfo.notes;
-    notesContainer.innerHTML = notesContainer.innerHTML.replace(/(https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)\?comment=[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z)/g, '<a href="$1" target="_blank">#$2</a>')
-    notesContainer.innerHTML = notesContainer.innerHTML.replace(/(https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+))/g, '<a href="$1">#$2</a>')
+    notesContainer.innerHTML = organizationInfo.notes;
+
+    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)\?comment=[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/g, '#', '_blank');
+    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)/g, '#');
 
     notesItems.push(notesContainer);
   }
