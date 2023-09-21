@@ -65,11 +65,13 @@ function replaceHelpCenterTicketURLs(
       var newLinkText = (matchResult.length > 1) ? matchResult[1] : matchResult[0].substring(matchResult[0].lastIndexOf('/') + 1);
 
       try {
-        newLinkText = replacePrefix + decodeURIComponent(newLinkText);
+        newLinkText = replacePrefix + decodeURIComponent(newLinkText).replace(/\+/g, ' ');
       }
       catch (e) {
-        newLink.textContent = replacePrefix + matchResult[1];
+        newLinkText = replacePrefix + newLinkText;
       }
+
+      newLink.textContent = newLinkText;
 
       if (target) {
         newLink.setAttribute('target', target);
@@ -87,7 +89,7 @@ function replaceHelpCenterTicketURLs(
   }
   else {
     for (var i = 0; i < element.childNodes.length; i++) {
-      replaceHelpCenterTicketURLs(element.childNodes[0], urlPattern, replacePrefix, target);
+      replaceHelpCenterTicketURLs(element.childNodes[i], urlPattern, replacePrefix, target);
     }
   }
 }
@@ -134,10 +136,13 @@ function addOrganizationField(
 
   if (organizationInfo && organizationInfo.notes) {
     var notesContainer = document.createElement('div');
-    notesContainer.innerHTML = organizationInfo.notes;
+    notesContainer.textContent = organizationInfo.notes;
+    notesContainer.innerHTML = notesContainer.textContent.replace(/\n/g, '<br/>');
 
-    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)\?comment=[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/g, '#', '_blank');
-    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)/g, '#');
+    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)\?comment=[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/, '#', '_blank');
+    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/liferay-support.zendesk.com\/agent\/tickets\/([0-9]+)/, '#');
+    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/liferay.atlassian.net\/[^\s\.]*/, '', '_blank');
+    replaceHelpCenterTicketURLs(notesContainer, /https:\/\/provisioning.liferay.com\/.*_com_liferay_osb_provisioning_web_portlet_AccountsPortlet_accountSearchKeywords=([^&]+)[^\s\.]*/, '', '_blank');
 
     notesItems.push(notesContainer);
   }
