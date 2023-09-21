@@ -18,10 +18,11 @@ function clearHighlightedComments() : void {
 function highlightComment(
   conversation: HTMLElement,
   ticketId: string,
-  commentId: string
+  commentId: string,
+  force: boolean
 ) : void {
 
-  if (!commentId && !document.location.search) {
+  if (!force && !commentId && !document.location.search) {
     var logContainer = <HTMLElement | null> conversation.querySelector('div[data-test-id="omni-log-container"]');
 
     if (logContainer && logContainer.getAttribute('data-sort-ticket-id') != ticketId) {
@@ -76,7 +77,7 @@ function highlightComment(
 
   var event = <HTMLElement> comment.closest(isAgentWorkspace ? 'article' : '.event');
 
-  if (event.classList.contains('lesa-ui-event-highlighted')) {
+  if (!force && event.classList.contains('lesa-ui-event-highlighted')) {
     return;
   }
 
@@ -88,9 +89,14 @@ function highlightComment(
 
   event.classList.add('lesa-ui-event-highlighted');
 
-  setTimeout(function() {
+  if (force) {
     event.scrollIntoView();
-  }, 1000);
+  }
+  else {
+    setTimeout(function() {
+      event.scrollIntoView();
+    }, 1000);
+  }
 }
 
 /**
@@ -221,7 +227,7 @@ function fixZenDeskLink(
   if (href.substring(x + '?comment='.length, y) == ticketId) {
     var commentId = href.substring(y + '?comment='.length);
 
-    anchor.onclick = highlightComment.bind(null, conversation, ticketId, commentId);
+    anchor.onclick = highlightComment.bind(null, conversation, ticketId, commentId, true);
   }
   else {
     var commentURL = 'https://' + document.location.host + '/agent' + href.substring(x);
@@ -280,7 +286,7 @@ function fixHelpCenterLink(
   var linkTicketId = href.substring(y + '/requests/'.length, Math.min(href.indexOf('?'), z));
 
   if (linkTicketId == ticketId) {
-    anchor.onclick = highlightComment.bind(null, conversation, ticketId, commentId);
+    anchor.onclick = highlightComment.bind(null, conversation, ticketId, commentId, true);
   }
   else {
     anchor.onclick = skipSinglePageApplication.bind(null, commentURL);

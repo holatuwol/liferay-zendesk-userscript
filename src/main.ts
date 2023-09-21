@@ -86,7 +86,7 @@ function checkTicketConversation(
   addPermaLinks(ticketId, ticketInfo, conversation);
   updateWindowTitle(ticketId, ticketInfo);
 
-  highlightComment(conversation, ticketId, '');
+  highlightComment(conversation, ticketId, '', false);
 }
 
 /**
