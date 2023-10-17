@@ -227,7 +227,7 @@ function addTicketDescription(
   var header = <HTMLElement | null> null;
 
   if (isAgentWorkspace) {
-    header = <HTMLElement> conversation.querySelector('div.omni-conversation-pane > div > div');
+    header = <HTMLElement> conversation.childNodes[0];
   }
   else {
     header = conversation.querySelector('.pane_header');
