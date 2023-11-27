@@ -1,6 +1,30 @@
 var isAgentWorkspace = false;
 
 /**
+ * Waits until elements appear and then click on them.
+ */
+
+function clickReactElement(
+  selector: string,
+  callback?: Function
+) : void {
+
+  var element = <HTMLElement> document.querySelector(selector);
+
+  if (!element) {
+    setTimeout(clickReactElement.bind(null, selector, callback), 100);
+
+    return;
+  }
+
+  element.click();
+
+  if (callback) {
+    callback();
+  }
+}
+
+/**
  * Generate an anchor tag with the specified text, href, and download attributes.
  * If the download attribute has an extension that looks like it will probably be
  * served inline, use the downloadBlob function instead.

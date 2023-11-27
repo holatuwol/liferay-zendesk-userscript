@@ -23,6 +23,7 @@
     "src/jira.ts",
     "src/knowledge.ts",
     "src/cursor_paginator.ts",
+    "src/internal.ts",
     "src/main.ts"
   ]
 }

@@ -85,6 +85,7 @@ function checkTicketConversation(
   fixPermaLinkAnchors(ticketId, ticketInfo, conversation);
   addPermaLinks(ticketId, ticketInfo, conversation);
   updateWindowTitle(ticketId, ticketInfo);
+  switchToInternalNotes(ticketId, ticketInfo, conversation);
 
   highlightComment(conversation, ticketId, '', false);
 }
