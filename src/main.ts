@@ -321,6 +321,42 @@ function adjustColumnTextWidth(): void {
       }
       header.setAttribute('heatscore_processed', 'true');
     }
+
+    var product_column;
+    var i = 0;
+    for (var header of headers) {
+      var textHeader = getTextHeader(header);
+      if (textHeader && (textHeader.nodeValue === 'Product')) {
+        product_column = i;
+        break;
+      }
+      i++;
+    }
+    if (!product_column) {
+      continue;
+    }
+
+    var rows = Array.from((<HTMLCollectionOf<HTMLTableSectionElement>>table.tBodies)[0].rows);
+    for (var row of rows) {
+      var cell = row.cells[product_column];
+      if (!cell || !cell.textContent || cell.getAttribute('product_processed')) {
+        continue;
+      }
+      cell.title = cell.textContent;
+      if (cell.textContent === 'Liferay DXP::Quarterly Release') {
+        cell.textContent = 'DXP::Quarterly';
+      }
+      else if (cell.textContent === 'LXC - Self-Managed') {
+        cell.textContent = 'LXC - SM';
+      }
+      else if (cell.textContent === 'Provisioning Request') {
+        cell.textContent = 'Provisioning';
+      }
+      else if (cell.textContent.startsWith('Liferay ')) {
+        cell.textContent = cell.textContent.replace('Liferay ', '');
+      }
+      cell.setAttribute('product_processed', 'true');
+    }
   }
 
   function getTextHeader(header: HTMLTableCellElement): ChildNode | null {
