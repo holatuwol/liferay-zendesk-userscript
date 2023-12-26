@@ -298,7 +298,46 @@ function fixOldTicketStatusColumnStyle() : void {
 
   if (viewPage) {
     removeTicketStatusColumn();
+    adjustColumnTextWidth();
     unsafeWindow.dispatchEvent(new Event('resize'));
+  }
+}
+
+function adjustColumnTextWidth(): void {
+  var tables = Array.from(document.querySelectorAll<HTMLTableElement>('table[data-onboarding-id="table_main"], table[data-test-id="table_header"]'));
+
+  for (var table of tables) {
+    var headers = Array.from((<HTMLTableSectionElement>table.tHead).rows[0].cells);
+    for (var header of headers) {
+      if (header.getAttribute('heatscore_processed') === 'true') {
+        continue;
+      }
+      var textHeader = getTextHeader(header);
+      if (textHeader && (textHeader.nodeValue === 'Heat Score')) {
+        var button = header.querySelector('button');
+        if (button) {button.title = 'Heat Score';}
+
+        textHeader.nodeValue = 'Heat';
+      }
+      header.setAttribute('heatscore_processed', 'true');
+    }
+  }
+
+  function getTextHeader(header: HTMLTableCellElement): ChildNode | null {
+    var button = header.querySelector('button');
+    if (!button) {
+      return null;
+    }
+
+    if (!button.firstChild) {
+      return null;
+    }
+
+    if (button.firstChild.nodeType === Node.TEXT_NODE) {
+      return button.firstChild;
+    }
+
+    return null;
   }
 }
 
