@@ -212,6 +212,12 @@ function getProductVersion(tags: string[]) : string {
   for (var i = 0; i < tags.length; i++) {
     var tag = tags[i];
 
+    var qr = tag.indexOf('prd_quarterly_release');
+
+    if (qr == 0) {
+        return 'Quarterly Release';
+    }
+
     var x = tag.indexOf('7_');
 
     if (x == 0) {
@@ -245,6 +251,10 @@ function getProductVersion(tags: string[]) : string {
 function getProductVersionId(
   version: string
 ) : string {
+
+  if (version == 'Quarterly Release') {
+    return '249803555';
+  }
 
   if (version == '7.4') {
     return '206111201';
