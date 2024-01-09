@@ -43,6 +43,7 @@ function addHeatScoreMarker(
 
   var heatScoreElement = document.createElement('span');
   heatScoreElement.classList.add('lesa-ui-heat-score', 'lesa-ui-priority-major');
+  heatScoreElement.setAttribute('title', 'Heat Score');
   heatScoreElement.textContent = heatScore;
 
   slaPolicyContainer.insertBefore(heatScoreElement, slaPolicy.nextSibling);
