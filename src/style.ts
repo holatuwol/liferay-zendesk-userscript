@@ -175,16 +175,31 @@ article.lesa-ui-event-highlighted {
   margin-bottom: 8px;
 }
 
+span[data-garden-container-id="containers.tooltip"] {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 4px;
+}
+
+.lesa-ui-heat-score,
 .lesa-ui-priority span {
   color: #fff;
   border-radius: 2px;
   font-size: 10px;
   font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.lesa-ui-heat-score {
+  padding: 0px 4px;
+  line-height: 1.6;
+}
+
+.lesa-ui-priority span {
   line-height: 16px;
   margin-right: 8px;
   padding: 0.5em;
-  text-align: center;
-  text-transform: uppercase;
   width: 6em;
 }
 

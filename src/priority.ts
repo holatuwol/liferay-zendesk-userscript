@@ -350,7 +350,7 @@ function addPriorityMarker(
   var ticketTags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
   var ticketTagSet = new Set(ticketTags);
 
-  var organizationTags = (ticketInfo && ticketInfo.organizations) ? ticketInfo.organizations.map(it => it.tags || []).reduce((acc, it) => acc.concat(it)) : [];
+  var organizationTags = (ticketInfo && ticketInfo.organizations) ? ticketInfo.organizations.map(it => it.tags || []).reduce((acc, it) => acc.concat(it), []) : [];
   organizationTags = Array.from(new Set(organizationTags));
 
   addRegionMarker(priorityElement, ticketInfo, ticketContainer);

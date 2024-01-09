@@ -1,4 +1,52 @@
 const CUSTOM_FIELD_CHILD_OF = 360013377052;
+const CUSTOM_FIELD_HEAT_SCORE = 360049454932;
+
+/**
+ * Add a heat score.
+ */
+
+function addHeatScoreMarker(
+  header: HTMLElement,
+  conversation: HTMLElement,
+  ticketInfo: TicketMetadata
+) : void {
+
+  var heatScore = getCustomFieldValue(ticketInfo, CUSTOM_FIELD_HEAT_SCORE);
+
+  if (heatScore == null) {
+    return;
+  }
+
+  var slaPolicy = conversation.querySelector('div[data-test-id^="sla-policy-"]');
+
+  var slaPolicyContainer = <HTMLSpanElement | null> null;
+
+  if (slaPolicy == null) {
+    slaPolicy = document.createElement('div');
+    slaPolicy.classList.add('sc-hljan3-0', 'iQJOlz', 'StyledTag-sc-1jvbe03-0', 'fSIpth');
+    slaPolicy.setAttribute('data-test-id', 'sla-policy-metric');
+
+    slaPolicyContainer = document.createElement('span');
+    slaPolicyContainer.setAttribute('data-garden-container-id', 'containers.tooltip');
+
+    var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
+
+    var divider = document.createElement('div');
+    divider.classList.add('Divider-sc-2k6bz0-9', 'fNgWaW');
+
+    viaLabel.before(divider);
+    divider.before(slaPolicyContainer);
+  }
+  else {
+    slaPolicyContainer = <HTMLSpanElement> slaPolicy.parentElement;
+  }
+
+  var heatScoreElement = document.createElement('span');
+  heatScoreElement.classList.add('lesa-ui-heat-score', 'lesa-ui-priority-major');
+  heatScoreElement.textContent = heatScore;
+
+  slaPolicyContainer.insertBefore(heatScoreElement, slaPolicy.nextSibling);
+}
 
 /**
  * Add a sort button.
@@ -268,6 +316,7 @@ function addTicketDescription(
 
   // Add a marker indicating the LESA priority based on critical workflow rules
 
+  addHeatScoreMarker(header, conversation, ticketInfo);
   addPriorityMarker(header, conversation, ticketId, ticketInfo);
   addSubjectTextWrap(header, ticketId, ticketInfo);
 
