@@ -117,6 +117,8 @@ function extractExternalLinkMetadata(
 }
 
 function addAttachmentDate(
+  ticketId: string,
+  conversation: HTMLDivElement,
   container: HTMLDivElement,
   attachment: AttachmentLinkMetadata,
   oldDate: string | null
@@ -138,7 +140,7 @@ function addAttachmentDate(
 
   var attachmentCommentLink = createAnchorTag(newDate, null);
   attachmentCommentLink.classList.add('attachment-comment-link');
-  attachmentCommentLink.onclick = highlightComment.bind(null, attachment.timestamp);
+  attachmentCommentLink.onclick = highlightComment.bind(null, conversation, ticketId, attachment.timestamp);
 
   attachmentExtraInfo.appendChild(attachmentCommentLink)
   container.appendChild(attachmentExtraInfo);
@@ -315,7 +317,7 @@ function createAttachmentsContainer(
   var oldDate = null;
 
   for (var i = 0; i < attachments.length; i++) {
-    oldDate = addAttachmentDate(attachmentInfo, attachments[i], oldDate);
+    oldDate = addAttachmentDate(ticketId, conversation, attachmentInfo, attachments[i], oldDate);
     addAttachmentRow(attachmentInfo, attachments[i]);
   }
 
