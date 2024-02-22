@@ -304,13 +304,12 @@ function fixPermaLinkAnchors(
   conversation: HTMLDivElement
 ) : void {
 
-  var permalinks = conversation.querySelectorAll(isAgentWorkspace ? 'article div.lesa-ui-permalink' : 'div[data-comment-id] div.lesa-ui-permalink');
+  var selectors = [
+    'a[href^="https://help.liferay.com/hc/"]',
+    'a[href*="/tickets/' + ticketId + '?comment="]'
+  ];
 
-  if (permalinks.length > 0) {
-    return;
-  }
-
-  var anchors = conversation.querySelectorAll('a');
+  var anchors = <NodeListOf<HTMLAnchorElement>> conversation.querySelectorAll(selectors.join(','));
 
   for (var i = 0; i < anchors.length; i++) {
     var anchor = anchors[i];
