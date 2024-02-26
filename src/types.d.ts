@@ -18,6 +18,12 @@ declare function cloneInto(gmObject: any, window: Window) : any;
 declare function exportFunction(gmFunction: any, window: Window) : any;
 declare var unsafeWindow : globals | Window;
 
+interface GM {
+  xmlHttpRequest: Function
+}
+
+declare var GM : GM;
+
 type JiraTicket = {
   subject: string
   createdAt: string

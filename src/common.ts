@@ -76,35 +76,34 @@ function downloadFile(
   callback?: (blob: Blob) => void,
 ) : void {
 
-  var xhr = new XMLHttpRequest();
-  xhr.responseType = 'blob';
-
-  xhr.onload = function() {
-    if (callback) {
-      callback(this.response);
-    }
-    else {
-      downloadBlob(filename, this.response);
-    }
-  };
-
-  xhr.onerror = function() {
-    if (callback) {
-      callback(this.response);
-    }
-  }
+  var requestURL = href;
 
   if (href.indexOf('https://help.liferay.com') == 0) {
-    xhr.open('GET', href.substring('https://help.liferay.com'.length));
-  }
-  else {
-    xhr.open('GET', href);
+    requestURL = href.substring('https://help.liferay.com'.length);
   }
 
-  xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
-  xhr.setRequestHeader('Pragma', 'no-cache');
-
-  xhr.send(null);
+  GM.xmlHttpRequest({
+    'method': 'GET',
+    'url': requestURL,
+    'headers': {
+      'Cache-Control': 'no-cache, no-store, max-age=0',
+      'Pragma': 'no-cache'
+    },
+    'responseType': 'blob',
+    'onload': function(xhr: XMLHttpRequest) {
+      if (callback) {
+        callback(xhr.response);
+      }
+      else {
+        downloadBlob(filename, xhr.response);
+      }
+    },
+    'onerror': function(xhr: XMLHttpRequest) {
+      if (callback) {
+        callback(xhr.response);
+      }
+    }
+  });
 }
 
 /**
