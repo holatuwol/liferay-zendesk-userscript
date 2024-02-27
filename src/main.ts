@@ -19,24 +19,6 @@ function fixAttachmentLinksHelper(
 }
 
 /**
- * Shows the public conversation tab so that you can get help.liferay.com links to
- * share with customers.
- */
-
-function enablePublicConversation(
-  ticketId: string,
-  ticketInfo: TicketMetadata,
-  conversation: HTMLDivElement
-) : void {
-
-  var fullTab = <HTMLElement> conversation.querySelector('.event-nav.conversation .fullConversation');
-  var publicTab = conversation.querySelector('.event-nav.conversation .publicConversation');
-
-  if (publicTab && parseInt(publicTab.getAttribute('data-count') || '0') == 0) {
-    publicTab.setAttribute('data-count', fullTab.getAttribute('data-count') || '0');
-  }
-}
-/**
  * Apply updates to the page based on the retrieved ticket information. Since the
  * ticket corresponds to a "conversation", find that conversation.
  */
@@ -63,20 +45,9 @@ function checkTicketConversation(
   }
 
   var hasAgentWorkspaceComments = conversation.querySelectorAll('article').length > 0;
-  var hasLegacyWorkspaceComments = conversation.querySelectorAll('.event .zd-comment').length > 0;
 
-  if (!hasAgentWorkspaceComments && !hasLegacyWorkspaceComments) {
+  if (!hasAgentWorkspaceComments) {
     return;
-  }
-
-  isAgentWorkspace = hasAgentWorkspaceComments;
-
-  if (!isAgentWorkspace && document.querySelectorAll('.editor').length == 0) {
-    return;
-  }
-
-  if (!isAgentWorkspace) {
-    enablePublicConversation(ticketId, ticketInfo, conversation);
   }
 
   addReplyFormattingButtons(ticketId, ticketInfo, conversation);

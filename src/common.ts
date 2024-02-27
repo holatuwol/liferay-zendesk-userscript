@@ -1,5 +1,3 @@
-var isAgentWorkspace = false;
-
 /**
  * Waits until elements appear and then click on them.
  */

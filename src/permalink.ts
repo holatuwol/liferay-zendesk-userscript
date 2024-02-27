@@ -75,7 +75,7 @@ function highlightComment(
     return;
   }
 
-  var event = <HTMLElement> comment.closest(isAgentWorkspace ? 'article' : '.event');
+  var event = <HTMLElement> comment.closest('article');
 
   if (!force && event.classList.contains('lesa-ui-event-highlighted')) {
     return;
@@ -126,8 +126,7 @@ function addPermaLinks(
   conversation: HTMLDivElement
 ) : void {
 
-  var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : 'div[data-comment-id]');
-  var isPublicTab = !isAgentWorkspace && document.querySelector('.publicConversation.is-selected');
+  var comments = conversation.querySelectorAll('article');
 
   for (var i = 0; i < comments.length; i++) {
     var timeElement = comments[i].querySelector('time');
@@ -138,28 +137,16 @@ function addPermaLinks(
 
     var commentHeader = null;
 
-    if (isAgentWorkspace) {
-      var actionsElement = <HTMLElement>comments[i].querySelector('.omnilog-header-actions');
-      commentHeader = actionsElement.parentElement
-    }
-    else {
-      commentHeader = comments[i].querySelector('.content .header');
-    }
+    var actionsElement = <HTMLElement>comments[i].querySelector('.omnilog-header-actions');
+    commentHeader = actionsElement.parentElement
 
     if (!commentHeader) {
       continue;
     }
 
-    if (isAgentWorkspace) {
-      var parentElement = <HTMLElement>commentHeader.parentElement;
-      if (parentElement.querySelector('.lesa-ui-permalink')) {
-        continue;
-      }
-    }
-    else {
-      if (commentHeader.querySelector('.lesa-ui-permalink')) {
-        continue;
-      }
+    var parentElement = <HTMLElement>commentHeader.parentElement;
+    if (parentElement.querySelector('.lesa-ui-permalink')) {
+      continue;
     }
 
     var commentId = timeElement.getAttribute('datetime');
@@ -168,21 +155,10 @@ function addPermaLinks(
     permalinkContainer.classList.add('lesa-ui-permalink');
 
     var permalinkHREF = 'https://' + document.location.host + document.location.pathname + '?comment=' + commentId;
-
-    if (isPublicTab) {
-      var pageId = Math.ceil((comments.length - i) / 30);
-      permalinkHREF = 'https://help.liferay.com/hc/requests/' + ticketId + '?page=' + pageId + '#request_comment_' + commentId;
-    }
-
     var permalink = createPermaLinkInputField(permalinkHREF);
     permalinkContainer.appendChild(permalink);
 
-    if (isAgentWorkspace) {
-      commentHeader.after(permalinkContainer);
-    }
-    else {
-      commentHeader.appendChild(permalinkContainer);
-    }
+    commentHeader.after(permalinkContainer);
   }
 }
 

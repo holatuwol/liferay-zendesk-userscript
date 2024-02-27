@@ -273,14 +273,7 @@ function addTicketDescription(
   conversation: HTMLDivElement
 ) : void {
 
-  var header = <HTMLElement | null> null;
-
-  if (isAgentWorkspace) {
-    header = <HTMLElement> conversation.childNodes[0];
-  }
-  else {
-    header = conversation.querySelector('.pane_header');
-  }
+  var header = <HTMLElement> conversation.childNodes[0];
 
   if (!header) {
     return;
@@ -288,31 +281,10 @@ function addTicketDescription(
 
   // Check to see if we have any descriptions that we need to remove.
 
-  if (isAgentWorkspace) {
-    var oldLinks = conversation.querySelectorAll('.lesa-ui-modal-header-link');
+  var oldLinks = conversation.querySelectorAll('.lesa-ui-modal-header-link');
 
-    if (oldLinks.length > 0) {
-      return;
-    }
-  }
-  else {
-    var oldDescriptions = conversation.querySelectorAll('.lesa-ui-description');
-
-    var hasNewDescription = false;
-
-    for (var i = 0; i < oldDescriptions.length; i++) {
-      if (oldDescriptions[i].getAttribute('data-ticket-id') == ticketId) {
-        hasNewDescription = true;
-      }
-      else {
-        revokeObjectURLs();
-        header.removeChild(oldDescriptions[i]);
-      }
-    }
-
-    if (hasNewDescription) {
-      return;
-    }
+  if (oldLinks.length > 0) {
+    return;
   }
 
   // Add a marker indicating the LESA priority based on critical workflow rules
@@ -323,38 +295,10 @@ function addTicketDescription(
 
   // Generate something to hold all of our attachments.
 
-  if (isAgentWorkspace) {
-    addHeaderLinkModal('description-modal', 'Description', header, conversation, createDescriptionContainer.bind(null, ticketId, ticketInfo, conversation));
-    addHeaderLinkModal('description-modal', 'Fast Track', header, conversation, createKnowledgeCaptureContainer.bind(null, ticketId, ticketInfo, conversation));
-    addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
-    addSortButton(conversation, header);
-  }
-  else {
-    var descriptionAncestor1 = document.createElement('div');
-    descriptionAncestor1.classList.add('lesa-ui-description');
-    descriptionAncestor1.classList.add('rich_text');
-    descriptionAncestor1.setAttribute('data-ticket-id', ticketId);
-
-    var descriptionContainer = createDescriptionContainer(ticketId, ticketInfo, conversation);
-
-    if (descriptionContainer) {
-      descriptionAncestor1.appendChild(descriptionContainer);
-    }
-
-    var knowledgeCaptureContainer = createKnowledgeCaptureContainer(ticketId, ticketInfo, conversation);
-
-    if (knowledgeCaptureContainer) {
-      descriptionAncestor1.appendChild(knowledgeCaptureContainer);
-    }
-
-    var attachmentsContainer = createAttachmentsContainer(ticketId, ticketInfo, conversation);
-
-    if (attachmentsContainer) {
-      descriptionAncestor1.appendChild(attachmentsContainer);
-    }
-
-    header.appendChild(descriptionAncestor1);
-  }
+  addHeaderLinkModal('description-modal', 'Description', header, conversation, createDescriptionContainer.bind(null, ticketId, ticketInfo, conversation));
+  addHeaderLinkModal('description-modal', 'Fast Track', header, conversation, createKnowledgeCaptureContainer.bind(null, ticketId, ticketInfo, conversation));
+  addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
+  addSortButton(conversation, header);
 }
 
 function createDescriptionContainer(
@@ -363,7 +307,7 @@ function createDescriptionContainer(
   conversation: HTMLDivElement
 ) : HTMLDivElement | null {
 
-  var comments = conversation.querySelectorAll(isAgentWorkspace ? 'article' : '.event .zd-comment');
+  var comments = conversation.querySelectorAll('article');
 
   if (comments.length == 0) {
     return null;
@@ -372,10 +316,6 @@ function createDescriptionContainer(
   var descriptionContainer = document.createElement('div');
 
   descriptionContainer.classList.add('is-public');
-
-  if (!isAgentWorkspace) {
-    descriptionContainer.classList.add('event');
-  }
 
   var tags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
   var tagSet = new Set(tags);
@@ -398,10 +338,10 @@ function createDescriptionContainer(
     descriptionContainer.appendChild(flsContainer);
   }
 
-  var firstComment = comments[isAgentWorkspace ? 0 : comments.length - 1];
+  var firstComment = comments[0];
 
   if (isDummyComment(ticketInfo, firstComment)) {
-    firstComment = comments[isAgentWorkspace ? 1 : comments.length - 2];
+    firstComment = comments[1];
   }
 
   var description = document.createElement('div');
