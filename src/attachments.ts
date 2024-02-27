@@ -257,15 +257,6 @@ function createAttachmentZip(
 }
 
 /**
- * Function to check if this is a large attachment, since those cannot be automatically
- * included in attachment .zip files due to CORS policies.
- */
-
-function isLiferayLargeAttachment(anchor: HTMLAnchorElement) : boolean {
-  return anchor.href.indexOf('ticketAttachmentId') != -1;
-}
-
-/**
  * Create a container to hold all of the attachments in the ticket, and a convenience
  * link which allows the user to download all of the selected attachments at once.
  */
@@ -281,7 +272,6 @@ function createAttachmentsContainer(
   var attachmentThumbnails = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('a[data-test-id="attachment-thumbnail"]'));
 
   var externalLinks = <Array<HTMLAnchorElement>> Array.from(conversation.querySelectorAll('.zd-comment > a:not(.attachment)'));
-  externalLinks = externalLinks.filter(isLiferayLargeAttachment);
 
   if (attachmentLinks.length + attachmentThumbnails.length + externalLinks.length == 0) {
     return null;
