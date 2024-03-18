@@ -315,6 +315,15 @@ function addPatcherPortalField(
 
       patcherPortalItems.push(createAnchorTag(version + ' Builds', versionBuildsLinkHREF));
     }
+
+    if (version == '7.4') {
+      var versionBuildsLinkHREF = getPatcherPortalAccountsHREF('/view', {
+        'patcherBuildAccountEntryCode': accountCode,
+        'patcherProductVersionId': getProductVersionId('Quarterly Release')
+      });
+
+      patcherPortalItems.push(createAnchorTag('Quarterly Release Builds', versionBuildsLinkHREF));
+    }
   }
   else if (ticketId) {
     patcherPortalItems.push(document.createTextNode('N/A'));
