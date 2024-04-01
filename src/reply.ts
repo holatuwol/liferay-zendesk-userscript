@@ -165,7 +165,7 @@ function addPlaybookReminder(
   conversation: HTMLDivElement
 ) : void {
 
-  var editor = conversation.querySelector(isAgentWorkspace ? 'div[data-test-id="omnicomposer-rich-text-ckeditor"]' : '.editor');
+  var editor = conversation.querySelector('div[data-test-id="omnicomposer-rich-text-ckeditor"]');
 
   if (!editor) {
     return;

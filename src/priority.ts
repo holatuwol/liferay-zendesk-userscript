@@ -364,20 +364,15 @@ function addPriorityMarker(
     priorityElement.appendChild(emojiContainer);
   }
 
-  if (isAgentWorkspace) {
-    var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
+  var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
 
-    var divider = document.createElement('div');
-    divider.classList.add('Divider-sc-2k6bz0-9');
+  var divider = document.createElement('div');
+  divider.classList.add('Divider-sc-2k6bz0-9');
 
-    if (priorityElement.childNodes.length > 0) {
-      divider.classList.add('fNgWaW');
-    }
-
-    viaLabel.before(divider);
-    divider.before(priorityElement);
+  if (priorityElement.childNodes.length > 0) {
+    divider.classList.add('fNgWaW');
   }
-  else {
-    header.insertBefore(priorityElement, header.querySelector('.round-avatar'));
-  }
+
+  viaLabel.before(divider);
+  divider.before(priorityElement);
 }
