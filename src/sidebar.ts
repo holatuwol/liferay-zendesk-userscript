@@ -112,6 +112,7 @@ function addOrganizationField(
 
   var helpCenterLinkHREF = null;
   var serviceLevel = <string[]> [];
+  var subOrganizationTag = null;
 
   if (tagSet.has('t1')) {
     serviceLevel.push('Account Tier 1');
@@ -161,6 +162,8 @@ function addOrganizationField(
 
     helpCenterLinkHREF = "https://support.liferay.com/project/#/" +
        organizationInfo.organization_fields.account_key;
+
+    subOrganizationTag = organizationFields.sub_organization;
   }
 
   var helpCenterItems = [];
@@ -186,6 +189,14 @@ function addOrganizationField(
   helpCenterItems.push(createPermaLinkInputField(permalinkHREF))
 
   generateFormField(propertyBox, 'lesa-ui-helpcenter', 'Help Center', helpCenterItems);
+
+  if (subOrganizationTag) {
+    var subOrganizationContainer = document.createElement('div');
+    var subOrganizationName = subOrganizationTag.split("_").map(function (word) { return word.charAt(0).toUpperCase() + word.slice(1); }).join(" "); /* replace underscores with spaces and capitalize: spain_pod_a => Spain Pod A */
+    subOrganizationContainer.appendChild(document.createTextNode(subOrganizationName));
+
+    generateFormField(propertyBox, 'lesa-ui-suborganization', 'Sub Organization', [subOrganizationContainer]);
+  }
 }
 
 /**
