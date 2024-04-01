@@ -52,6 +52,7 @@ type OrganizationMetadata = {
     account_key: string;
     country: string;
     sla: string;
+    sub_organization: string;
     support_region: string;
   }
   tags: string[];
