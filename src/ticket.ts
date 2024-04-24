@@ -2,8 +2,6 @@ const accountCodeCache: {[s: string]: string} = {};
 const organizationCache: {[s: string]: OrganizationMetadata} = {};
 const ticketInfoCache: {[s: string]: string | TicketMetadata} = {};
 
-var accountInfo: AccountMetadata | null = null;
-
 /**
  * Retrieve the account code from the sidebar.
  */
@@ -267,50 +265,6 @@ function checkEvents(
   ].join('');
 
   xhr.open('GET', auditEventsURL);
-
-  xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
-  xhr.setRequestHeader('Pragma', 'no-cache');
-
-  xhr.send();
-}
-
-/**
- * Cache the account information for the current ZenDesk site.
- */
-
-function setAccountInfo(
-  callback: () => void
-) : void {
-
-  if (accountInfo) {
-    return;
-  }
-
-  var xhr = new XMLHttpRequest();
-
-  xhr.onload = function() {
-    if (xhr.status != 200) {
-      console.log("URL: " + xhr.responseURL);
-      console.log("Error: " + xhr.status + " - " + xhr.statusText);
-    }
-
-    try {
-      accountInfo = JSON.parse(xhr.responseText);
-    }
-    catch (e) {
-    }
-
-    callback();
-  };
-
-  var accountDetailsURL = [
-    document.location.protocol,
-    '//',
-    document.location.host,
-    '/api/v2/account.json'
-  ].join('');
-
-  xhr.open('GET', accountDetailsURL);
 
   xhr.setRequestHeader('Cache-Control', 'no-cache, no-store, max-age=0');
   xhr.setRequestHeader('Pragma', 'no-cache');

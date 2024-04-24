@@ -71,12 +71,7 @@ function updateWindowTitle(
   ticketInfo?: TicketMetadata
 ) : void {
 
-  if (!accountInfo) {
-    setAccountInfo(updateWindowTitle.bind(null, ticketId, ticketInfo));
-    return;
-  }
-
-  var accountName = accountInfo.account.name;
+  var accountName = (document.location.hostname == 'liferay-support.zendesk.com') ? 'Liferay Help Center' : 'Liferay Sandbox';
 
   if (document.location.pathname.indexOf('/agent/dashboard') == 0) {
     document.title = accountName + ' - Agent Dashboard';
