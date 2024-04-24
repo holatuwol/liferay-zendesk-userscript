@@ -75,19 +75,12 @@ function checkTicket(
 
   ticketInfoCache[ticketId] = 'PENDING';
 
-  var forkFunctions = [checkTicketMetadata, checkEvents];
-  var returnedFunctions = 0;
-
   var joinCallback = function(ticketId: string, newTicketInfo: Object) {
     if (ticketInfo == null) {
       ticketInfo = <TicketMetadata> newTicketInfo;
     }
     else {
       Object.assign(ticketInfo, newTicketInfo);
-    }
-
-    if (++returnedFunctions != forkFunctions.length) {
-      return;
     }
 
     if (Object.keys(ticketInfo).length == 0) {
@@ -98,9 +91,7 @@ function checkTicket(
     }
   }
 
-  for (var i = 0; i < forkFunctions.length; i++) {
-    forkFunctions[i](ticketId, joinCallback);
-  }
+  checkTicketMetadata(ticketId, joinCallback);
 }
 
 /**
@@ -246,7 +237,9 @@ function checkEvents(
       checkEvents(ticketId, callback, audits, pageId + 1);
     }
     else {
-      callback(ticketId, {'audits': audits});
+      var ticketInfo = <TicketMetadata> ticketInfoCache[ticketId];
+      ticketInfo['audits'] = audits;
+      callback(ticketId, ticketInfo);
     }
   };
 
