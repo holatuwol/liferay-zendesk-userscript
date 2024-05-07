@@ -464,5 +464,6 @@ if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
     setInterval(makeDraggableModals, 1000);
     setInterval(fixOldTicketStatusColumnStyle, 1000);
     setInterval(addViewsGoToPageButton, 1000);
+    setInterval(addViewsBreakdownLink, 1000);
   }
 }

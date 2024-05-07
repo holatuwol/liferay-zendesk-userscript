@@ -296,6 +296,10 @@ button[data-test-id="omnilog-jump-button"] {
   color: rebeccapurple;
   font-weight: 600;
 }
+
+.lesa-ui-group-rows-summary {
+  width: fit-content;
+}
 `;
 }
 
