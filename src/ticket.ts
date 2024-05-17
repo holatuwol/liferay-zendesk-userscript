@@ -215,7 +215,8 @@ function checkUser(
 
 function checkEvents(
   ticketId: string,
-  callback: (s: string, t: Object | null) => void,
+  ticketInfo: TicketMetadata,
+  callback: Function,
   audits: Array<TicketAuditEvent> = [],
   pageId: number = 1
 ) : void {
@@ -234,17 +235,16 @@ function checkEvents(
     Array.prototype.push.apply(audits, auditInfo.audits);
 
     if (auditInfo.next_page) {
-      checkEvents(ticketId, callback, audits, pageId + 1);
+      checkEvents(ticketId, ticketInfo, callback, audits, pageId + 1);
     }
     else {
-      var ticketInfo = <TicketMetadata> ticketInfoCache[ticketId];
       ticketInfo['audits'] = audits;
-      callback(ticketId, ticketInfo);
+      callback();
     }
   };
 
   xhr.onerror = function() {
-    callback(ticketId, null);
+    callback();
   };
 
   var auditEventsURL = [
@@ -263,4 +263,33 @@ function checkEvents(
   xhr.setRequestHeader('Pragma', 'no-cache');
 
   xhr.send();
+}
+
+/**
+ * Comments are hidden behind a "Show More" button, so click it here
+ * until we've loaded everything.
+ */
+
+function checkComments(
+  conversation: HTMLElement,
+  callback: Function
+) : void {
+
+  var showMoreButton = <HTMLButtonElement | null>document.querySelector('button[data-test-id="convolog-show-more-button"]');
+
+  if (showMoreButton) {
+    showMoreButton.click();
+
+    setTimeout(checkComments.bind(null, conversation, callback), 500);
+
+    return;
+  }
+
+  if (document.querySelector('[role="progressbar"]')) {
+    setTimeout(checkComments.bind(null, conversation, callback), 500);
+
+    return;
+  }
+
+  callback();
 }

@@ -295,9 +295,9 @@ function addTicketDescription(
 
   // Generate something to hold all of our attachments.
 
-  addHeaderLinkModal('description-modal', 'Description', header, conversation, createDescriptionContainer.bind(null, ticketId, ticketInfo, conversation));
-  addHeaderLinkModal('description-modal', 'Fast Track', header, conversation, checkEvents.bind(null, ticketId, createKnowledgeCaptureContainer.bind(null, ticketId, ticketInfo, conversation)));
-  addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
+  addHeaderLinkModal('description-modal', 'Description', header, conversation, checkComments.bind(null, conversation), createDescriptionContainer.bind(null, ticketId, ticketInfo, conversation));
+  addHeaderLinkModal('description-modal', 'Fast Track', header, conversation, checkEvents.bind(null, ticketId, ticketInfo), createKnowledgeCaptureContainer.bind(null, ticketId, ticketInfo, conversation));
+  addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, checkComments.bind(null, conversation), createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
   addSortButton(conversation, header);
 }
 

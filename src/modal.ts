@@ -8,35 +8,6 @@ function initializeModal(
   var loadingElement = contentWrapper.querySelector('.loading');
 
   if (content == null) {
-    var showMoreButton = <HTMLButtonElement | null>document.querySelector('button[data-test-id="convolog-show-more-button"]');
-
-    if (showMoreButton) {
-      if (!loadingElement) {
-        loadingElement = document.createElement('div');
-        loadingElement.classList.add('loading');
-
-        contentWrapper.appendChild(loadingElement);
-      }
-
-      var commentCount = conversation.querySelectorAll('article').length;
-
-      loadingElement.innerHTML = 'Loading older comments (' + commentCount + ' loaded so far)...';
-
-      contentWrapper.appendChild(loadingElement);
-
-      showMoreButton.click();
-
-      setTimeout(initializeModal.bind(null, conversation, contentWrapper, callback), 500);
-
-      return;
-    }
-
-    if (document.querySelector('[role="progressbar"]')) {
-      setTimeout(initializeModal.bind(null, conversation, contentWrapper, callback), 500);
-
-      return;
-    }
-
     content = document.createElement('div');
 
     content.appendChild(document.createTextNode('No data found.'));
@@ -56,9 +27,9 @@ function createModal(
   linkText: string,
   header: HTMLElement,
   conversation: HTMLElement,
-  callback: Function,
+  dataCallback: (c: Function) => void,
+  elementCallback: Function
 ) : void {
-
 
   var modal = document.createElement('div');
   modal.setAttribute('id', modalId);
@@ -93,9 +64,15 @@ function createModal(
 
   var contentWrapper = document.createElement('div');
   contentWrapper.classList.add('modal-body', 'app_view_wrapper');
+
+  var loadingElement = document.createElement('div');
+  loadingElement.classList.add('loading');
+  loadingElement.innerHTML = 'Loading data...';
+
+  contentWrapper.appendChild(loadingElement);
   iframe.appendChild(contentWrapper);
 
-  initializeModal(conversation, contentWrapper, callback);
+  dataCallback(initializeModal.bind(null, conversation, contentWrapper, elementCallback));
 }
 
 function addHeaderLinkModal(
@@ -103,12 +80,13 @@ function addHeaderLinkModal(
   linkText: string,
   header: HTMLElement,
   conversation: HTMLElement,
-  callback: Function,
+  dataCallback: Function,
+  elementCallback: Function,
 ) : void {
 
   var openLink = document.createElement('a');
   openLink.textContent = linkText;
-  openLink.onclick = createModal.bind(null, modalId, linkText, header, conversation, callback);
+  openLink.onclick = createModal.bind(null, modalId, linkText, header, conversation, dataCallback, elementCallback);
 
   var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');
 
