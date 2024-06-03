@@ -300,6 +300,15 @@ button[data-test-id="omnilog-jump-button"] {
 .lesa-ui-group-rows-summary {
   width: fit-content;
 }
+
+td[data-test-id="ticket-table-cells-subject"] .lesa-ui-tags span {
+  background: rgb(233, 235, 237);
+  border-radius: 0.2em;
+  color: rgb(73, 84, 92);
+  font-size: smaller;
+  margin: 0.2em 0.2em;
+  padding: 0.3em;
+}
 `;
 }
 

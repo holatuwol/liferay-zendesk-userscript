@@ -463,7 +463,10 @@ if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
     setInterval(fixAttachmentLinks, 1000);
     setInterval(makeDraggableModals, 1000);
     setInterval(fixOldTicketStatusColumnStyle, 1000);
+  }
+  if (unsafeWindow.location.pathname.indexOf('/agent/filters/') == 0) {
     setInterval(addViewsGoToPageButton, 1000);
     setInterval(addViewsBreakdownLink, 1000);
+    setInterval(addViewsExtraColumns, 1000);
   }
 }

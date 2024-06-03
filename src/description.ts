@@ -11,7 +11,7 @@ function addHeatScoreMarker(
   ticketInfo: TicketMetadata
 ) : void {
 
-  var heatScore = getCustomFieldValue(ticketInfo, CUSTOM_FIELD_HEAT_SCORE);
+  var heatScore = getCustomFieldValue(ticketInfo.ticket, CUSTOM_FIELD_HEAT_SCORE);
 
   if (heatScore == null) {
     return;
@@ -233,7 +233,7 @@ function isDummyComment(
   ticketInfo: TicketMetadata,
   comment: Element
 ) : boolean {
-  var childOf = getCustomFieldValue(ticketInfo, CUSTOM_FIELD_CHILD_OF);
+  var childOf = getCustomFieldValue(ticketInfo.ticket, CUSTOM_FIELD_CHILD_OF);
 
   if (childOf == null || childOf.indexOf('child_of:') == -1) {
     return false;
@@ -258,8 +258,8 @@ function isDummyComment(
 /**
  * Returns the custom field value
  */
-function getCustomFieldValue(ticketInfo: TicketMetadata, fieldId: number) {
-  var matchingFields = ticketInfo.ticket.custom_fields.filter(function (it) { return it.id == fieldId; });
+function getCustomFieldValue(ticketInfo: TicketAPIResult, fieldId: number) : any {
+  var matchingFields = ticketInfo.custom_fields.filter(function (it) { return it.id == fieldId; });
   return matchingFields.length == 0 ? null : matchingFields[0].value;
 }
 

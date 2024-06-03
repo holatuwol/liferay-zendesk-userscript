@@ -77,18 +77,20 @@ type TicketAuditEvent = {
   events: Array<{body: {article: {title: string, html_url: string}}, type: string}>
 }
 
+type TicketAPIResult = {
+  id: number
+  custom_fields: Array<{id: number; value: string | null}>
+  priority: string | null
+  raw_subject: string
+  requester_id: number
+  status: string
+  tags: Array<string> | null
+}
+
 type TicketMetadata = {
   audits?: Array<TicketAuditEvent>
-  ticket: {
-    id: number
-    custom_fields: Array<{id: number; value: string | null}>
-    priority: string | null
-    raw_subject: string
-    requester_id: number
-    status: string
-    tags: Array<string> | null
-  };
-  organizations: Array<OrganizationMetadata>;
+  ticket: TicketAPIResult
+  organizations: Array<OrganizationMetadata>
 }
 
 interface TinyMCEDomQuery {

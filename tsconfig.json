@@ -25,6 +25,7 @@
     "src/cursor_paginator.ts",
     "src/internal.ts",
     "src/group_rows.ts",
+    "src/view_columns.ts",
     "src/main.ts"
   ]
 }
