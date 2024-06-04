@@ -24,7 +24,15 @@ function populateViewsExtraColumns(
       continue;
     }
 
-    var categoriesContainer = document.createElement('div');
+    var cell = <HTMLTableCellElement> link.closest('td');
+
+    var categoriesContainer = cell.querySelector('.lesa-ui-tags');
+
+    if (categoriesContainer) {
+      categoriesContainer.remove();
+    }
+
+    categoriesContainer = document.createElement('div');
     categoriesContainer.classList.add('lesa-ui-tags');
 
     categoriesContainer = swarmCategories.reduce((acc, next) => {
@@ -33,8 +41,6 @@ function populateViewsExtraColumns(
       acc.appendChild(categoryElement);
       return acc;
     }, categoriesContainer);
-
-    var cell = <HTMLTableCellElement> link.closest('td');
 
     cell.appendChild(categoriesContainer);
   }
@@ -49,6 +55,7 @@ function addViewsExtraColumns() : void {
 
   var currentFilter = unsafeWindow.location.pathname.substring('/agent/filters/'.length);
   var currentPage = '1';
+  var currentSorts = Array.from(document.querySelectorAll('div#views_views-ticket-table thead th[aria-sort]:not([aria-sort="none"])')).map(it => it.textContent).filter(it => it && it.trim()).join(',');
 
   var pageIndicator = document.querySelector('span[data-test-id="views_views-header-page-amount"]');
 
@@ -62,13 +69,15 @@ function addViewsExtraColumns() : void {
 
   var previousFilter = ticketTable.getAttribute('data-lesa-ui-filter-container-id');
   var previousPage = ticketTable.getAttribute('data-lesa-ui-filter-page-number');
+  var previousSorts = ticketTable.getAttribute('data-lesa-ui-filter-sorts');
 
-  if ((currentFilter == previousFilter) && (currentPage == previousPage)) {
+  if ((currentFilter == previousFilter) && (currentPage == previousPage) && (currentSorts == previousSorts)) {
     return;
   }
 
   ticketTable.setAttribute('data-lesa-ui-filter-container-id', currentFilter);
   ticketTable.setAttribute('data-lesa-ui-filter-page-number', currentPage);
+  ticketTable.setAttribute('data-lesa-ui-filter-sorts', currentSorts);
 
   var requestURL = '/api/v2/views/' + currentFilter + '/tickets.json?per_page=30&page=' + currentPage;
 
