@@ -223,6 +223,10 @@ function getProductVersion(tags: string[]) : string {
   for (var i = 0; i < tags.length; i++) {
     var tag = tags[i];
 
+    if (tag == 'go_live_7_days') {
+        continue;
+    }
+
     var qr = tag.indexOf('prd_quarterly_release');
 
     if (qr == 0) {
