@@ -135,11 +135,7 @@ function addPermaLinks(
       continue;
     }
 
-    var commentHeader = null;
-
-    var actionsElement = <HTMLElement>comments[i].querySelector('.omnilog-header-actions');
-    commentHeader = actionsElement.parentElement
-
+    var commentHeader = comments[i].querySelector('div[data-test-id="ticket-conversation-event-message-envelope-container"]');
     if (!commentHeader) {
       continue;
     }
