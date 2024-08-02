@@ -69,7 +69,7 @@ function extractAttachmentLinkMetadata(
   encodedFileName = encodedFileName.replace(/\+/g, '%20');
   var attachmentFileName = decodeURIComponent(encodedFileName);
 
-  var authorElement = <HTMLElement> comment.querySelector('span[data-test-id="omni-log-item-sender"]');
+  var authorElement = <HTMLElement> comment.querySelector('div[data-test-id="omni-log-item-sender"]');
 
   var timeElement = <HTMLTimeElement> comment.querySelector('time');
 
@@ -80,7 +80,7 @@ function extractAttachmentLinkMetadata(
     download: attachmentFileName,
     commentId: <string> comment.getAttribute('data-comment-id'),
     author: <string> authorElement.textContent,
-    time: timeElement.title,
+    time: timeElement.textContent || 'unknown',
     timestamp: <string> timeElement.getAttribute('datetime'),
     missingCorsHeader: false
   };
@@ -96,7 +96,7 @@ function extractExternalLinkMetadata(
 
   var comment = <HTMLDivElement> externalLink.closest('article');
 
-  var authorElement = <HTMLElement> comment.querySelector('span[data-test-id="omni-log-item-sender"]');
+  var authorElement = <HTMLElement> comment.querySelector('div[data-test-id="omni-log-item-sender"]');
 
   var timeElement = <HTMLTimeElement> comment.querySelector('time');
 
@@ -110,7 +110,7 @@ function extractExternalLinkMetadata(
     download: <string> externalLink.textContent,
     commentId: <string> comment.getAttribute('data-comment-id'),
     author: <string> authorElement.textContent,
-    time: timeElement.title,
+    time: timeElement.textContent || 'unknown',
     timestamp: <string> timeElement.getAttribute('datetime'),
     missingCorsHeader: true
   }
@@ -136,7 +136,7 @@ function addAttachmentDate(
   var attachmentExtraInfo = document.createElement('div');
   attachmentExtraInfo.classList.add('lesa-ui-attachment-extra-info');
 
-  attachmentExtraInfo.appendChild(document.createTextNode(attachment.author + ' on '));
+  attachmentExtraInfo.appendChild(document.createTextNode(attachment.author + ', '));
 
   var attachmentCommentLink = createAnchorTag(newDate, null);
   attachmentCommentLink.classList.add('attachment-comment-link');
