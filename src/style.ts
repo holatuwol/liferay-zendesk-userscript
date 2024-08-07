@@ -309,6 +309,10 @@ td[data-test-id="ticket-table-cells-subject"] .lesa-ui-tags span {
   margin: 0.2em 0.2em;
   padding: 0.3em;
 }
+
+div[data-cy-test-id="status-badge-state"] {
+  width: 4em;
+}
 `;
 }
 

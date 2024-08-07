@@ -219,20 +219,25 @@ function checkForSubtitles() : void {
   }
 }
 
-function abbreviateBadgeText(badge: HTMLElement) : void {
+function abbreviateBadgeText(badge: HTMLElement) : boolean {
+  var madeResizeChanges = false;
   if (!badge.textContent || (badge.textContent.length <= 2) || (badge.textContent[0] == '\u00A0')) {
-    return;
+    return madeResizeChanges;
   }
 
   if (badge.textContent === 'On-hold') {
     badge.textContent = '\u00A0H\u00A0';
+    madeResizeChanges = true;
   }
   else if (badge.textContent === 'Open-Pending') {
     badge.textContent = 'OP';
+    madeResizeChanges = true;
   }
   else {
     badge.textContent = '\u00A0' + badge.textContent[0] + '\u00A0';
+    madeResizeChanges = true;
   }
+  return madeResizeChanges;
 }
 
 /**
@@ -247,29 +252,44 @@ function fixOldTicketStatusColumnStyle() : void {
 
   /* update status column */
   var badges = <Array<HTMLElement>> Array.from(document.querySelectorAll('div[data-cy-test-id="status-badge-state"]'));
+  var needsResize = false;
 
   for (var badge of badges) {
-    updateBadge(badge);
+  	if (updateBadge(badge)) {
+      needsResize = true;
+  	}
     /* Change the status text to the abbreviate form only if we are in a view page and we are not in a popup */
     if (viewPage && !isBadgeInPopup(badge)) {
-      abbreviateBadgeText(badge);
+      if (abbreviateBadgeText(badge)) {
+        needsResize = true;
+      }
     }
   }
 
   /* Update Open-Pending badge color inside the ticket */
   var ticketBadges = <Array<HTMLElement>> Array.from(document.querySelectorAll('span.ticket_status_label'));
   for (var badge of ticketBadges) {
-    updateBadge(badge);
+    if (updateBadge(badge)) {
+      needsResize = true;
+    }
   }
 
   if (viewPage) {
-    removeTicketStatusColumn();
-    adjustColumnTextWidth();
-    unsafeWindow.dispatchEvent(new Event('resize'));
+  	if (removeTicketStatusColumn()) {
+      needsResize = true;
+  	}
+  	if (adjustColumnTextWidth()) {
+  	  needsResize = true;
+  	}
+
+    if (needsResize) {
+      unsafeWindow.dispatchEvent(new Event('resize'));
+    }
   }
 }
 
-function adjustColumnTextWidth(): void {
+function adjustColumnTextWidth() : boolean {
+  var madeResizeChanges = false;
   var tables = Array.from(document.querySelectorAll<HTMLTableElement>('table[data-onboarding-id="table_main"], table[data-test-id="table_header"]'));
 
   for (var table of tables) {
@@ -284,6 +304,7 @@ function adjustColumnTextWidth(): void {
         if (button) {button.title = 'Heat Score';}
 
         textHeader.nodeValue = 'Heat';
+        madeResizeChanges = true;
       }
       header.setAttribute('heatscore_processed', 'true');
     }
@@ -311,39 +332,46 @@ function adjustColumnTextWidth(): void {
       cell.title = cell.textContent;
       if (cell.textContent === 'Liferay DXP::Quarterly Release') {
         cell.textContent = 'DXP::Quarterly';
+        madeResizeChanges = true;
       }
       else if (cell.textContent === 'LXC - Self-Managed') {
         cell.textContent = 'LXC - SM';
+        madeResizeChanges = true;
       }
       else if (cell.textContent === 'Provisioning Request') {
         cell.textContent = 'Provisioning';
+        madeResizeChanges = true;
       }
       else if (cell.textContent.startsWith('Liferay ')) {
         cell.textContent = cell.textContent.replace('Liferay ', '');
+        madeResizeChanges = true;
       }
       cell.setAttribute('product_processed', 'true');
     }
   }
 
-  function getTextHeader(header: HTMLTableCellElement): ChildNode | null {
-    var button = header.querySelector('button');
-    if (!button) {
-      return null;
-    }
-
-    if (!button.firstChild) {
-      return null;
-    }
-
-    if (button.firstChild.nodeType === Node.TEXT_NODE) {
-      return button.firstChild;
-    }
-
-    return null;
-  }
+  return madeResizeChanges;
 }
 
-function removeTicketStatusColumn() : void {
+function getTextHeader(header: HTMLTableCellElement): ChildNode | null {
+  var button = header.querySelector('button');
+  if (!button) {
+    return null;
+  }
+
+  if (!button.firstChild) {
+    return null;
+  }
+
+  if (button.firstChild.nodeType === Node.TEXT_NODE) {
+    return button.firstChild;
+  }
+
+  return null;
+}
+
+function removeTicketStatusColumn() : boolean {
+  var madeResizeChanges = false;
   var tables = <Array<HTMLTableElement>> Array.from(document.querySelectorAll('table[data-onboarding-id="table_main"], table[data-test-id="table_header"]'));
 
   for (var i = 0; i < tables.length; i++) {
@@ -386,6 +414,8 @@ function removeTicketStatusColumn() : void {
       continue
     }
 
+    madeResizeChanges = true;
+
     /* remove "Ticket status" text from headers */
     statusHeaderCell.setAttribute('processed', 'true');
     statusHeaderCell.textContent = ' ';
@@ -405,9 +435,12 @@ function removeTicketStatusColumn() : void {
       cell.style.padding = '0';
     }
   }
+
+  return madeResizeChanges;
 }
 
-function updateBadge(badge: HTMLElement) : void {
+function updateBadge(badge: HTMLElement) : boolean {
+  var madeResizeChanges = false;
   /* Change badge colors for Open-Pending to purple */
   if ((badge.textContent === 'Open-Pending' || badge.textContent === 'OP')) {
     if (!badge.getAttribute('updated-open-color')) {
@@ -426,7 +459,9 @@ function updateBadge(badge: HTMLElement) : void {
     badge.style.setProperty("color", "#04363d", "important");
     badge.textContent = 'Closed';
     badge.setAttribute('updated-closed-color', "true");
+    madeResizeChanges = true;
   }
+  return madeResizeChanges;
 }
 
 function isBadgeInPopup(badge: HTMLElement) : boolean {
