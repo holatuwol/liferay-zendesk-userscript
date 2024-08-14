@@ -135,11 +135,12 @@ function addPermaLinks(
       continue;
     }
 
-    var commentHeader = comments[i].querySelector('div[data-test-id="ticket-conversation-event-message-envelope-container"]');
-    if (!commentHeader) {
+    var itemSender = comments[i].querySelector('div[data-test-id="omni-log-item-sender"]');
+    if (!itemSender) {
       continue;
     }
 
+    var commentHeader = <HTMLElement>itemSender.parentElement;
     var parentElement = <HTMLElement>commentHeader.parentElement;
     if (parentElement.querySelector('.lesa-ui-permalink')) {
       continue;
