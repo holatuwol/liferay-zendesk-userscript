@@ -188,6 +188,9 @@ span[data-garden-container-id="containers.tooltip"] {
   font-size: 10px;
   font-weight: 600;
   text-align: center;
+}
+
+.lesa-ui-priority span:not(.lesa-ui-offering) {
   text-transform: uppercase;
 }
 
@@ -219,6 +222,10 @@ span[data-garden-container-id="containers.tooltip"] {
 .lesa-ui-subpriority {
   border: 1px #eee dashed;
   font-size: 0.8em;
+}
+
+.lesa-ui-offering {
+  background-color: #222;
 }
 
 .lesa-ui-priority-minor,

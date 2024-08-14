@@ -34,7 +34,6 @@ function addServiceLifeMarker(
     }
   }
 
-
   if ((version == '6.x') || (version == '7.0') || (version == '7.1')) {
     limitedSupport = true;
     endOfSoftwareLife = true;
@@ -207,6 +206,34 @@ function getSupportRegions(
   return new Set(supportRegions.map(x => x.toLowerCase()));
 }
 
+function addOfferingMarker(
+  priorityElement: HTMLElement,
+  ticketInfo: TicketMetadata,
+  ticketTags: string[]
+) : void {
+
+  var offeringElement = document.createElement('span');
+  offeringElement.classList.add('lesa-ui-offering');
+  offeringElement.setAttribute('title', 'Offering');
+
+  var offeringText = 'Self-Hosted';
+
+  for (var i = 0; i < ticketTags.length; i++) {
+    if (ticketTags[i].indexOf('lxc_sm') != -1) {
+      offeringText = 'PaaS';
+      break;
+    }
+    else if (ticketTags[i].indexOf('lxc') != -1) {
+      offeringText = 'SaaS';
+      break;
+    }
+  }
+
+  offeringElement.textContent = offeringText;
+
+  priorityElement.appendChild(offeringElement);
+}
+
 const middleEastCountries = new Set([
   'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Kuwait', 'Bahrein', 'Oman', 'Jordan', 'Iraq', 'Lebanon'
 ]);
@@ -353,6 +380,7 @@ function addPriorityMarker(
   var organizationTags = (ticketInfo && ticketInfo.organizations) ? ticketInfo.organizations.map(it => it.tags || []).reduce((acc, it) => acc.concat(it), []) : [];
   organizationTags = Array.from(new Set(organizationTags));
 
+  addOfferingMarker(priorityElement, ticketInfo, ticketTags);
   addRegionMarker(priorityElement, ticketInfo, ticketContainer);
   addServiceLifeMarker(priorityElement, ticketId, ticketTags, organizationTags);
   addCriticalMarker(priorityElement, ticketInfo, ticketTagSet);
