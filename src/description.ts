@@ -1,23 +1,9 @@
 const CUSTOM_FIELD_CHILD_OF = 360013377052;
 const CUSTOM_FIELD_HEAT_SCORE = 360049454932;
+const CUSTOM_FIELD_OFFERING = 360006076471;
 
-/**
- * Add a heat score.
- */
-
-function addHeatScoreMarker(
-  header: HTMLElement,
-  conversation: HTMLElement,
-  ticketInfo: TicketMetadata
-) : void {
-
-  var heatScore = getCustomFieldValue(ticketInfo.ticket, CUSTOM_FIELD_HEAT_SCORE);
-
-  if (heatScore == null) {
-    return;
-  }
-
-  var slaPolicy = conversation.querySelector('div[data-test-id^="sla-policy-"]');
+function getSlaPolicyContainer(conversation: HTMLElement) : HTMLElement[] {
+  var slaPolicy = <HTMLElement> conversation.querySelector('div[data-test-id^="sla-policy-"]');
 
   var slaPolicyContainer = <HTMLSpanElement | null> null;
 
@@ -40,6 +26,27 @@ function addHeatScoreMarker(
   else {
     slaPolicyContainer = <HTMLSpanElement> slaPolicy.parentElement;
   }
+
+  return [slaPolicy, slaPolicyContainer];
+}
+
+/**
+ * Add a heat score.
+ */
+
+function addHeatScoreMarker(
+  header: HTMLElement,
+  conversation: HTMLElement,
+  ticketInfo: TicketMetadata
+) : void {
+
+  var heatScore = getCustomFieldValue(ticketInfo.ticket, CUSTOM_FIELD_HEAT_SCORE);
+
+  if (heatScore == null) {
+    return;
+  }
+
+  var [slaPolicy, slaPolicyContainer] = getSlaPolicyContainer(conversation);
 
   var heatScoreElement = document.createElement('span');
   heatScoreElement.classList.add('lesa-ui-heat-score', 'lesa-ui-priority-major');
