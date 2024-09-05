@@ -20,13 +20,10 @@ function setReactInputValue(
   // Format dates like React datepickers expect.
 
   if (value instanceof Date) {
-    var mm = value.getMonth() + 1;
-    var mmString = (mm < 10) ? '0' + mm : mm;
-    var dd = value.getDate();
-    var ddString = (dd < 10) ? '0' + dd : dd;
-    var yyyy = value.getFullYear();
+    var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    var userLocale = navigator.language;
 
-    value = mmString + '/' + ddString + '/' + yyyy;
+    value = new Intl.DateTimeFormat(userLocale, options).format(value);
   }
 
   // Make sure to call the right setter function so the underlying state is updated.
