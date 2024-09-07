@@ -86,7 +86,7 @@ function getCriticalMarkerText(
     return 'critical';
   }
 
-  return null;
+  return subpriority;
 }
 
 function addCriticalMarker(
