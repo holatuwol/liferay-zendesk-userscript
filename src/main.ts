@@ -255,9 +255,9 @@ function fixOldTicketStatusColumnStyle() : void {
   var needsResize = false;
 
   for (var badge of badges) {
-  	if (updateBadge(badge)) {
+    if (updateBadge(badge)) {
       needsResize = true;
-  	}
+    }
     /* Change the status text to the abbreviate form only if we are in a view page and we are not in a popup */
     if (viewPage && !isBadgeInPopup(badge)) {
       if (abbreviateBadgeText(badge)) {
@@ -275,12 +275,12 @@ function fixOldTicketStatusColumnStyle() : void {
   }
 
   if (viewPage) {
-  	if (removeTicketStatusColumn()) {
+    if (removeTicketStatusColumn()) {
       needsResize = true;
-  	}
-  	if (adjustColumnTextWidth()) {
-  	  needsResize = true;
-  	}
+    }
+    if (adjustColumnTextWidth()) {
+      needsResize = true;
+    }
 
     if (needsResize) {
       unsafeWindow.dispatchEvent(new Event('resize'));
@@ -487,21 +487,32 @@ function isBadgeInPopup(badge: HTMLElement) : boolean {
   return false;
 }
 
+function updateZendeskUI() : void {
+  var pathname = unsafeWindow.location.pathname;
+  if (pathname.indexOf('/agent/') == 0) {
+    checkForConversations();
+    checkForSubtitles();
+    checkSidebarTags();
+
+    fixAttachmentLinks();
+    makeDraggableModals();
+    fixOldTicketStatusColumnStyle();
+
+    if (pathname.indexOf('/agent/filters/') == 0) {
+      addViewsGoToPageButton();
+      addViewsBreakdownLink();
+      addViewsExtraColumns();
+    }
+
+    if (pathname.indexOf('/agent/search/') == 0) {
+      addSearchExtraColumns();
+    }
+  }
+}
+
 // Since there's an SPA framework in place that I don't fully understand,
 // attempt to do everything once per second.
 
 if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
-  if (unsafeWindow.location.pathname.indexOf('/agent/') == 0) {
-    setInterval(checkForConversations, 1000);
-    setInterval(checkForSubtitles, 1000);
-    setInterval(checkSidebarTags, 1000);
-    setInterval(fixAttachmentLinks, 1000);
-    setInterval(makeDraggableModals, 1000);
-    setInterval(fixOldTicketStatusColumnStyle, 1000);
-  }
-  if (unsafeWindow.location.pathname.indexOf('/agent/filters/') == 0) {
-    setInterval(addViewsGoToPageButton, 1000);
-    setInterval(addViewsBreakdownLink, 1000);
-    setInterval(addViewsExtraColumns, 1000);
-  }
+  setInterval(updateZendeskUI, 1000);
 }
