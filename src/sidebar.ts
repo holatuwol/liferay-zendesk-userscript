@@ -219,44 +219,57 @@ function getPatcherPortalAccountsHREF(
  * Retrieve the Liferay version from the tags.
  */
 
-function getProductVersion(tags: string[]) : string {
+function getProductVersions(tags: string[]) : string[] {
+  var candidates = [];
+
   for (var i = 0; i < tags.length; i++) {
     var tag = tags[i];
 
-    if (tag == 'go_live_7_days') {
+    if (tag == 'prd_quarterly_release') {
+      candidates.push('Quarterly Release');
+    }
+    else if (tag.indexOf('prd_liferay_dxp_7_') == 0) {
+      candidates.push('7.' + tag.charAt(18));
+    }
+    else if (tag.indexOf('prd_liferay_portal_') == 0) {
+      candidates.push('6.x');
+    }
+    else if ((tag.indexOf('go_live_') == 0) || (tag.indexOf('_eps') != -1)) {
+      continue;
+    }
+    else {
+      var x = tag.indexOf('7_');
+
+      if (x == 0) {
+        candidates.push('7.' + tag.charAt(2));
         continue;
-    }
+      }
 
-    var qr = tag.indexOf('prd_quarterly_release');
+      x = tag.indexOf('_7_');
 
-    if (qr == 0) {
-        return 'Quarterly Release';
-    }
+      if (x != -1) {
+        candidates.push('7.' + tag.charAt(x + 3));
+        continue;
+      }
 
-    var x = tag.indexOf('7_');
-
-    if (x == 0) {
-      return '7.' + tag.charAt(2);
-    }
-
-    x = tag.indexOf('_7_');
-
-    if (x != -1) {
-      return '7.' + tag.charAt(x + 3);
-    }
-
-    x = tag.indexOf('6_');
-    if (x == 0) {
-      return '6.x';
-    }
-
-    x = tag.indexOf('_6_');
-    if (x != -1) {
-      return '6.x';
+      if ((tag.indexOf('6_') == 0) || (tag.indexOf('_6_') != -1)) {
+        candidates.push('6.x');
+        continue;
+      }
     }
   }
 
-  return '';
+  if ((candidates.indexOf('7.4') != -1) && (candidates.indexOf('Quarterly Release') == -1)) {
+    candidates.push('Quarterly Release');
+  }
+
+  candidates.sort().reverse();
+
+  if (candidates.length == 0) {
+    candidates.push('Quarterly Release');
+  }
+
+  return candidates;
 }
 
 /**
@@ -320,24 +333,17 @@ function addPatcherPortalField(
 
     patcherPortalItems.push(createAnchorTag('All Builds', allBuildsLinkHREF));
 
-    var version = getProductVersion(ticketInfo.ticket && ticketInfo.ticket.tags ? ticketInfo.ticket.tags : []);
+    var versions = getProductVersions(ticketInfo.ticket && ticketInfo.ticket.tags ? ticketInfo.ticket.tags : []);
 
-    if (version) {
+    for (var i = 0; i < versions.length; i++) {
+      var version = versions[i];
+
       var versionBuildsLinkHREF = getPatcherPortalAccountsHREF('/view', {
         'patcherBuildAccountEntryCode': accountCode,
         'patcherProductVersionId': getProductVersionId(version)
       });
 
       patcherPortalItems.push(createAnchorTag(version + ' Builds', versionBuildsLinkHREF));
-    }
-
-    if (version == '7.4') {
-      var versionBuildsLinkHREF = getPatcherPortalAccountsHREF('/view', {
-        'patcherBuildAccountEntryCode': accountCode,
-        'patcherProductVersionId': getProductVersionId('Quarterly Release')
-      });
-
-      patcherPortalItems.push(createAnchorTag('Quarterly Release Builds', versionBuildsLinkHREF));
     }
   }
   else if (ticketId) {

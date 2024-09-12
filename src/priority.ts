@@ -1,3 +1,21 @@
+const today = new Date();
+
+const limitedSupportDates = <Record<string, Date>> {
+  '6.x': new Date('2017-12-01'),
+  '7.0': new Date('2020-06-14'),
+  '7.1': new Date('2022-11-13'),
+  '7.2': new Date('2023-06-03'),
+  '7.3': new Date('2024-10-12')
+};
+
+const endOfSoftwareLifeDates = <Record<string, Date>> {
+  '6.x': new Date('2020-12-01'),
+  '7.0': new Date('2023-06-14'),
+  '7.1': new Date('2025-11-13'),
+  '7.2': new Date('2026-06-03'),
+  '7.3': new Date('2027-10-12')
+};
+
 function addServiceLifeMarker(
   priorityElement: HTMLElement,
   ticketId: string,
@@ -5,27 +23,45 @@ function addServiceLifeMarker(
   organizationTags: string[]
 ) : void {
 
-  var limitedSupport = false;
-  var endOfSoftwareLife = false;
-  var extendedPremiumSupport = null;
+  var versions = getProductVersions(ticketTags);
 
-  var version = getProductVersion(ticketTags);
+  if (versions.length == 0) {
+    return;
+  }
+
+  var version = versions[0];
+
+  if (!endOfSoftwareLifeDates[version] || !limitedSupportDates[version]) {
+    return;
+  }
+
+  var limitedSupport = (today > limitedSupportDates[version]);
+  var endOfSoftwareLife = (today > endOfSoftwareLifeDates[version]);
+
+  var declinedVersions = [];
 
   for (var i = 0; i < organizationTags.length; i++) {
     var tag = organizationTags[i];
 
-    if ((tag == 'neg_7_0_eps') && (version == '7.0')) {
-      extendedPremiumSupport = 'Declined 7.0 EPS';
+    if ((tag == 'neg_7_0_eps') && (versions.indexOf('7.0') != -1)) {
+      declinedVersions.push('7.0');
     }
-    else if ((tag == 'neg_7_1_eps') && (version == '7.1')) {
-      extendedPremiumSupport = 'Declined 7.1 EPS';
+    else if ((tag == 'neg_7_1_eps') && (versions.indexOf('7.1') != -1)) {
+      declinedVersions.push('7.1');
     }
-    else if ((tag == 'neg_7_2_eps') && (version == '7.2')) {
-      extendedPremiumSupport = 'Declined 7.2 EPS';
+    else if ((tag == 'neg_7_2_eps') && (versions.indexOf('7.2') != -1)) {
+      declinedVersions.push('7.2');
+    }
+    else if ((tag == 'neg_7_3_eps') && (versions.indexOf('7.3') != -1)) {
+      declinedVersions.push('7.3');
     }
   }
 
-  if (extendedPremiumSupport == null) {
+  declinedVersions.sort().reverse();
+
+  var extendedPremiumSupport = null;
+
+  if (declinedVersions.length == 0) {
     for (var i = 0; i < ticketTags.length; i++) {
       if ((ticketTags[i].indexOf('eps') != -1)) {
         extendedPremiumSupport = 'Extended Premium Support';
@@ -33,10 +69,8 @@ function addServiceLifeMarker(
       }
     }
   }
-
-  if ((version == '6.x') || (version == '7.0') || (version == '7.1')) {
-    limitedSupport = true;
-    endOfSoftwareLife = true;
+  else {
+    extendedPremiumSupport = 'Declined ' + declinedVersions[0] + ' EPS';
   }
 
   var serviceLifeLink = null;

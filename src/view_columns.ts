@@ -123,7 +123,7 @@ function addViewsExtraColumns() : void {
 
   var tableContainer = <HTMLElement> document.querySelector('div[data-garden-id="pane"][role="tabpanel"]');
 
-  var requestURL = '/api/v2/views/' + currentFilter + '/tickets.json?per_page=30&page=' + currentPage + '&sort_by=';
+  var requestURL = '/api/v2/views/' + currentFilter + '/tickets.json?per_page=30&page=' + currentPage;
   addTicketTableExtraColumns(tableContainer, requestURL);
 }
 
