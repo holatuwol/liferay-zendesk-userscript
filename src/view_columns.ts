@@ -2,12 +2,14 @@ const CUSTOM_FIELD_SWARM_CATEGORIES = 14748442953229;
 
 function populateTicketTableExtraColumns(
   tableContainer: HTMLElement,
-  tickets: TicketAPIResult[]
+  tickets?: TicketAPIResult[]
 ) : void {
 
-  if (tableContainer.querySelectorAll('td[data-test-id="ticket-table-cells-subject"]').length != tickets.length) {
-    setTimeout(populateTicketTableExtraColumns.bind(null, tickets), 100);
-    return
+  if (tickets) {
+    tableContainer.setAttribute('data-tickets', JSON.stringify(tickets));
+  }
+  else {
+    tickets = <TicketAPIResult[]> JSON.parse(tableContainer.getAttribute('data-tickets') || '[]');
   }
 
   for (var i = 0; i < tickets.length; i++) {
@@ -34,7 +36,7 @@ function populateTicketTableExtraColumns(
     var categoriesContainer = cell.querySelector('.lesa-ui-tags');
 
     if (categoriesContainer) {
-      categoriesContainer.remove();
+      continue;
     }
 
     categoriesContainer = document.createElement('div');
@@ -63,18 +65,15 @@ function addTicketTableExtraColumns(
     return;
   }
 
-  var currentSorts = Array.from(tableContainer.querySelectorAll('div#views_views-ticket-table thead th[aria-sort]:not([aria-sort="none"])')).map(it => it.textContent).filter(it => it && it.trim()).join(',');
-  var previousSorts = ticketTable.getAttribute('data-lesa-ui-filter-sorts');
-
   var currentURL = requestURL;
   var previousURL = ticketTable.getAttribute('data-lesa-ui-filter-url');
 
-  if ((currentSorts == previousSorts) && (currentURL == previousURL)) {
+  if (currentURL == previousURL) {
+    populateTicketTableExtraColumns(tableContainer);
     return;
   }
 
   ticketTable.setAttribute('data-lesa-ui-filter-url', currentURL);
-  ticketTable.setAttribute('data-lesa-ui-filter-sorts', currentSorts);
 
   var xhr = new XMLHttpRequest();
 
@@ -108,6 +107,12 @@ function addTicketTableExtraColumns(
 }
 
 function addViewsExtraColumns() : void {
+  var tableContainer = document.querySelector('div[data-garden-id="pane"][role="tabpanel"]');
+
+  if (tableContainer == null) {
+    return;
+  }
+
   var currentFilter = unsafeWindow.location.pathname.substring('/agent/filters/'.length);
   var currentPage = '1';
 
@@ -121,10 +126,8 @@ function addViewsExtraColumns() : void {
     }
   }
 
-  var tableContainer = <HTMLElement> document.querySelector('div[data-garden-id="pane"][role="tabpanel"]');
-
   var requestURL = '/api/v2/views/' + currentFilter + '/tickets.json?per_page=30&page=' + currentPage;
-  addTicketTableExtraColumns(tableContainer, requestURL);
+  addTicketTableExtraColumns(<HTMLElement> tableContainer, requestURL);
 }
 
 function addSearchExtraColumns() : void {

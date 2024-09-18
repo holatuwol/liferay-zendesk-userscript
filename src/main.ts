@@ -489,6 +489,7 @@ function isBadgeInPopup(badge: HTMLElement) : boolean {
 
 function updateZendeskUI() : void {
   var pathname = unsafeWindow.location.pathname;
+
   if (pathname.indexOf('/agent/') == 0) {
     checkForConversations();
     checkForSubtitles();
@@ -500,7 +501,6 @@ function updateZendeskUI() : void {
 
     if (pathname.indexOf('/agent/filters/') == 0) {
       addViewsGoToPageButton();
-      addViewsBreakdownLink();
       addViewsExtraColumns();
     }
 
@@ -508,11 +508,12 @@ function updateZendeskUI() : void {
       addSearchExtraColumns();
     }
   }
+  else if (pathname.indexOf('/knowledge/') == 0) {
+    updateKnowledgeCenterEditor();
+  }
 }
 
 // Since there's an SPA framework in place that I don't fully understand,
 // attempt to do everything once per second.
 
-if (unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) {
-  setInterval(updateZendeskUI, 1000);
-}
+setInterval(updateZendeskUI, 1000);

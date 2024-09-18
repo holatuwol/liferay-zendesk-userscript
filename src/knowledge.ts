@@ -133,9 +133,3 @@ function updateKnowledgeCenterEditor() {
   addArticleFormattingButtons(tinymce);
   addArticleSubmissionListeners(tinymce);
 }
-
-if ((unsafeWindow.location.hostname.indexOf('zendesk.com') != -1) &&
-  (unsafeWindow.location.pathname.indexOf('/knowledge/') == 0)) {
-
-  setInterval(updateKnowledgeCenterEditor, 1000);
-}
