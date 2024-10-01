@@ -202,6 +202,9 @@ function addOrganizationField(
 
     generateFormField(propertyBox, 'lesa-ui-suborganization', 'Sub Organization', [subOrganizationContainer]);
   }
+  else {
+    generateFormField(propertyBox, 'lesa-ui-suborganization', '', []);
+  }
 }
 
 /**
