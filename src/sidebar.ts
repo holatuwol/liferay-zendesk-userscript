@@ -158,7 +158,10 @@ function addOrganizationField(
 
   if (organizationInfo) {
     var organizationFields = organizationInfo.organization_fields;
-    serviceLevel.push(organizationFields.sla.toUpperCase());
+    var sla = organizationFields.sla;
+    if (sla) {
+      serviceLevel.push(sla.toUpperCase());
+    }
 
     helpCenterLinkHREF = "https://support.liferay.com/project/#/" +
        organizationInfo.organization_fields.account_key;
