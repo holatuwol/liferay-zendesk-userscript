@@ -513,7 +513,29 @@ function updateZendeskUI() : void {
   }
 }
 
-// Since there's an SPA framework in place that I don't fully understand,
-// attempt to do everything once per second.
+GM_config.init({
+  id: 'zendesk_for_tse_config',
+  title: GM_info.script.name + ' Settings',
+  fields: {
+      EXECUTION_INTERVAL: {
+          label: 'Execution interval (ms)',
+          type: 'number',
+          min: 1,
+          default: 1000,
+          title: 'The number of milliseconds to wait between each execution of the script'
+      }
+  },
+  events: {
+      init: onInit
+  }
+})
 
-setInterval(updateZendeskUI, 1000);
+GM_registerMenuCommand('Settings', () => {
+  GM_config.open()
+})
+
+function onInit() {
+  // Since there's an SPA framework in place that I don't fully understand,
+  // attempt to do everything once per second.
+  setInterval(updateZendeskUI, GM_config.get('EXECUTION_INTERVAL'));
+}
