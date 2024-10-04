@@ -517,6 +517,12 @@ GM_config.init({
   id: 'zendesk_for_tse_config',
   title: GM_info.script.name + ' Settings',
   fields: {
+      DISPLAY_SWARMING_CATEGORIES_ON_LIST: {
+          label: 'Display Swarming Skills on ticket rows',
+          type: 'checkbox',
+          default: true,
+          title: 'Check if you want to display the Swarming Skils on ticket rows below the ticket title in filter viewsCheck if you want to display the Swarming Skils on ticket rows below the ticket title in filter views. This will make rows larger vertically.'
+      },
       EXECUTION_INTERVAL: {
           label: 'Execution interval (ms)',
           type: 'number',
