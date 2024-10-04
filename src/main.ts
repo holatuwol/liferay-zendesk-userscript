@@ -523,6 +523,12 @@ GM_config.init({
           default: true,
           title: 'Check if you want to display the Swarming Skils on ticket rows below the ticket title in filter viewsCheck if you want to display the Swarming Skils on ticket rows below the ticket title in filter views. This will make rows larger vertically.'
       },
+      DISPLAY_SUB_ORGANIZATION_ON_LIST: {
+          label: 'Display suborganization information on tickets rows (Spain office only)',
+          type: 'checkbox',
+          default: false,
+          title: 'Check if you want to display the suborganization information on ticket rows below the ticket title'
+      },
       EXECUTION_INTERVAL: {
           label: 'Execution interval (ms)',
           type: 'number',

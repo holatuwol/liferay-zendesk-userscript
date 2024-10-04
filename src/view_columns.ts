@@ -5,10 +5,6 @@ function populateTicketTableExtraColumns(
   tickets?: TicketAPIResult[]
 ) : void {
 
-  if (!GM_config.get('DISPLAY_SWARMING_CATEGORIES_ON_LIST')) {
-    return;
-  }
-
   if (tickets) {
     tableContainer.setAttribute('data-tickets', JSON.stringify(tickets));
   }
@@ -16,44 +12,99 @@ function populateTicketTableExtraColumns(
     tickets = <TicketAPIResult[]> JSON.parse(tableContainer.getAttribute('data-tickets') || '[]');
   }
 
-  for (var i = 0; i < tickets.length; i++) {
-    if (!tickets[i].custom_fields) {
-      continue;
+  if (GM_config.get('DISPLAY_SWARMING_CATEGORIES_ON_LIST')) {
+    for (var i = 0; i < tickets.length; i++) {
+      if (!tickets[i].custom_fields) {
+        continue;
+      }
+
+      var swarmCategories = <string[] | null> getCustomFieldValue(tickets[i], CUSTOM_FIELD_SWARM_CATEGORIES);
+
+      if (swarmCategories == null) {
+        continue;
+      }
+
+      var selector = 'td[data-test-id="ticket-table-cells-subject"] a[href="tickets/' + tickets[i].id + '"]';
+
+      var link = tableContainer.querySelector(selector);
+
+      if (!link) {
+        continue;
+      }
+
+      var cell = <HTMLTableCellElement> link.closest('td');
+
+      var categoriesContainer = cell.querySelector('.lesa-ui-tags');
+
+      if (categoriesContainer) {
+        continue;
+      }
+
+      categoriesContainer = document.createElement('div');
+      categoriesContainer.classList.add('lesa-ui-tags');
+
+      categoriesContainer = swarmCategories.reduce((acc, next) => {
+        var categoryElement = document.createElement('span');
+        categoryElement.textContent = '+' + next.substring(5);
+        acc.appendChild(categoryElement);
+        return acc;
+      }, categoriesContainer);
+
+      cell.appendChild(categoriesContainer);
     }
+  }
 
-    var swarmCategories = <string[] | null> getCustomFieldValue(tickets[i], CUSTOM_FIELD_SWARM_CATEGORIES);
+  if (GM_config.get('DISPLAY_SUB_ORGANIZATION_ON_LIST')) {
+    for (var i = 0; i < tickets.length; i++) {
+        var selector = 'td[data-test-id="generic-table-cells-id"]';
 
-    if (swarmCategories == null) {
-      continue;
+        var cellIds = <Array<HTMLElement>> Array.from(tableContainer.querySelectorAll(selector));
+
+        var cellId = null;
+
+        for (var j = 0; j < cellIds.length; j++) {
+            const cellIdText = cellIds[j].textContent;
+            if (cellIdText == null) {
+              continue;
+            }
+
+            if (cellIdText.trim() === "#" + tickets[i].id) {
+              cellId = cellIds[j];
+            }
+        }
+
+        if (cellId == null) {
+            continue;
+        }
+
+        var subOrgContainer = cellId.querySelector('.lesa-ui-tags');
+        if (subOrgContainer) {
+            continue;
+        }
+        var ticketTags = tickets[i].tags;
+        if (ticketTags == null) {
+          continue;
+        }
+
+        for (var j = 0; j < ticketTags.length; j++) {
+        var tag = ticketTags[j];
+        if (tag.startsWith("spain_pod_")) {
+          var container;
+          if (GM_config.get('DISPLAY_SWARMING_CATEGORIES_ON_LIST')) {
+            container = document.createElement('div');
+            cellId.appendChild(container);
+          }
+          else {
+            container = cellId;
+            cellId.textContent = cellId.textContent + " ";
+          }
+          var tagElement = document.createElement('span');
+          tagElement.classList.add('lesa-ui-tags');
+          tagElement.textContent = tag;
+          container.appendChild(tagElement);
+        }
+      }
     }
-
-    var selector = 'td[data-test-id="ticket-table-cells-subject"] a[href="tickets/' + tickets[i].id + '"]';
-
-    var link = tableContainer.querySelector(selector);
-
-    if (!link) {
-      continue;
-    }
-
-    var cell = <HTMLTableCellElement> link.closest('td');
-
-    var categoriesContainer = cell.querySelector('.lesa-ui-tags');
-
-    if (categoriesContainer) {
-      continue;
-    }
-
-    categoriesContainer = document.createElement('div');
-    categoriesContainer.classList.add('lesa-ui-tags');
-
-    categoriesContainer = swarmCategories.reduce((acc, next) => {
-      var categoryElement = document.createElement('span');
-      categoryElement.textContent = '+' + next.substring(5);
-      acc.appendChild(categoryElement);
-      return acc;
-    }, categoriesContainer);
-
-    cell.appendChild(categoriesContainer);
   }
 }
 

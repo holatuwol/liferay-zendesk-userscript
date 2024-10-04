@@ -323,6 +323,16 @@ td[data-test-id="ticket-table-cells-subject"] .lesa-ui-tags span {
   padding-right: 0.3em;
 }
 
+td[data-test-id="generic-table-cells-id"] span.lesa-ui-tags {
+  background: rgb(233, 235, 237);
+  border-radius: 0.2em;
+  color: rgb(73, 84, 92);
+  font-size: x-small;
+  margin: 0.2em 0.2em;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+}
+
 div[data-cy-test-id="status-badge-state"] {
   width: 4em;
 }
