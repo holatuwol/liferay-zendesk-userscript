@@ -24,6 +24,12 @@ interface GM {
 
 declare var GM : GM;
 
+declare var GM_config : GM_config;
+
+declare var GM_info : GM_info;
+
+declare function GM_registerMenuCommand(name: string, callback: function) : void;
+
 type JiraTicket = {
   subject: string
   createdAt: string
