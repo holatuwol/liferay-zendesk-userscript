@@ -313,7 +313,7 @@ function adjustColumnTextWidth() : boolean {
     var i = 0;
     for (var header of headers) {
       var textHeader = getTextHeader(header);
-      if (textHeader && (textHeader.nodeValue === 'Product')) {
+      if (textHeader && (textHeader.nodeValue === 'Offering')) {
         product_column = i;
         break;
       }
@@ -330,12 +330,8 @@ function adjustColumnTextWidth() : boolean {
         continue;
       }
       cell.title = cell.textContent;
-      if (cell.textContent === 'Liferay DXP::Quarterly Release') {
-        cell.textContent = 'DXP::Quarterly';
-        madeResizeChanges = true;
-      }
-      else if (cell.textContent === 'LXC - Self-Managed') {
-        cell.textContent = 'LXC - SM';
+      if (cell.textContent === 'Liferay Self-Hosted::Quarterly Release') {
+        cell.textContent = 'Self-Hosted::Quarterly';
         madeResizeChanges = true;
       }
       else if (cell.textContent === 'Provisioning Request') {
