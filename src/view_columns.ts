@@ -5,6 +5,10 @@ function populateTicketTableExtraColumns(
   tickets?: TicketAPIResult[]
 ) : void {
 
+  if (!GM_config.get('DISPLAY_SWARMING_CATEGORIES_ON_LIST')) {
+    return;
+  }
+
   if (tickets) {
     tableContainer.setAttribute('data-tickets', JSON.stringify(tickets));
   }
