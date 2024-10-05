@@ -514,36 +514,67 @@ GM_config.init({
   title: GM_info.script.name + ' Settings',
   fields: {
       DISPLAY_SWARMING_CATEGORIES_ON_LIST: {
-          label: 'Display Swarming Skills on ticket rows',
+          label: 'Check this box if you want to display Swarming Skills below the ticket title in each row on filter views (this will make rows larger vertically)',
           type: 'checkbox',
-          default: true,
-          title: 'Check if you want to display the Swarming Skils on ticket rows below the ticket title in filter viewsCheck if you want to display the Swarming Skils on ticket rows below the ticket title in filter views. This will make rows larger vertically.'
+          default: true
       },
       DISPLAY_SUB_ORGANIZATION_ON_LIST: {
-          label: 'Display suborganization information on tickets rows (Spain office only)',
+          label: '(Spain office only) Check this box if you want to display suborganization information below the ticket title in each row on filter views',
           type: 'checkbox',
-          default: false,
-          title: 'Check if you want to display the suborganization information on ticket rows below the ticket title'
+          default: false
       },
       EXECUTION_INTERVAL: {
-          label: 'Execution interval (ms)',
+          label: 'Enter the number of milliseconds to wait between each iteration of the script UI checking loop',
           type: 'number',
-          min: 1,
-          default: 1000,
-          title: 'The number of milliseconds to wait between each execution of the script'
+          min: 100,
+          default: 1000
       }
   },
+  css: `
+#zendesk_for_tse_config #zendesk_for_tse_config_wrapper #zendesk_for_tse_config_header {
+  font-size: x-large;
+  font-weight: 600;
+  margin: 1em;
+}
+
+#zendesk_for_tse_config #zendesk_for_tse_config_wrapper .section_header_holder {
+  display: grid;
+  grid-template-columns: 5em auto;
+  grid-gap: 0.5em;
+}
+
+#zendesk_for_tse_config #zendesk_for_tse_config_wrapper .section_header_holder .config_var {
+  display: contents;
+}
+
+#zendesk_for_tse_config #zendesk_for_tse_config_wrapper .section_header_holder .config_var label {
+  justify-self: start;
+  font-size: large;
+  font-weight: normal;
+}
+
+#zendesk_for_tse_config #zendesk_for_tse_config_wrapper .section_header_holder .config_var input {
+  font-size: medium;
+  text-align: end;
+  max-width: 4em;
+  align-self: start;
+  justify-self: end;
+}
+`,
   events: {
-      init: onInit
+    init: function() {
+      // Since there's an SPA framework in place that I don't fully understand,
+      // attempt to do everything once per second.
+      setInterval(updateZendeskUI, GM_config.get('EXECUTION_INTERVAL'));
+    },
+    open: function(configDocument : HTMLDocument) {
+      configDocument.querySelectorAll('.config_var').forEach(function(element) {
+        element.appendChild(<HTMLLabelElement> element.querySelector('label'));
+      });
+    }
   }
-})
+});
 
 GM_registerMenuCommand('Settings', () => {
   GM_config.open()
-})
-
-function onInit() {
-  // Since there's an SPA framework in place that I don't fully understand,
-  // attempt to do everything once per second.
-  setInterval(updateZendeskUI, GM_config.get('EXECUTION_INTERVAL'));
-}
+});
