@@ -147,7 +147,8 @@ function getJiraSearchLink(
 ) : HTMLAnchorElement {
     var query = `
 "Customer Ticket Permalink" = "https://${document.location.host}${document.location.pathname}" OR
-"Zendesk Ticket IDs" ~ ${ticketId} OR
+"Zendesk Ticket IDs" ~ "${ticketId}" OR
+"Zendesk Ticket IDs" ~ "https://${document.location.host}${document.location.pathname}" OR
 "Customer Ticket" = "https://${document.location.host}${document.location.pathname}"
   `.trim();
 
