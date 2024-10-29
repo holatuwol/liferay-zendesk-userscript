@@ -88,7 +88,7 @@ function populateTicketTableExtraColumns(
 
         for (var j = 0; j < ticketTags.length; j++) {
         var tag = ticketTags[j];
-        if (tag.startsWith("spain_pod_")) {
+        if (tag.indexOf("_pod_") != -1) {
           var container;
           if (GM_config.get('DISPLAY_SWARMING_CATEGORIES_ON_LIST')) {
             container = document.createElement('div');
