@@ -519,7 +519,7 @@ GM_config.init({
           default: true
       },
       DISPLAY_SUB_ORGANIZATION_ON_LIST: {
-          label: '(Spain office only) Check this box if you want to display suborganization information below the ticket title in each row on filter views',
+          label: 'Check this box if you want to display suborganization information below the ticket title in each row on filter views',
           type: 'checkbox',
           default: false
       },
