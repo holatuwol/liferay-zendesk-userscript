@@ -20,7 +20,7 @@ function addServiceLifeMarker(
   priorityElement: HTMLElement,
   ticketId: string,
   ticketTags: string[],
-  organizationTags: string[]
+  organizationTagSet: Set<string>
 ) : void {
 
   var versions = getProductVersions(ticketTags);
@@ -40,24 +40,29 @@ function addServiceLifeMarker(
 
   var declinedVersions = [];
 
-  for (var i = 0; i < organizationTags.length; i++) {
-    var tag = organizationTags[i];
+  if ((versions.indexOf('7.3') != -1) &&
+    (organizationTagSet.has('neg_7_3_eps'))) {
 
-    if ((tag == 'neg_7_0_eps') && (versions.indexOf('7.0') != -1)) {
-      declinedVersions.push('7.0');
-    }
-    else if ((tag == 'neg_7_1_eps') && (versions.indexOf('7.1') != -1)) {
-      declinedVersions.push('7.1');
-    }
-    else if ((tag == 'neg_7_2_eps') && (versions.indexOf('7.2') != -1)) {
-      declinedVersions.push('7.2');
-    }
-    else if ((tag == 'neg_7_3_eps') && (versions.indexOf('7.3') != -1)) {
-      declinedVersions.push('7.3');
-    }
+    declinedVersions.push('7.3');
   }
 
-  declinedVersions.sort().reverse();
+  if ((versions.indexOf('7.2') != -1) &&
+    (organizationTagSet.has('neg_7_2_eps'))) {
+
+    declinedVersions.push('7.2');
+  }
+
+  if ((versions.indexOf('7.1') != -1) &&
+    (organizationTagSet.has('neg_7_1_eps'))) {
+
+    declinedVersions.push('7.1');
+  }
+
+  if ((versions.indexOf('7.0') != -1) &&
+    (organizationTagSet.has('neg_7_0_eps'))) {
+
+    declinedVersions.push('7.0');
+  }
 
   var extendedPremiumSupport = null;
 
@@ -97,7 +102,7 @@ function addServiceLifeMarker(
 
 function getCriticalMarkerText(
   ticketInfo: TicketMetadata,
-  tagSet: Set<string>
+  ticketTagSet: Set<string>
 ) : string | null {
 
   var subpriority = ticketInfo.ticket.priority || 'none';
@@ -106,14 +111,14 @@ function getCriticalMarkerText(
     return null;
   }
 
-  if (tagSet.has('premium')) {
+  if (ticketTagSet.has('premium')) {
     return 'premium critical';
   }
 
-  var criticalMarkers = ['production', 'production_completely_shutdown', 'production_severely_impacted_inoperable'].filter(Set.prototype.has.bind(tagSet));
+  var criticalMarkers = ['production', 'production_completely_shutdown', 'production_severely_impacted_inoperable'].filter(Set.prototype.has.bind(ticketTagSet));
 
   if (criticalMarkers.length >= 2) {
-    if (tagSet.has('platinum')) {
+    if (ticketTagSet.has('platinum')) {
       return 'platinum critical'
     }
 
@@ -126,10 +131,10 @@ function getCriticalMarkerText(
 function addCriticalMarker(
   priorityElement: HTMLElement,
   ticketInfo: TicketMetadata,
-  tagSet: Set<string>
+  ticketTagSet: Set<string>
 ) : void {
 
-  var markerText = getCriticalMarkerText(ticketInfo, tagSet);
+  var markerText = getCriticalMarkerText(ticketInfo, ticketTagSet);
 
   if (markerText == null) {
     return;
@@ -141,38 +146,48 @@ function addCriticalMarker(
   priorityElement.appendChild(criticalElement);
 }
 
-function addCustomerTypeMarkerHelper(
+function addOrganizationTagSearchHeader(
   priorityElement: HTMLElement,
-  tagSet: Set<string>,
-  tag: string,
-  text: string
+  organizationTagSet: Set<string>,
+  tag: string | null,
+  text: string,
+  cssClass: string
 ) : void {
 
-  if (!tagSet.has(tag)) {
+  if ((tag != null) && !organizationTagSet.has(tag)) {
     return;
   }
 
   var element = document.createElement('span');
-  element.classList.add('lesa-ui-priority-minor');
+  element.classList.add('lesa-ui-' + cssClass);
 
-  var query = 'tags:' + tag;
+  if (tag == null) {
+    element.appendChild(document.createTextNode(text));
+  }
+  else {
+    var query = 'tags:' + tag;
 
-  var link = document.createElement('a');
-  link.textContent = text;
-  link.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+    var link = document.createElement('a');
+    link.textContent = text;
+    link.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+    link.setAttribute('title', query);
 
-  element.appendChild(link);
+    element.appendChild(link);
+  }
+
   priorityElement.appendChild(element);
 }
 
 function addCustomerTypeMarker(
   priorityElement: HTMLElement,
-  tagSet: Set<string>
+  organizationTagSet: Set<string>
 ) : void {
 
-  addCustomerTypeMarkerHelper(priorityElement, tagSet, 'gs_opportunity', 'GS Opportunity');
-  addCustomerTypeMarkerHelper(priorityElement, tagSet, 'service_solution', 'Service Portal Customer');
-  addCustomerTypeMarkerHelper(priorityElement, tagSet, 'commerce_solution', 'Commerce Portal Customer');
+  addOrganizationTagSearchHeader(priorityElement, organizationTagSet, 'tam_services', 'TAM Services', 'priority-critical');
+
+  addOrganizationTagSearchHeader(priorityElement, organizationTagSet, 'gs_opportunity', 'GS Opportunity', 'priority-minor');
+  addOrganizationTagSearchHeader(priorityElement, organizationTagSet, 'service_solution', 'Service Portal Customer', 'priority-minor');
+  addOrganizationTagSearchHeader(priorityElement, organizationTagSet, 'commerce_solution', 'Commerce Portal Customer', 'priority-minor');
 }
 
 /**
@@ -243,29 +258,32 @@ function getSupportRegions(
 function addOfferingMarker(
   priorityElement: HTMLElement,
   ticketInfo: TicketMetadata,
-  ticketTags: string[]
+  ticketTags: string[],
+  organizationTagSet: Set<string>
 ) : void {
 
-  var offeringElement = document.createElement('span');
-  offeringElement.classList.add('lesa-ui-offering');
-  offeringElement.setAttribute('title', 'Offering');
-
   var offeringText = 'Self-Hosted';
+  var offeringTag = null;
 
   for (var i = 0; i < ticketTags.length; i++) {
-    if (ticketTags[i].indexOf('lxc_sm') != -1) {
-      offeringText = 'PaaS';
-      break;
-    }
-    else if (ticketTags[i].indexOf('lxc') != -1) {
+    if (ticketTags[i].indexOf('lxc') != -1) {
       offeringText = 'SaaS';
+      offeringTag = ticketTags[i];
       break;
     }
   }
 
-  offeringElement.textContent = offeringText;
+  if (offeringText == 'SaaS') {
+    for (var i = 0; i < ticketTags.length; i++) {
+      if (ticketTags[i].indexOf('lxc_sm') != -1) {
+        offeringText = 'PaaS';
+        offeringTag = ticketTags[i];
+        break;
+      }
+    }
+  }
 
-  priorityElement.appendChild(offeringElement);
+  addOrganizationTagSearchHeader(priorityElement, organizationTagSet, offeringTag, offeringText, 'offering');
 }
 
 const middleEastCountries = new Set([
@@ -318,6 +336,7 @@ function addRegionMarker(
     customerRegionLink.textContent = 'customer region: ' + customerRegion;
 
     var query = 'support_region:' + customerRegion;
+    customerRegionLink.setAttribute('title', query);
     customerRegionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
 
     customerRegionElement.appendChild(customerRegionLink);
@@ -411,14 +430,13 @@ function addPriorityMarker(
   var ticketTags = (ticketInfo && ticketInfo.ticket && ticketInfo.ticket.tags) || [];
   var ticketTagSet = new Set(ticketTags);
 
-  var organizationTags = (ticketInfo && ticketInfo.organizations) ? ticketInfo.organizations.map(it => it.tags || []).reduce((acc, it) => acc.concat(it), []) : [];
-  organizationTags = Array.from(new Set(organizationTags));
+  var organizationTagSet = new Set((ticketInfo && ticketInfo.organizations) ? ticketInfo.organizations.map(it => it.tags || []).reduce((acc, it) => acc.concat(it), []) : []);
 
-  addOfferingMarker(priorityElement, ticketInfo, ticketTags);
+  addOfferingMarker(priorityElement, ticketInfo, ticketTags, organizationTagSet);
   addRegionMarker(priorityElement, ticketInfo, ticketContainer);
-  addServiceLifeMarker(priorityElement, ticketId, ticketTags, organizationTags);
+  addServiceLifeMarker(priorityElement, ticketId, ticketTags, organizationTagSet);
   addCriticalMarker(priorityElement, ticketInfo, ticketTagSet);
-  addCustomerTypeMarker(priorityElement, ticketTagSet);
+  addCustomerTypeMarker(priorityElement, organizationTagSet);
 
   var emojiContainer = getEmojiAnchorTags(ticketTags);
 
