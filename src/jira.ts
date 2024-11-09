@@ -252,7 +252,7 @@ function initPatchTicketValues(
 ) : void {
 
   var ticket = <JiraTicket> data['ticket'];
-  var productVersion = <string> data['ticket.customField:custom_field_360006076471'];
+  var versions = getProductVersions(ticket.tags);
 
   function setSummary(callback: Function) : void {
     setReactInputValue('input[data-test-id=summary]', ticket.subject, callback);
@@ -270,12 +270,10 @@ function initPatchTicketValues(
   }
 
   function setAffectsVersion(callback: Function) : void {
-    var value = (productVersion.indexOf('7_0') != -1) ? '7.0.10' :
-      (productVersion.indexOf('7_1') != -1) ? '7.1.10' :
-      (productVersion.indexOf('7_2') != -1) ? '7.2.10' :
-      (productVersion.indexOf('7_3') != -1) ? '7.3.10' :
-      (productVersion.indexOf('7_4') != -1) ? '7.4.13' :
-      (productVersion.indexOf('lxc') != -1) ? '7.4.13' :
+    var value = (versions.indexOf('7.0') != -1) ? '7.0.10' :
+      (versions.indexOf('7.1') != -1) ? '7.1.10' :
+      (versions.indexOf('7.2') != -1) ? '7.2.10' :
+      (versions.indexOf('7.3') != -1) ? '7.3.10' :
       null;
 
     if (value) {

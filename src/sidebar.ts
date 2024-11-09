@@ -227,7 +227,11 @@ function getPatcherPortalAccountsHREF(
  * Retrieve the Liferay version from the tags.
  */
 
-function getProductVersions(tags: string[]) : string[] {
+function getProductVersions(tags: string[] | null) : string[] {
+  if (tags == null) {
+    return [];
+  }
+
   var candidates = [];
 
   for (var i = 0; i < tags.length; i++) {

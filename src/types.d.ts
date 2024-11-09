@@ -38,6 +38,7 @@ type JiraTicket = {
       name: string
     }
   }
+  tags: string[] | null
   conversation: Array<{value: string}>
 }
 
