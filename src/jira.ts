@@ -321,7 +321,7 @@ function initZafClient() : void {
       return;
     }
 
-    if (issueTypeMenu.textContent != 'Patch') {
+    if (issueTypeMenu.textContent != 'Customer Issue') {
       setTimeout(initJiraTicketValues, 1000);
       return;
     }
