@@ -201,41 +201,37 @@ function addReactLabelValues(
  */
 
 function getSupportOffices(
-  assigneeGroup: string
+  supportRegion: string
 ) : Set<string> {
 
   var supportOffices = [];
 
-  if (assigneeGroup.indexOf('- AU') != -1) {
+  if (supportRegion == 'australia') {
     supportOffices.push('APAC');
     supportOffices.push('AU/NZ');
   }
 
-  if (assigneeGroup.indexOf('- BR') != -1) {
+  if (supportRegion == 'brazil') {
     supportOffices.push('Brazil');
   }
 
-  if (assigneeGroup.indexOf('- CN') != -1) {
-    supportOffices.push('APAC');
-  }
-
-  if (assigneeGroup.indexOf('- HU') != -1) {
+  if (supportRegion == 'hungary') {
     supportOffices.push('EU');
   }
 
-  if (assigneeGroup.indexOf('- IN') != -1) {
+  if (supportRegion == 'india') {
     supportOffices.push('India');
   }
 
-  if (assigneeGroup.indexOf('- JP') != -1) {
+  if (supportRegion == 'japan') {
     supportOffices.push('Japan');
   }
 
-  if ((assigneeGroup.indexOf('Spain Pod') == 0) || ((assigneeGroup.indexOf(' - ES') != -1) && (assigneeGroup.indexOf('- BR') == -1) )) {
+  if (supportRegion == 'spain') {
     supportOffices.push('Spain');
   }
 
-  if (assigneeGroup.indexOf(' - US') != -1) {
+  if (supportRegion == 'us') {
     supportOffices.push('US');
   }
 
@@ -252,6 +248,7 @@ function initPatchTicketValues(
 ) : void {
 
   var ticket = <JiraTicket> data['ticket'];
+  var organizationFields = ticket.organization.organizationFields;
   var versions = getProductVersions(ticket.tags);
 
   function setSummary(callback: Function) : void {
@@ -262,9 +259,13 @@ function initPatchTicketValues(
     setReactInputValue('span[data-test-id=customfield_10134] input', new Date(ticket.createdAt), callback);
   }
 
+  function setBaseline(callback: Function) : void {
+    setReactInputValue('input[data-test-id=customfield_10172]', organizationFields.account_code, callback);
+  }
+
   function setSupportOffice(callback: Function) : void {
-    var assigneeGroup = ticket.assignee.group.name;
-    var supportOffices = Array.from(getSupportOffices(assigneeGroup));
+    var supportRegion = organizationFields.support_region;
+    var supportOffices = Array.from(getSupportOffices(supportRegion));
 
     addReactLabelValues('customfield_10133', supportOffices, callback);
   }
@@ -296,7 +297,7 @@ function initPatchTicketValues(
     }
   }
 
-  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setSupportOffice, setAffectsVersion, focusSummary];
+  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setBaseline, setSupportOffice, setAffectsVersion, focusSummary];
 
   var nestedFunction = callOrder.reverse().reduce(function(accumulator, x) { return x.bind(null, accumulator); });
   nestedFunction();

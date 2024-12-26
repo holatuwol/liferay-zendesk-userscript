@@ -210,51 +210,6 @@ function isSupportRegion(
   return false;
 }
 
-/**
- * Retrieves the support region
- */
-
-function getSupportRegions(
-  assigneeText: string
-) : Set<string> {
-
-  var supportRegions = [];
-
-  if (isSupportRegion(assigneeText, 'AU')) {
-    supportRegions.push('Australia');
-  }
-
-  if (isSupportRegion(assigneeText, 'BR')) {
-    supportRegions.push('Brazil');
-  }
-
-  if (isSupportRegion(assigneeText, 'CN')) {
-    supportRegions.push('China');
-  }
-
-  if (isSupportRegion(assigneeText, 'HU')) {
-    supportRegions.push("Hungary");
-  }
-
-  if (isSupportRegion(assigneeText, 'IN')) {
-    supportRegions.push('India');
-  }
-
-  if (isSupportRegion(assigneeText, 'JP')) {
-    supportRegions.push('Japan');
-  }
-
-  if ((assigneeText.indexOf('Spain Pod') == 0) || (isSupportRegion(assigneeText, 'ES') && !isSupportRegion(assigneeText, 'BR'))) {
-    supportRegions.push('Spain');
-  }
-
-  if (isSupportRegion(assigneeText, 'US')) {
-    supportRegions.push('US');
-  }
-
-  return new Set(supportRegions.map(x => x.toLowerCase()));
-}
-
 function addOfferingMarker(
   priorityElement: HTMLElement,
   ticketInfo: TicketMetadata,
@@ -324,24 +279,21 @@ function addRegionMarker(
 
   var customerRegion = organizationFields.support_region;
   var assigneeText = ((assigneeElement && assigneeElement.textContent) || '').trim();
-  var assigneeRegions = getSupportRegions(assigneeText);
 
   var subpriority = ticketInfo.ticket.priority || 'none';
 
-  if ((subpriority == 'high') || (subpriority == 'urgent') || !assigneeRegions.has(customerRegion)) {
-    var customerRegionElement = document.createElement('span');
-    customerRegionElement.classList.add('lesa-ui-priority-major');
+  var customerRegionElement = document.createElement('span');
+  customerRegionElement.classList.add('lesa-ui-priority-major');
 
-    var customerRegionLink = document.createElement('a');
-    customerRegionLink.textContent = 'customer region: ' + customerRegion;
+  var customerRegionLink = document.createElement('a');
+  customerRegionLink.textContent = 'customer region: ' + customerRegion;
 
-    var query = 'support_region:' + customerRegion;
-    customerRegionLink.setAttribute('title', query);
-    customerRegionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
+  var query = 'support_region:' + customerRegion;
+  customerRegionLink.setAttribute('title', query);
+  customerRegionLink.href = 'https://' + document.location.host + '/agent/search/1?type=organization&q=' + encodeURIComponent(query);
 
-    customerRegionElement.appendChild(customerRegionLink);
-    priorityElement.appendChild(customerRegionElement);
-  }
+  customerRegionElement.appendChild(customerRegionLink);
+  priorityElement.appendChild(customerRegionElement);
 }
 
 /**

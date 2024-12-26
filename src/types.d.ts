@@ -40,6 +40,12 @@ type JiraTicket = {
   }
   tags: string[] | null
   conversation: Array<{value: string}>
+  organization: {
+    organizationFields: {
+      account_code: string
+      support_region: string
+    }
+  }
 }
 
 interface JSZip {
