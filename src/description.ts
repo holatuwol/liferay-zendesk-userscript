@@ -161,6 +161,7 @@ function createKnowledgeCaptureContainer(
   conversation: HTMLDivElement
 ) : HTMLDivElement | null {
 
+  var seenArticles = new Set();
   var fastTrackList = document.createElement('ul');
 
   if (ticketInfo.audits) {
@@ -173,16 +174,33 @@ function createKnowledgeCaptureContainer(
     }, []);
 
     fastTrackList = knowledgeCaptureEvents.reduce(function(list, x) {
+      var htmlURL = x.body.article.html_url;
+
+      if (seenArticles.has(htmlURL)) {
+        return list;
+      }
+
+      seenArticles.add(htmlURL);
+
       var item = document.createElement('li');
-      item.appendChild(createAnchorTag(x.body.article.title, x.body.article.html_url));
+      item.appendChild(createAnchorTag(x.body.article.title, htmlURL));
       list.appendChild(item);
+
       return list;
     }, fastTrackList);
   }
 
   var otherArticleList = document.createElement('ul');
 
-  Array.from(conversation.querySelectorAll('a[href*="/hc/"]')).reduce(function(list, x) {
+  Array.from(conversation.querySelectorAll('a[href*="/hc/"]')).reduce(function(list, x: HTMLAnchorElement) {
+    var htmlURL = x.href;
+
+    if (seenArticles.has(htmlURL)) {
+      return list;
+    }
+
+    seenArticles.add(htmlURL);
+
     var item = document.createElement('li');
 
     if (x.textContent != x.getAttribute('href')) {
@@ -190,11 +208,12 @@ function createKnowledgeCaptureContainer(
     }
 
     var link = <HTMLAnchorElement> x.cloneNode(true);
-    link.textContent = link.href;
+    link.textContent = htmlURL;
 
     item.appendChild(link);
 
     list.appendChild(item);
+
     return list;
   }, otherArticleList);
 
