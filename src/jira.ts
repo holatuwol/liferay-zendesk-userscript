@@ -259,10 +259,6 @@ function initPatchTicketValues(
     setReactInputValue('span[data-test-id=customfield_10134] input', new Date(ticket.createdAt), callback);
   }
 
-  function setBaseline(callback: Function) : void {
-    setReactInputValue('input[data-test-id=customfield_10172]', organizationFields.account_code, callback);
-  }
-
   function setSupportOffice(callback: Function) : void {
     var supportRegion = organizationFields.support_region;
     var supportOffices = Array.from(getSupportOffices(supportRegion));
@@ -297,7 +293,7 @@ function initPatchTicketValues(
     }
   }
 
-  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setBaseline, setSupportOffice, setAffectsVersion, focusSummary];
+  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setSupportOffice, setAffectsVersion, focusSummary];
 
   var nestedFunction = callOrder.reverse().reduce(function(accumulator, x) { return x.bind(null, accumulator); });
   nestedFunction();
