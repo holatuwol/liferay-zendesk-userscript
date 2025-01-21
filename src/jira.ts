@@ -259,6 +259,59 @@ function initPatchTicketValues(
     setReactInputValue('span[data-test-id=customfield_10134] input', new Date(ticket.createdAt), callback);
   }
 
+  function setBaseline(callback: Function) : void {
+    GM.xmlHttpRequest({
+      'method': 'GET',
+      'url': 'https://patcher.liferay.com/api/jsonws',
+      'headers': {
+        'Cache-Control': 'no-cache, no-store, max-age=0',
+        'Pragma': 'no-cache'
+      },
+      'onload': function(xhr: XMLHttpRequest) {
+        var matcher = /Liferay.authToken="([^"]*)"/g.exec(xhr.responseText);
+
+        if (!matcher) {
+          setReactInputValue('input[data-test-id=customfield_10172]', '', callback);
+          return;
+        }
+
+        var authToken = matcher[1];
+
+        GM.xmlHttpRequest({
+          'method': 'POST',
+          'url': 'https://patcher.liferay.com/api/jsonws/invoke',
+          'data': new URLSearchParams({
+              limit: '1',
+              patcherBuildAccountEntryCode: organizationFields.account_code,
+              cmd: JSON.stringify({"/osb-patcher-portlet.accounts/view":{}}),
+              p_auth: authToken
+            }),
+          'headers': {
+            'Cache-Control': 'no-cache, no-store, max-age=0',
+            'Pragma': 'no-cache'
+          },
+          'onload': function(xhr: XMLHttpRequest) {
+            var json = JSON.parse(xhr.responseText);
+            if (!json.data || json.data.length == 0) {
+              setReactInputValue('input[data-test-id=customfield_10172]', '', callback);
+              return;
+            }
+
+            setReactInputValue('input[data-test-id=customfield_10172]', json.data[0].patcherProjectVersionName, callback);
+          },
+          'onerror': function(xhr: XMLHttpRequest) {
+            if (callback) {
+              setReactInputValue('input[data-test-id=customfield_10172]', '', callback);
+            }
+          }
+        });
+      },
+      'onerror': function(xhr: XMLHttpRequest) {
+        setReactInputValue('input[data-test-id=customfield_10172]', '', callback);
+      }
+    });
+  }
+
   function setSupportOffice(callback: Function) : void {
     var supportRegion = organizationFields.support_region;
     var supportOffices = Array.from(getSupportOffices(supportRegion));
@@ -293,7 +346,7 @@ function initPatchTicketValues(
     }
   }
 
-  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setSupportOffice, setAffectsVersion, focusSummary];
+  var callOrder = <Array<Function>> [setSummary, setCustomerTicketCreationDate, setBaseline, setSupportOffice, setAffectsVersion, focusSummary];
 
   var nestedFunction = callOrder.reverse().reduce(function(accumulator, x) { return x.bind(null, accumulator); });
   nestedFunction();
