@@ -233,7 +233,7 @@ function addOfferingMarker(
 
   if (offeringText == 'SaaS') {
     for (var i = 0; i < ticketTags.length; i++) {
-      if (ticketTags[i].indexOf('lxc_sm') != -1) {
+      if (ticketTags[i] === 'lxc_sm') {
         offeringText = 'PaaS';
         offeringTag = ticketTags[i];
         break;
