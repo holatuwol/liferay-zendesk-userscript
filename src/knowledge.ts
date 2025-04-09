@@ -133,3 +133,66 @@ function updateKnowledgeCenterEditor() {
   addArticleFormattingButtons(tinymce);
   addArticleSubmissionListeners(tinymce);
 }
+
+function updateFastTrackArticle() {
+  if ((document.location.pathname.indexOf('/hc/') != 0) || (document.location.pathname.indexOf('/articles/') == -1)) {
+    return;
+  }
+
+  var metaElement = document.querySelector('div.article-author .article-meta');
+
+  if (metaElement == null) {
+    return;
+  }
+
+  if (metaElement.classList.contains('lesa-ui-article-linked')) {
+    return;
+  }
+
+  metaElement.classList.add('lesa-ui-article-linked');
+
+  var articleLinksElement = document.createElement('div');
+  metaElement.appendChild(articleLinksElement);
+
+  articleLinksElement.classList.add('meta-group', 'secondary-font', 'secondary-text-color');
+  articleLinksElement.style.gap = '0.5em';
+
+  var articleId = document.location.pathname.substring(document.location.pathname.lastIndexOf('/') + 1);
+
+  var pos = articleId.indexOf('-');
+
+  if (pos != -1) {
+    articleId = articleId.substring(0, pos);
+  }
+
+  var requestURL = document.location.origin + '/api/v2/help_center/articles/' + articleId + '.json';
+
+  GM.xmlHttpRequest({
+    'method': 'GET',
+    'url': requestURL,
+    'headers': {
+      'Cache-Control': 'no-cache, no-store, max-age=0',
+      'Pragma': 'no-cache'
+    },
+    'responseType': 'blob',
+    'onload': function(xhr: XMLHttpRequest) {
+      var payload = JSON.parse(xhr.responseText);
+      var labelNames = ((payload && payload.article && payload.article.label_names) ? payload.article.label_names : []) as string[];
+
+      var ticketIds = labelNames.filter((it) => it.match(/^[0-9]+$/g));
+
+      var ticketLinks = ticketIds.map((it) => createAnchorTag('https://liferay-support.zendesk.com/agent/tickets/' + it, 'https://liferay-support.zendesk.com/agent/tickets/' + it));
+
+      if (ticketLinks.length > 0) {
+        for (var ticketLink of ticketLinks) {
+          articleLinksElement.appendChild(ticketLink);
+        }
+      }
+      else {
+        articleLinksElement.remove();
+      }
+    },
+    'onerror': function(xhr: XMLHttpRequest) {
+    }
+  });
+}

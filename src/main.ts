@@ -486,7 +486,10 @@ function isBadgeInPopup(badge: HTMLElement) : boolean {
 function updateZendeskUI() : void {
   var pathname = unsafeWindow.location.pathname;
 
-  if (pathname.indexOf('/agent/') == 0) {
+  if (document.location.hostname == 'help.liferay.com') {
+    updateFastTrackArticle();
+  }
+  else if (pathname.indexOf('/agent/') == 0) {
     checkForConversations();
     checkForSubtitles();
     checkSidebarTags();
