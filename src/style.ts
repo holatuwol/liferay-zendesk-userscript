@@ -345,6 +345,12 @@ td[data-test-id="generic-table-cells-id"] span.lesa-ui-tags {
 div[data-cy-test-id="status-badge-state"] {
   width: 4em;
 }
+
+div[data-test-id="ticket_table_tooltip-header-ticket-info"] > * > div[data-cy-test-id="status-badge-state"],
+div[data-test-id="header-tab-tooltip"] > * > * > div[data-cy-test-id="status-badge-state"],
+div[data-cy-test-id="submit_button-menu"] > * > * > div[data-cy-test-id="status-badge-state"] {
+  width: auto;
+}
 `;
 }
 
