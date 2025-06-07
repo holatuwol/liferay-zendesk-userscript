@@ -306,7 +306,8 @@ function addRegionMarker(
 const emojiMap: {[s: string]: string} = {
   'cas_fire': '⚠️',
   'cas_hot': '⚠️',
-  'cas_priority': '⚠️'
+  'cas_priority': '⚠️',
+  'fire': '🔥',
 };
 
 const isEmoji = Set.prototype.has.bind(new Set(Object.keys(emojiMap)));
@@ -396,7 +397,12 @@ function addPriorityMarker(
   var emojiContainer = getEmojiAnchorTags(ticketTags);
 
   if (emojiContainer != null) {
-    priorityElement.appendChild(emojiContainer);
+    var subjectElement = <HTMLElement> document.querySelector('input[data-test-id="omni-header-subject"]');
+
+    var subjectContainerElement = <HTMLElement> subjectElement.parentElement;
+
+    subjectContainerElement.insertBefore(emojiContainer, subjectElement);
+    subjectContainerElement.classList.add('lesa-ui-subject-emojis-container');
   }
 
   var viaLabel = <HTMLDivElement> conversation.querySelector('div[data-test-id="omni-header-via-label"]');

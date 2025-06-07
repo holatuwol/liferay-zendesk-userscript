@@ -244,8 +244,17 @@ span[data-garden-container-id="containers.tooltip"] {
   background-color: #bf1e2d;
 }
 
-.lesa-ui-priority .lesa-ui-subject-emojis {
+.lesa-ui-subject-emojis-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+
+.lesa-ui-subject-emojis {
   background-color: #f8f9f9;
+  margin-right: 0.5em;
+  font-size: 1rem;
 }
 
 .lesa-ui-subject-emojis a {
