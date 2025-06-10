@@ -526,6 +526,16 @@ GM_config.init({
           type: 'checkbox',
           default: false
       },
+      DISPLAY_QUICKWIN_ON_LIST: {
+          label: 'Check this box if you want to highlight quick win tickets in green in the filter views',
+          type: 'checkbox',
+          "default": true
+      },
+      DISPLAY_GREENCIRCLE_ON_LIST: {
+          label: 'Check this box if you want to display a green circle emoji instead of the eye icon',
+          type: 'checkbox',
+          "default": true
+      },
       EXECUTION_INTERVAL: {
           label: 'Enter the number of milliseconds to wait between each iteration of the script UI checking loop',
           type: 'number',

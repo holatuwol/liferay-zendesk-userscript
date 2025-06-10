@@ -193,6 +193,22 @@ function addCustomerTypeMarker(
   addOrganizationTagSearchHeader(priorityElement, organizationTagSet, 'commerce_solution', 'Commerce Portal Customer', 'priority-minor');
 }
 
+function addQuickWinMarker(
+  priorityElement: HTMLElement,
+  ticketInfo: TicketMetadata,
+  ticketTagSet: Set<string>
+) : void {
+
+  if (!ticketTagSet.has("quick_win")) {
+    return;
+  }
+
+  var quickwinElement = document.createElement('span');
+  quickwinElement.classList.add('lesa-ui-quickwin');
+  quickwinElement.textContent = "Quick Win";
+  priorityElement.appendChild(quickwinElement);
+}
+
 /**
  * Checks whether the assignee text corresponds to the specified support region.
  */
@@ -393,6 +409,7 @@ function addPriorityMarker(
   addServiceLifeMarker(priorityElement, ticketId, ticketTags, organizationTagSet);
   addCriticalMarker(priorityElement, ticketInfo, ticketTagSet);
   addCustomerTypeMarker(priorityElement, organizationTagSet);
+  addQuickWinMarker(priorityElement, ticketInfo, ticketTagSet);
 
   var emojiContainer = getEmojiAnchorTags(ticketTags);
 

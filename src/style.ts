@@ -228,6 +228,14 @@ span[data-garden-container-id="containers.tooltip"] {
   background-color: #222;
 }
 
+.lesa-ui-quickwin {
+  background-color: #037f52;
+}
+
+tr.quickwin {
+  background-color: #eef8f4;
+}
+
 .lesa-ui-priority-minor,
 .lesa-ui-subpriority-none,
 .lesa-ui-subpriority-low {

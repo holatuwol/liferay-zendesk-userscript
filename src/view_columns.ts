@@ -110,6 +110,38 @@ function populateTicketTableExtraColumns(
         }
     }
   }
+
+  if (GM_config.get('DISPLAY_QUICKWIN_ON_LIST')) {
+    var selector = 'table[data-test-id="generic-table"] tbody tr[data-test-id="generic-table-row"]';
+    var rows = document.querySelectorAll(selector);
+    for (let i = 0; i < tickets.length; i++) {
+      var row = <HTMLTableRowElement> rows[i];
+      if (!row) {
+        continue;
+      }
+
+      if (row.classList.contains('quickwin') || row.classList.contains('not-quickwin')) {
+        continue;
+      }
+
+      var ticketTags = tickets[i].tags;
+      var quickWin = ticketTags && ticketTags.filter(it => it.includes('quick_win')).length > 0;
+
+      if (quickWin) {
+        row.classList.add('quickwin');
+      }
+      else {
+        row.classList.add('not-quickwin');
+      }
+
+      if (GM_config.get('DISPLAY_GREENCIRCLE_ON_LIST')) {
+        row.cells[1].textContent = quickWin ? '🟢' : '';
+        row.cells[1].style.width = '';
+        row.cells[1].style.maxWidth = '';
+        row.cells[1].style.padding = '';
+      }
+    }
+  }
 }
 
 function addTicketTableExtraColumns(
@@ -196,13 +228,12 @@ function addSearchExtraColumns() : void {
     return;
   }
 
+  var page = '1';
   var pageElement = <HTMLLIElement | null> activeWorkspaceElement.querySelector('li[data-garden-id="pagination.page"][aria-current="true"]');
 
-  if (!pageElement) {
-    return;
+  if (pageElement) {
+    page = pageElement.title;
   }
-
-  var page = pageElement.title;
 
   var searchElement = <HTMLInputElement> activeWorkspaceElement.querySelector('input[data-test-id="search_advanced-search-box_input-field_media-input"]');
   var search = searchElement.value;
