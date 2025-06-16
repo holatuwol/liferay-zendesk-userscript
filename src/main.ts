@@ -248,7 +248,8 @@ function fixOldTicketStatusColumnStyle() : void {
   var pathname = unsafeWindow.location.pathname;
   var viewPage = (pathname.indexOf('/agent/dashboard') == 0) ||
     ((pathname.indexOf('/agent/filters/') == 0) && (pathname.indexOf('/suspended') == -1)) ||
-    ((pathname.indexOf('/agent/search/') == 0) && (document.querySelector('div[data-test-id="search_tables_tab-tickets"][aria-selected="true"]') != null));
+    ((pathname.indexOf('/agent/search/') == 0) && (document.querySelector('div[data-test-id="search_tables_tab-tickets"][aria-selected="true"]') != null)) ||
+    (pathname.indexOf('/organization/tickets') != -1);
 
   /* update status column */
   var badges = <Array<HTMLElement>> Array.from(document.querySelectorAll('div[data-cy-test-id="status-badge-state"]'));
