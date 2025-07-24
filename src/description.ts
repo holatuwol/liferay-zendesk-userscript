@@ -290,6 +290,64 @@ function getCustomFieldValue(ticketInfo: TicketAPIResult, fieldId: number) : any
 }
 
 /**
+ * Add collapse internal info
+ */
+function addCollapseInternalInfo(header: HTMLElement) : void {
+
+    var collapseInternalInfoElement = document.createElement('button');
+    collapseInternalInfoElement.setAttribute('data-test-id', 'collapse-internal-comments');
+    collapseInternalInfoElement.classList.add('lesa-ui-collapseInternalInfoElement');
+    collapseInternalInfoElement.classList.add('eUFUgT');
+    collapseInternalInfoElement.classList.add('iQoDao');
+    collapseInternalInfoElement.classList.add('lnpbol');
+
+      collapseInternalInfoElement.textContent = "";
+
+    var imgCollapse  = document.createElement('img');
+    imgCollapse.setAttribute('src', 'https://www.tiny.cloud/docs/tinymce/latest/_images/icons/flip-vertically.svg');
+    imgCollapse.setAttribute('alt', 'Collapse internal Info');
+
+    collapseInternalInfoElement.prepend(imgCollapse);
+
+
+    var buttons = header.children[1];
+    var isCollapsed = getCookieCustom('_lesa-ui-collapse-info') || GM_config.get('DISPLAY_INTERNAL_COMMENTS_COLLAPSED_ON_LIST');
+    var collapsedBool = (isCollapsed === true || isCollapsed === 'true');
+
+    const targets = document.querySelectorAll('[type="internal"]');
+    collapseInternalInfoElement.addEventListener("click", () => {
+        collapsedBool = !collapsedBool;
+        setCookieCustom('_lesa-ui-collapse-info', String(collapsedBool));
+        targets.forEach(el => {
+          el.classList.toggle('collapsed', collapsedBool);
+        });
+    });
+
+    targets.forEach(el => {
+        el.classList.toggle('collapsed', collapsedBool);
+    });
+
+    buttons.prepend(collapseInternalInfoElement);
+}
+
+function getCookieCustom(name: string) : string | null {
+  const cookieArr = document.cookie.split("; ");
+  for (let cookie of cookieArr) {
+    const [key, value] = cookie.split("=");
+    if (key === name) {
+      return decodeURIComponent(value);
+    }
+  }
+  return null;
+}
+
+function setCookieCustom(name: string, value: string) : void {
+  const years = 10;
+  const expires = new Date(Date.now() + years * 365 * 24 * 60 * 60 * 1000).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+}
+
+/**
  * Add a ticket description and a complete list of attachments to the top of the page.
  */
 
@@ -325,6 +383,7 @@ function addTicketDescription(
   addHeaderLinkModal('description-modal', 'Fast Track', header, conversation, checkEvents.bind(null, ticketId, ticketInfo), createKnowledgeCaptureContainer.bind(null, ticketId, ticketInfo, conversation));
   addHeaderLinkModal('attachments-modal', 'Attachments', header, conversation, checkComments.bind(null, conversation), createAttachmentsContainer.bind(null, ticketId, ticketInfo, conversation));
   addSortButton(conversation, header);
+  addCollapseInternalInfo(header);
 }
 
 function createDescriptionContainer(

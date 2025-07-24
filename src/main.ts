@@ -536,6 +536,11 @@ GM_config.init({
           label: 'Check this box if you want to display a green circle emoji instead of the eye icon',
           type: 'checkbox',
           "default": true
+        },    
+      DISPLAY_INTERNAL_COMMENTS_COLLAPSED_ON_LIST: {
+          label: 'Check this box if you want to collapse internal comments by default',
+          type: 'checkbox',
+          "default": false
       },
       EXECUTION_INTERVAL: {
           label: 'Enter the number of milliseconds to wait between each iteration of the script UI checking loop',

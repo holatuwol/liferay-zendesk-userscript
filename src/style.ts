@@ -359,6 +359,19 @@ div[data-test-id="header-tab-tooltip"] > * > * > div[data-cy-test-id="status-bad
 div[data-cy-test-id="submit_button-menu"] > * > * > div[data-cy-test-id="status-badge-state"] {
   width: auto;
 }
+
+[type="internal"] {
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  overflow: hidden;
+  max-height: 1000px;
+}
+  
+[type="internal"].collapsed {
+  max-height: 0 !important;
+  padding: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
 `;
 }
 
