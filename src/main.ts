@@ -484,6 +484,66 @@ function isBadgeInPopup(badge: HTMLElement) : boolean {
   return false;
 }
 
+/**
+ * Close all tabs button
+ */
+function closeAllTabs() {
+     const tablist = document.querySelector('[data-test-id="header-tablist"]');
+
+    const visibleCloseButtons = Array.from(document.querySelectorAll('[data-test-id="close-button"]'))
+    .filter((btn: HTMLElement) => {
+        const style = window.getComputedStyle(btn);
+        return style.display !== 'none' && style.visibility !== 'hidden' && btn.offsetParent !== null;
+    });
+
+    if (tablist && visibleCloseButtons.length > 0 && !document.querySelector('#close-all-tab-btn')) {
+        const newDiv = document.createElement('div');
+        newDiv.className = 'sc-19uji9v-0 dcLIks';
+
+        const button = document.createElement('button');
+        button.id = 'close-all-tab-btn';
+        button.type = 'button';
+        button.setAttribute('aria-haspopup', 'false');
+        button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('data-test-id', 'close-all-tabs-button');
+        button.className = 'sc-1yqwijl-0 fSkeuV';
+
+        const innerDiv = document.createElement('div');
+        innerDiv.style.display = 'flex';
+        innerDiv.style.alignItems = 'center';
+        innerDiv.style.gap = '6px';
+
+        const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        icon.setAttribute('width', '12');
+        icon.setAttribute('height', '12');
+        icon.setAttribute('viewBox', '0 0 12 12');
+        icon.setAttribute('aria-hidden', 'true');
+        icon.setAttribute('focusable', 'false');
+        icon.classList.add('sc-y7z43x-0', 'gGJlIS');
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('stroke', 'currentColor');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('d', 'M3 9L9 3M9 9L3 3');
+        icon.appendChild(path);
+
+        const span = document.createElement('span');
+        span.className = 'sc-10vdpwu-0 hysyZs';
+        span.textContent = 'Close all';
+
+        innerDiv.appendChild(icon);
+        innerDiv.appendChild(span);
+        button.appendChild(innerDiv);
+        newDiv.appendChild(button);
+        tablist.appendChild(newDiv);
+
+        button.addEventListener('click', () => {
+            document.querySelectorAll('[data-test-id="close-button"]').forEach((btn: HTMLElement) => btn.click());
+            button.remove();
+        });
+    }
+}
+
 function updateZendeskUI() : void {
   var pathname = unsafeWindow.location.pathname;
 
@@ -498,6 +558,7 @@ function updateZendeskUI() : void {
     fixAttachmentLinks();
     makeDraggableModals();
     fixOldTicketStatusColumnStyle();
+    closeAllTabs();
 
     if (pathname.indexOf('/agent/filters/') == 0) {
       addViewsGoToPageButton();
