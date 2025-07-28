@@ -538,8 +538,10 @@ function closeAllTabs() {
         tablist.appendChild(newDiv);
 
         button.addEventListener('click', () => {
+          if (confirm("Are you sure you want to proceed?")) {
             document.querySelectorAll('[data-test-id="close-button"]').forEach((btn: HTMLElement) => btn.click());
             button.remove();
+          }
         });
     }
 }

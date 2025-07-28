@@ -363,7 +363,7 @@ div[data-cy-test-id="submit_button-menu"] > * > * > div[data-cy-test-id="status-
 [type="internal"] {
   transition: max-height 0.3s ease, padding 0.3s ease;
   overflow: hidden;
-  max-height: 1000px;
+  max-height: 100%;
 }
   
 [type="internal"].collapsed {
