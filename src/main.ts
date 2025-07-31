@@ -494,7 +494,7 @@ function closeAllTabs() {
         const updateCloseAllButton = () => {
             // Get all visible and non-collapsed close buttons
             const visibleCloseButtons = Array.from(document.querySelectorAll('[data-test-id="close-button"]')).filter(btn => {
-                const tab = btn.closest('[data-test-id="header-tab"]');
+                const tab = <HTMLElement | null> btn.closest('[data-test-id="header-tab"]');
                 return tab && tab.offsetParent !== null && !tab.classList.contains('collapsed');
             });
 
@@ -502,7 +502,12 @@ function closeAllTabs() {
 
             // If no visible tabs and button exists → remove the button
             if (visibleCloseButtons.length === 0) {
-                if (existingButton) existingButton.closest('div')?.remove();
+                if (existingButton) {
+                  const existingButtonContainer = existingButton.closest('div');
+                  if (existingButtonContainer) {
+                    existingButtonContainer.remove();
+                  }
+                }
                 return;
             }
 
@@ -553,11 +558,11 @@ function closeAllTabs() {
             button.addEventListener('click', () => {
                 if (confirm('Are you sure you want to close all tabs?')) {
                     const freshCloseButtons = Array.from(document.querySelectorAll('[data-test-id="close-button"]')).filter(btn => {
-                        const tab = btn.closest('[data-test-id="header-tab"]');
+                        const tab = <HTMLElement | null> btn.closest('[data-test-id="header-tab"]');
                         return tab && tab.offsetParent !== null && !tab.classList.contains('collapsed');
                     });
 
-                    freshCloseButtons.forEach(btn => btn.click());
+                    freshCloseButtons.forEach((btn: HTMLElement) => btn.click());
                     wrapper.remove();
                 }
             });
