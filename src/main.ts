@@ -539,17 +539,11 @@ function closeAllTabs() {
 
   button.addEventListener('click', () => {
     if (confirm('Are you sure you want to close all tabs?')) {
-      const freshCloseButtons = Array.from(document.querySelectorAll('[data-test-id="close-button"]')).filter(btn => {
-        const tab = <HTMLElement | null> btn.closest('[data-test-id="header-tab"]');
-        return tab && tab.offsetParent !== null && !tab.classList.contains('collapsed');
-      });
-
-      freshCloseButtons.forEach((btn: HTMLElement) => btn.click());
-      wrapper.remove();
+      tablist.querySelectorAll('[data-test-id="close-button"]:not(.collapsed)').forEach((btn: HTMLElement) => btn.click());
     }
   });
 
-  const updateVisibleTabCount = function() {
+  const updateVisibleTabCount = () => {
     const visibleCloseButtons = Array.from(tablist.querySelectorAll('[data-test-id="close-button"]:not(.collapsed)'));
     tablist.setAttribute('data-visible-tabs', String(visibleCloseButtons.length));
   };
