@@ -130,7 +130,7 @@ article.lesa-ui-event-highlighted {
 .lesa-ui-form-field {
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.5em;
+  grid-column: span 2;
 }
 
 .lesa-ui-permalink {
