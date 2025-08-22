@@ -133,6 +133,10 @@ article.lesa-ui-event-highlighted {
   grid-column: span 2;
 }
 
+.sidebar_box_container .lesa-ui-form-field {
+  margin-bottom: 0.5em;
+}
+
 .lesa-ui-permalink {
   margin-bottom: 1em;
 }

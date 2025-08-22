@@ -471,12 +471,24 @@ function getPropertyBoxes(
 ) : HTMLElement[] {
 
   var propertyBoxes = <HTMLDivElement[]> Array.from(document.querySelectorAll('#ticket_sidebar div[data-garden-id="grid.row"]'));
+  var visiblePropertyBoxes;
 
-  var visiblePropertyBoxes = propertyBoxes.filter(it => {
-    var workspaceElement = <HTMLElement | null> it.closest('.workspace');
+  if (propertyBoxes.length == 0) {
+    propertyBoxes = <HTMLDivElement[]> Array.from(document.querySelectorAll('.property_box:not(.ticket_properties)'));
 
-    return workspaceElement && workspaceElement.style.display != 'none';
-  }).filter(it => it.querySelector('div[data-test-id="ticket-fields-tags"]') == null);
+    visiblePropertyBoxes = propertyBoxes.filter(it => {
+      var workspaceElement = <HTMLElement | null> it.closest('.workspace');
+
+      return workspaceElement && workspaceElement.style.display != 'none';
+    });
+  }
+  else {
+    visiblePropertyBoxes = propertyBoxes.filter(it => {
+      var workspaceElement = <HTMLElement | null> it.closest('.workspace');
+
+      return workspaceElement && workspaceElement.style.display != 'none';
+    }).filter(it => it.querySelector('div[data-test-id="ticket-fields-tags"]') == null);
+  }
 
   if (ticketId) {
     return visiblePropertyBoxes.filter(it => it.getAttribute('data-ticket-id') != ticketId);
